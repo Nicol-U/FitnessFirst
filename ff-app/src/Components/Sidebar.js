@@ -1,10 +1,18 @@
 import React from "react";
 import "../App.css";
-import { SidebarData } from "./SidebarData";
+import { SidebarHeader, SidebarData } from "./SidebarData";
 
 function Sidebar() {
     return (
     <div className="Sidebar">
+        <h1 className="SidebarTitle">FITNESS FIRST</h1>
+        <ul className="SidebarHeader">
+            <li>
+                <div id="title">{SidebarHeader[0].title}</div>
+                <div id="subtitle">{SidebarHeader[0].subtitle}</div>
+            </li>    
+        </ul>
+
         <ul className="SidebarList">
             {SidebarData.map((val, key)=> {
                 return (

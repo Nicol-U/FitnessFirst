@@ -5,6 +5,13 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import SettingsIcon from '@mui/icons-material/Settings';
 
+export const SidebarHeader =  [
+    {
+        title: 'THE ARCHIVE',
+        subtitle: 'ELITE PERFORMANCE',
+    }
+];
+
 export const SidebarData =  [
 {
     title: "DASHBOARD",

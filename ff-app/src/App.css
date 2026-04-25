@@ -1,3 +1,11 @@
+
+:root {
+  --primary-color: #DFFF00;
+  --primary-font: 'lexend', sans-serif;
+  --primary-bg-color: #000000;
+  --selection-black: #393939;
+  --main-gray: #ADAAAA;
+}
 .App {
   width: 100vw;
   height: 100vh;
@@ -7,7 +15,7 @@
 body{
   margin: 0;
   padding: 0%;
-  background-color: black;
+  background-color: var(--primary-bg-color);
 }
 
 .Sidebar {
@@ -16,44 +24,80 @@ body{
   left: 0;
   width: 200px;
   height: 100%;
-  background-color: black;
-  outline: yellowgreen solid 1px;
+  font-family: var(--primary-font);
+  background-color: var(--primary-bg-color);
+  /*outline: var(--primary-color) solid 1px;
+  this gets ride of a green outline on the left sidebar might want latter*/
+}
+
+.SidebarTitle {
+  color: var(--primary-color);
+  /*font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  */
+
+  font-family: 'lexend', sans-serif;
+  font-size: 1.5rem;
+  text-align: center;
+  margin: 5%;
+  /* Margin vs text-align IDK need to rearch later this is for the title */
+  background-color: var(--primary-bg-color);
+}
+
+.SidebarHeader{
+  height: auto;
+  font-family: 'lexend', sans-serif;
+  color: var(--primary-color);
+  width: 100%;
+  padding: 0;
+  align-items: left;
+  background-color: var(--primary-bg-color);
+}
+
+.SidebarHeader #subtitle {
+  color: gray;
+  font-size: 0.8rem;
+  align-items: left;
 }
 
 .SidebarList {
   height: auto;
   width: 100%;
   padding: 0;
-  background-color: black;
-
+  /*background-color: var(--main-gray);  */
 }
 
 .SidebarList .row {
 width: 100%;
 height: 60px;
-background-color: gray;
-border-start-end-radius: 1px solid yellowgreen;
-list-style-type: none;
+background-color: var(--primary-bg-color);
+border-start-end-radius: 1px solid var(--main-gray);
 margin: 0%;
 display: flex;
 flex-direction: row;
-color: yellowgreen;
+color: var(--main-gray);
 justify-content: center;
 align-items: center;
-font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+font-family: var(--primary-font);
 }
 
 .Sidebar .row:hover{
-  background-color: yellowgreen;
-  color: black;
+  background-color: var(--selection-black);
+  color: var(--primary-color);
   cursor: pointer;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  border-left-color: #DFFF00;
 }
 
 .Sidebar #active {
 
   display: grid;
   place-items: center;
-  background-color: wheat;
+  background-color: var(--selection-black);
+  color: var(--primary-color);
+  border-left: 5px solid var(--primary-color);
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
 }
 
 .row #icon {
@@ -64,6 +108,7 @@ font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 
 .row #title {
   flex: 70%;
+  text-align: left;
 }
 
 .App-logo {
@@ -78,7 +123,7 @@ font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: var(--primary-bg-color);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -88,7 +133,7 @@ font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: yellowgreen;
+  color: var(--primary-color);
 }
 
 .App-link {
