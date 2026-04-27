@@ -4,7 +4,9 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import SettingsIcon from '@mui/icons-material/Settings';
+import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
 
+export const profileIcon = <AccountCircleSharpIcon />;
 export const SidebarHeader =  [
     {
         title: 'THE ARCHIVE',

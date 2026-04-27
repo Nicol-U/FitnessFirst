@@ -12,10 +12,27 @@
   text-align: center;
 }
 
+.profile {
+  position: fixed;
+  bottom: 40px;
+  right: 20px;
+  color: var(--primary-color);
+  top: 20px;
+  width: 50px;
+  height: 50px;
+}
+
+.profile:active{
+
+  /*turns blue on click*/
+  color:#61dafb
+}
+
 body{
   margin: 0;
   padding: 0%;
   background-color: var(--primary-bg-color);
+  
 }
 
 .Sidebar {

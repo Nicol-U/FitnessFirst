@@ -1,10 +1,11 @@
 import React from "react";
 import "../App.css";
-import { SidebarHeader, SidebarData } from "./SidebarData";
+import { SidebarHeader, SidebarData, profileIcon } from "./SidebarData";
 
 function Sidebar() {
     return (
     <div className="Sidebar">
+
         <h1 className="SidebarTitle">FITNESS FIRST</h1>
         <ul className="SidebarHeader">
             <li>
@@ -32,6 +33,9 @@ function Sidebar() {
      
     <button class="LogWBut">LOG WORKOUT</button>
     
+    <div className="profile" href="/profile">
+        {profileIcon}
+    </div>
     </div>);
 
 }
