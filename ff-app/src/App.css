@@ -34,23 +34,31 @@ body{
   color: var(--primary-color);
   /*font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   */
-
+  padding-top: 2%;
   font-family: 'lexend', sans-serif;
   font-size: 1.5rem;
-  text-align: center;
-  margin: 5%;
+  text-align: right;
   /* Margin vs text-align IDK need to rearch later this is for the title */
   background-color: var(--primary-bg-color);
 }
 
 .SidebarHeader{
-  height: auto;
+  align-items: left;
   font-family: 'lexend', sans-serif;
   color: var(--primary-color);
   width: 100%;
   padding: 0;
-  align-items: left;
   background-color: var(--primary-bg-color);
+  padding-top: 10%; /*this controls the dist from bottom of sub header*/
+  padding-bottom: 10%;
+}
+
+.SidebarHeader #title {
+  color: var(--primary-color);
+  font-size: 130%;
+  align-items: left;
+  font-family: 'lexend', sans-serif;
+
 }
 
 .SidebarHeader #subtitle {
@@ -59,19 +67,21 @@ body{
   align-items: left;
 }
 
+
 .SidebarList {
   height: auto;
   width: 100%;
-  padding: 0;
+  padding: 5px;
   /*background-color: var(--main-gray);  */
 }
 
 .SidebarList .row {
 width: 100%;
-height: 60px;
+height: 40px;
 background-color: var(--primary-bg-color);
 border-start-end-radius: 1px solid var(--main-gray);
 margin: 0%;
+
 display: flex;
 flex-direction: row;
 color: var(--main-gray);
@@ -90,9 +100,8 @@ font-family: var(--primary-font);
 }
 
 .Sidebar #active {
-
-  display: grid;
   place-items: center;
+  font-family: var(--primary-font);
   background-color: var(--selection-black);
   color: var(--primary-color);
   border-left: 5px solid var(--primary-color);
@@ -109,7 +118,25 @@ font-family: var(--primary-font);
 .row #title {
   flex: 70%;
   text-align: left;
+  font-size: small;
 }
+
+.LogWBut {
+  position: fixed;
+  bottom: 40px;
+  left: 20px;
+  border-radius: 5px;
+  border: none;
+  background: linear-gradient(95deg, #F6FFC0, var(--primary-color), #DAF900);
+  width: 25%;
+  height: 40px;
+
+  color: black;
+  font-family: var(--primary-font);
+  font-size: small;
+}
+
+
 
 .App-logo {
   height: 40vmin;

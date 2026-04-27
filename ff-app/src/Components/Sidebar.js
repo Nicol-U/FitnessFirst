@@ -29,6 +29,9 @@ function Sidebar() {
             ); 
             })}
         </ul>
+     
+    <button class="LogWBut">LOG WORKOUT</button>
+    
     </div>);
 
 }
