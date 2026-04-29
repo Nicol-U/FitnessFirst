@@ -1,6 +1,7 @@
 import React from "react";
 import "../App.css";
 import { SidebarHeader, SidebarData, profileIcon } from "./SidebarData";
+import { Link } from "react-router-dom";
 
 function Sidebar() {
     return (
@@ -17,16 +18,18 @@ function Sidebar() {
         <ul className="SidebarList">
             {SidebarData.map((val, key)=> {
                 return (
-                <li
-                     key ={key}
-                     className="row"
-                     id={window.location.pathname === val.link ? "active" : ""}
-                     onClick={() => {window.location.pathname = val.link}}
-                     >
-                     <div id="icon">{val.icon}</div>
-                     <div id="title">{val.title}</div>
-                
-                </li>  
+                <Link
+                    key ={key}
+                    className="row"
+                    to={val.link}
+                    style={{ textDecoration: 'none' }} 
+                    
+                    id={window.location.pathname === val.link ? "active" : ""}
+                    onClick={() => {window.location.pathname = val.link}}
+                    >
+                    <div id="icon">{val.icon}</div>
+                    <div id="title">{val.title}</div>
+                </Link>  
             ); 
             })}
         </ul>

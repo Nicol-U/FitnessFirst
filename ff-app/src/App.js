@@ -1,7 +1,12 @@
-import logo from './logo.svg';
 import './App.css';
 import Sidebar from './Components/Sidebar';
-
+import {HashRouter as Router, Routes, Route} from 'react-router-dom';
+import { Dashboard } from './Pages/Dashboard';
+import {Login } from './Pages/login';
+import {LogWorkoutPlan} from './Pages/WLPlans';
+import {LW} from './Pages/LW';
+import {History} from './Pages/History';
+import {Settings} from './Pages/Settings';
 /* function App() {
   return (
     <div className="App">
@@ -25,11 +30,29 @@ import Sidebar from './Components/Sidebar';
 }
 */
 
-function App() {
+/*function App() {
   return (
     <div className="App">
       <Sidebar />
     </div>
+  );
+}
+
+export default App;
+*/
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/logworkoutplan" element={<LogWorkoutPlan />} />
+        <Route path="/LW" element={<LW />} />
+        <Route path="/history" element={<History />} />
+        <Route path="/settings" element={<Settings />} />
+      </Routes>
+    </Router>
   );
 }
 

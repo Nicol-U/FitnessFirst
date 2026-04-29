@@ -12,6 +12,14 @@
   text-align: center;
 }
 
+.PageTitle {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+  position: relative;
+  right: 0px;
+}
+
 .profile {
   position: fixed;
   bottom: 40px;
@@ -23,7 +31,6 @@
 }
 
 .profile:active{
-
   /*turns blue on click*/
   color:#61dafb
 }

@@ -5,8 +5,10 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
+import { Link } from "react-router-dom";
 
 export const profileIcon = <AccountCircleSharpIcon />;
+
 export const SidebarHeader =  [
     {
         title: 'THE ARCHIVE',
@@ -18,26 +20,26 @@ export const SidebarData =  [
 {
     title: "DASHBOARD",
     icon: <DashboardIcon />,
-    link: "/home"
+    link: "/"
 },
 
 {
     title: "WORKOUT PLANS",
     icon: <FitnessCenterIcon />,
-    link: "/WorkoutPlans"
+    link: "/logworkoutplan"
 },
 
 {
     title: "LOG WORKOUT",
     icon: <EditNoteIcon />,
-    link: "/LogWorkout"
+    link: "/LW"
 },
 
 
 {
     title: "HISTORY",
     icon: <CalendarMonthIcon />,
-    link: "/History"
+    link: "/history"
 },
 
 {
