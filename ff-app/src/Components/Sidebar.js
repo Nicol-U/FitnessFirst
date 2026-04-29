@@ -1,10 +1,11 @@
-import React, { use } from "react";
+import React from "react";
 import "../App.css";
 import { SidebarHeader, SidebarData, profileIcon } from "./SidebarData";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom"; // ✅ import useLocation
 
 function Sidebar() {
-    const location = useLocation();
+    const location = useLocation(); // ✅ call the hook here
+
     return (
     <div className="Sidebar">
 
@@ -20,11 +21,10 @@ function Sidebar() {
             {SidebarData.map((val, key)=> {
                 return (
                 <Link
-                    key ={key}
+                    key={key}
                     className="row"
                     to={val.link}
                     style={{ textDecoration: 'none' }} 
-                    
                     id={location.pathname === val.link ? "active" : ""}
                 >
                     <div id="icon">{val.icon}</div>

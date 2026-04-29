@@ -16,7 +16,6 @@ return (
        }}
     >
       <h1>Login</h1>
-      <Sidebar />
     </div>
   );
 }

@@ -3,7 +3,7 @@ import Sidebar from '../Components/Sidebar';
 
 export function History() {
 return (
-    <div
+    <div class="bodySection"
       style={{ padding: 'flux',
         justifyContent: 'center',
         alignItems: 'center',
@@ -16,7 +16,6 @@ return (
        }}
     >
       <h1>History</h1>
-      <Sidebar />
     </div>
   );
 }

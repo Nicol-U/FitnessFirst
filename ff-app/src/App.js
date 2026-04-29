@@ -45,12 +45,26 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
         <Route path="/login" element={<Login />} />
+        
+        <Route path="/*" element={
+         <div classname="AppLayout">
+          <Sidebar />
+          <div classname="MainContent">
+            <Routes>
+
+
+         
+        <Route path="/" element={<Dashboard />} />
         <Route path="/logworkoutplan" element={<LogWorkoutPlan />} />
         <Route path="/LW" element={<LW />} />
         <Route path="/history" element={<History />} />
         <Route path="/settings" element={<Settings />} />
+        
+        </Routes>
+          </div>
+        </div>
+        } />
       </Routes>
     </Router>
   );

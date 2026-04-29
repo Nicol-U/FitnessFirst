@@ -16,7 +16,6 @@ return (
        }}
     >
       <h1>Log Workout Plans</h1>
-      <Sidebar />
     </div>
   );
 }
