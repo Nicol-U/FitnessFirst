@@ -3,11 +3,21 @@ import Sidebar from '../Components/Sidebar';
 
 export function Dashboard() {
   return (
-    <>
-    <Sidebar />
-
-    <h1 className='PageTitle'>Dashboard</h1>
-    </>
+    <div
+      style={{ padding: 'flux',
+        justifyContent: 'center',
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        width: '100%',
+        backgroundColor: 'black',
+        color: 'white'
+       }}
+    >
+      <h1>Dashboard</h1>
+      <Sidebar />
+    </div>
   );
 }
 

@@ -1,9 +1,10 @@
-import React from "react";
+import React, { use } from "react";
 import "../App.css";
 import { SidebarHeader, SidebarData, profileIcon } from "./SidebarData";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function Sidebar() {
+    const location = useLocation();
     return (
     <div className="Sidebar">
 
@@ -24,9 +25,8 @@ function Sidebar() {
                     to={val.link}
                     style={{ textDecoration: 'none' }} 
                     
-                    id={window.location.pathname === val.link ? "active" : ""}
-                    onClick={() => {window.location.pathname = val.link}}
-                    >
+                    id={location.pathname === val.link ? "active" : ""}
+                >
                     <div id="icon">{val.icon}</div>
                     <div id="title">{val.title}</div>
                 </Link>  
@@ -34,9 +34,9 @@ function Sidebar() {
             })}
         </ul>
      
-    <button class="LogWBut">LOG WORKOUT</button>
+    <button className="LogWBut">LOG WORKOUT</button>
     
-    <div className="profile" href="/profile">
+    <div className="profile">
         {profileIcon}
     </div>
     </div>);

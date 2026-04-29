@@ -11,7 +11,6 @@
   height: 100vh;
   text-align: center;
 }
-
 .PageTitle {
   font-size: 2rem;
   margin-bottom: 1rem;
@@ -77,18 +76,22 @@ body{
   padding-bottom: 10%;
 }
 
+/* This is the Archive section */
 .SidebarHeader #title {
   color: var(--primary-color);
   font-size: 130%;
-  align-items: left;
   font-family: 'lexend', sans-serif;
+  padding: 0 20px;
 
 }
 
+/* This is the "Elite Performance" section */
 .SidebarHeader #subtitle {
   color: gray;
   font-size: 0.8rem;
   align-items: left;
+  padding: 0 20px;
+
 }
 
 
