@@ -159,7 +159,7 @@ font-family: var(--primary-font);
   border-radius: 5px;
   border: none;
   background: linear-gradient(95deg, #F6FFC0, var(--primary-color), #DAF900);
-  width: 25%;
+  width: 200px;
   height: 40px;
 
   color: black;
