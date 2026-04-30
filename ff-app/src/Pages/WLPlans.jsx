@@ -457,7 +457,7 @@ const s = {
     backgroundColor: "#DFFF00",
     color: "#000",
     border: "none",
-    borderRadius: 30,
+    borderRadius: 5,
     padding: "12px 22px",
     fontSize: 13,
     fontWeight: 700,

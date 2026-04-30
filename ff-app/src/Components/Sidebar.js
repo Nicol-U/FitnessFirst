@@ -34,9 +34,13 @@ function Sidebar() {
             })}
         </ul>
      
-    <button className="LogWBut">LOG WORKOUT</button>
+    <button className="LogWBut">
+        <Link to="/LW" style={{ textDecoration: 'none', color: 'black' }}>
+            LOG WORKOUT
+        </Link>
+    </button>
     
-    <div className="profile">
+    <div className="profile" onClick={() => location.pathname = "/login"}>
         {profileIcon}
     </div>
     </div>);

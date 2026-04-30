@@ -61,10 +61,11 @@ body{
   color: var(--primary-color);
   /*font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   */
-  padding-top: 2%;
+  padding-top: 10px;
+  padding-left: 20px;
   font-family: 'lexend', sans-serif;
   font-size: 1.5rem;
-  text-align: right;
+  text-align: left;
   /* Margin vs text-align IDK need to rearch later this is for the title */
   background-color: var(--primary-bg-color);
 }
@@ -74,7 +75,7 @@ body{
   font-family: 'lexend', sans-serif;
   color: var(--primary-color);
   width: 100%;
-  padding: 0;
+  padding-left: 10px;
   background-color: var(--primary-bg-color);
   padding-top: 10%; /*this controls the dist from bottom of sub header*/
   padding-bottom: 10%;
