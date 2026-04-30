@@ -13,7 +13,7 @@ export function Dashboard() {
         width: '100%',
         backgroundColor: 'black',
         color: 'white',
-        paddingLeft: '250px'
+        paddingLeft: '290px'
         // padding left at 250 makes sure our header isn't behind the sidebar 
         // looking into flex box as a better solution 
        }}
