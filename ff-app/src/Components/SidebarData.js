@@ -29,12 +29,13 @@ export const SidebarData =  [
     link: "/logworkoutplan"
 },
 
-{
+/*{
     title: "LOG WORKOUT",
     icon: <EditNoteIcon />,
     link: "/LW"
 },
 
+*/
 
 {
     title: "HISTORY",

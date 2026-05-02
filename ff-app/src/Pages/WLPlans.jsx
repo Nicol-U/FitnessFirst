@@ -454,7 +454,7 @@ const s = {
     lineHeight: 1.6,
   },
   addBtn: {
-    backgroundColor: "#DFFF00",
+    background: "linear-gradient(95deg, #F6FFC0, #DFFF00, #DAF900)",
     color: "#000",
     border: "none",
     borderRadius: 5,

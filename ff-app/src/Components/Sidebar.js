@@ -1,10 +1,11 @@
 import React from "react";
 import "../App.css";
 import { SidebarHeader, SidebarData, profileIcon } from "./SidebarData";
-import { Link, useLocation } from "react-router-dom"; // ✅ import useLocation
-
+import { Link, useLocation, useNavigate } from "react-router-dom"; // ✅ import useLocation
+import CustomButton from "./CustomButton";
 function Sidebar() {
     const location = useLocation(); // ✅ call the hook here
+    const navigate = useNavigate(); // ✅ call the hook here
 
     return (
     <div className="Sidebar">
@@ -33,14 +34,16 @@ function Sidebar() {
             ); 
             })}
         </ul>
-     
-    <button className="LogWBut">
-        <Link to="/LW" style={{ textDecoration: 'none', color: 'black' }}>
-            LOG WORKOUT
-        </Link>
-    </button>
-    
-    <div className="profile" onClick={() => location.pathname = "/login"}>
+<CustomButton
+  size="medium"
+  width="240px"
+  position={{ position: "fixed", bottom: "40px", left: "20px" }}
+  onClick={() => navigate("/LW")}
+>
+    LOG WORKOUT
+</CustomButton>
+
+    <div className="profile" onClick={() => navigate("/profile")}>
         {profileIcon}
     </div>
     </div>);

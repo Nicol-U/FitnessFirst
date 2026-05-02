@@ -2,21 +2,16 @@ import React from 'react';
 import Sidebar from '../Components/Sidebar';
 
 export function History() {
-return (
-    <div class="bodySection"
-      style={{ padding: 'flux',
-        justifyContent: 'center',
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        width: '100%',
-        backgroundColor: 'black',
-        color: 'white'
-       }}
-    >
-      <h1>History</h1>
-    </div>
+  return (
+
+    <div className="page">
+      {/* Header */}
+      <div className= 'toprow'>
+          <h1 className='heading' style={{ fontSize: 46, fontWeight: 900 }}>
+            <span style={{ color: "#fff" }}>HISTORY</span>
+          </h1>
+      </div>
+      </div>
   );
 }
 

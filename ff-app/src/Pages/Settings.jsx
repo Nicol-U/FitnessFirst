@@ -1,21 +1,16 @@
 import Sidebar from "../Components/Sidebar";
 
 export function Settings() {
-return (
-    <div
-      style={{ padding: 'flux',
-        justifyContent: 'center',
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        width: '100%',
-        backgroundColor: 'black',
-        color: 'white'
-       }}
-    >
-      <h1>Settings</h1>
-    </div>
+  return (
+
+    <div className="page">
+      {/* Header */}
+      <div className= 'toprow'>
+          <h1 className='heading' style={{ fontSize: 46, fontWeight: 900 }}>
+            <span style={{ color: "#fff" }}>SETTINGS </span>
+          </h1>
+      </div>
+      </div>
   );
 }
 
