@@ -1,20 +1,22 @@
 import Sidebar from '../Components/Sidebar';
-import React, { useState } from 'react';
+import React, {useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 
 export function Dashboard() {
   const [ShowPopUp, setShowPopUp] = useState(false);
+  const [dayCount, setDayCount] = useState(checkIfNewDay());
 
   return (
-    <Container>
-      <Row>
-
-        <Col style={{marginLeft: "240px"}}>
+    <div className='page'>
+        <div style={{marginLeft: "200px", marginBottom: "20px", marginTop: "20px", height: "55px", width: "300px", textAlign: "center",  background: "#191A17", borderRadius: "100px", color: "#DFFF00", fontSize: 24}}>
+          <p style={{ marginTop: "10px"}}> <LocalFireDepartmentIcon style={{marginTop: "2px"}}/> Day {dayCount}</p>
+        </div>
+        <div style={{marginLeft: "200px"}}>
               <h1 className="heading" style={{ fontSize: 46, fontWeight: 900 }}>
                 <span style={{ color: "#fff" }}>DASHBOARD</span>
               </h1>
-        </Col>
-        <Col>
+        </div>
           <button
             style={{
               display: "grid",
@@ -28,9 +30,8 @@ export function Dashboard() {
           </button>
           
           {ShowPopUp && <AddGoalPopup onClose={() => setShowPopUp(false)} />}
-            </Col>
-      </Row>
-    </Container>
+
+    </div>
   );
 }
 
@@ -51,6 +52,30 @@ function AddGoalPopup({ onClose }) {
     </div>
   );
 }
+
+function checkIfNewDay() {
+  const cntDay = JSON.parse(localStorage.getItem("DayCount")) || 0;
+  const SavedDay = JSON.parse(localStorage.getItem("NextDay")) || null;
+  const currentDay = new Date().getDate();
+  const NextDay = (SavedDay + 1) % 31; // Assuming a month has 31 days for simplicity
+
+
+
+  if ((currentDay == SavedDay) && (SavedDay != null) && (cntDay != 0)) {
+    localStorage.setItem("DayCount", JSON.stringify(cntDay + 1));
+    localStorage.setItem("NextDay", JSON.stringify(SavedDay));
+    return cntDay + 1;
+  }
+
+  else {
+    localStorage.setItem("NextDay", JSON.stringify((currentDay +1) % 31));
+    localStorage.setItem("DayCount", JSON.stringify(1));    
+    return 1;
+}
+}
+
+
+
 
 const overlayStyle = {
   position: "fixed",

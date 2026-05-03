@@ -43,7 +43,7 @@ function Sidebar() {
     LOG WORKOUT
 </CustomButton>
 
-    <div className="profile" onClick={() => navigate("/profile")}>
+    <div className="profile" onClick={() => navigate("/settings")}>
         {profileIcon}
     </div>
     </div>);

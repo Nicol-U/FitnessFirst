@@ -192,7 +192,9 @@ font-family: var(--primary-font);
 }
 
 .page {
+  display: grid;
     padding-left: 290px;
+    margin-left: 240px;
     padding-right: 40px;
     padding-top: 40px;
     padding-bottom: 64px;
@@ -202,6 +204,7 @@ font-family: var(--primary-font);
     color: "#DFFF00";
     box-sizing: "border-box";
     font-family: "'lexend', sans-serif";
+    
 }
 
 .page .toprow {
