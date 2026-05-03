@@ -75,7 +75,7 @@ body{
   align-items: left;
   font-family: 'lexend', sans-serif;
   color: var(--primary-color);
-  width: 100%;
+  width: 90%;
   padding-left: 10px;
   background-color: var(--primary-bg-color);
   padding-top: 10%; /*this controls the dist from bottom of sub header*/
