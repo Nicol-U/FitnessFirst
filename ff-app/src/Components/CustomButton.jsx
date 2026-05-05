@@ -1,5 +1,6 @@
 
-export default function CustomButton({ size, width, position, onClick, children, BGColor = "linear-gradient(95deg, #F6FFC0, #DFFF00, #DAF900)", Txtcolor = "black" }) {
+import React from "react";
+export default function GreenButton({ size, width, position, onClick, children, BGColor = "linear-gradient(95deg, #F6FFC0, #DFFF00, #DAF900)", Txtcolor = "black" }) {
   const styles = {
     background: BGColor,
     color: Txtcolor,
@@ -33,5 +34,30 @@ export default function CustomButton({ size, width, position, onClick, children,
       {children}
     </button>
   );
+}
+
+export function GrayRactangles({widthSize="75%", heightSize="90vh", children}){
+  const styles1 = {
+    display: "flex",
+    backgroundColor: "#212020",
+    flex: 1,
+    color: " white",
+    border: "1px solid #2a2a2a",
+    borderRadius: 14,
+    padding: "12px 28px 12px 40px",
+    width: "90vw",
+    marginRight: "100px",
+    maxHeight: heightSize,
+    marginLeft: "150px",
+    fontFamily: "'lexend', sans-serif",
+    maxWidth: widthSize,
+  };
+  
+  return (
+    <div style={styles1}>
+      <p>{children}</p>
+      </div>
+  );
+
 }
 

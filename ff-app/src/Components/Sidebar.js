@@ -2,7 +2,7 @@ import React from "react";
 import "../App.css";
 import { SidebarHeader, SidebarData, profileIcon } from "./SidebarData";
 import { Link, useLocation, useNavigate } from "react-router-dom"; // ✅ import useLocation
-import CustomButton from "./CustomButton";
+import GreenButton from "./CustomButton";
 function Sidebar() {
     const location = useLocation(); // ✅ call the hook here
     const navigate = useNavigate(); // ✅ call the hook here
@@ -34,14 +34,14 @@ function Sidebar() {
             ); 
             })}
         </ul>
-<CustomButton
+<GreenButton
   size="medium"
   width="240px"
   position={{ position: "fixed", bottom: "40px", left: "20px" }}
   onClick={() => navigate("/LW")}
 >
     LOG WORKOUT
-</CustomButton>
+</GreenButton>
 
     <div className="profile" onClick={() => navigate("/settings")}>
         {profileIcon}

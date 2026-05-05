@@ -2,7 +2,8 @@ import Sidebar from '../Components/Sidebar';
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import CustomButton from '../Components/CustomButton';
+import GreenButton, { GrayRactangles } from '../Components/CustomButton';
+
 import Input from '@mui/material/Input';
 import { Checkbox } from "@mui/material";
 
@@ -31,6 +32,7 @@ export function Dashboard() {
     <LocalFireDepartmentIcon sx={{fontSize: 35}} />
     <p> {dayCount} DAY STREAK</p>
   </div>
+
 </div>
 
   
@@ -49,22 +51,23 @@ export function Dashboard() {
           <span style={{ color: "#fff" }}>TARGET MILESTONES</span>
         </h1>
 
-        <CustomButton
+        <GreenButton
           onClick={() => setShowPopUp(true)}
         >
           + Add Goal
-        </CustomButton>
+        </GreenButton>
 
         {ShowPopUp && <AddGoalPopup onClose={() => setShowPopUp(false)} />}
       </div>
         
-        <div style={{
-        width: "90vw",
-        maxWidth: "75%",
-    }}>
+        <div >
         <RadioToggle />
         </div>
+      
+      <div >
+       
 
+      </div>
     </div>
   );
 }
@@ -81,11 +84,11 @@ function AddGoalPopup({ onClose }) {
         alignItems: 'center', 
         marginTop: '30%'
         }}> 
-        <CustomButton BGColor='Black' Txtcolor='Gray' onClick={onClose}>
+        <GreenButton BGColor='Black' Txtcolor='Gray' onClick={onClose}>
           Cancel
-        </CustomButton>
+        </GreenButton>
 
-        <CustomButton> Save </CustomButton>
+        <GreenButton> Save </GreenButton>
         </div>
       </div>
     </div>
@@ -179,16 +182,19 @@ const styles = {
     display: "flex",
     backgroundColor: "#212020",
     flex: 1,
-
+    color: " white",
     border: "1px solid #2a2a2a",
     borderRadius: 14,
     padding: "12px 28px 12px 40px",
-    width: '100%',
+    width: "90vw",
     marginRight: "100px",
     maxHeight: "90vh",
     marginLeft: "150px",
     fontFamily: "'lexend', sans-serif",
+    maxWidth: "75%",
   },
+
+  
   radio: {
     width: "22px",
     height: "22px",
