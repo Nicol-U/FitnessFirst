@@ -1,8 +1,8 @@
 
-export default function CustomButton({ size, width, position, onClick, children }) {
+export default function CustomButton({ size, width, position, onClick, children, BGColor = "linear-gradient(95deg, #F6FFC0, #DFFF00, #DAF900)", Txtcolor = "black" }) {
   const styles = {
-    background: "linear-gradient(95deg, #F6FFC0, #DFFF00, #DAF900)",
-    color: "black",
+    background: BGColor,
+    color: Txtcolor,
     border: "none",
     width: width,
     padding:
@@ -11,7 +11,7 @@ export default function CustomButton({ size, width, position, onClick, children 
         : size === "small"
         ? "6px 12px"
         : "10px 20px",
-    borderRadius: "3px",
+    borderRadius: "4px",
     cursor: "pointer",
     position: position ? "absolute" : "static",
     ...position,
@@ -34,3 +34,4 @@ export default function CustomButton({ size, width, position, onClick, children 
     </button>
   );
 }
+

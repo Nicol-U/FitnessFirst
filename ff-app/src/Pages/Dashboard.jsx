@@ -1,53 +1,92 @@
 import Sidebar from '../Components/Sidebar';
-import React, {useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import CustomButton from '../Components/CustomButton';
+import Input from '@mui/material/Input';
+import { Checkbox } from "@mui/material";
 
 export function Dashboard() {
   const [ShowPopUp, setShowPopUp] = useState(false);
   const [dayCount, setDayCount] = useState(checkIfNewDay());
 
   return (
-    <div className='page'>
-        <div style={{marginLeft: "200px", marginBottom: "20px", marginTop: "20px", height: "55px", width: "300px", textAlign: "center",  background: "#191A17", borderRadius: "100px", color: "#DFFF00", fontSize: 24}}>
-          <p style={{ marginTop: "10px"}}> <LocalFireDepartmentIcon style={{marginTop: "2px"}}/> Day {dayCount}</p>
+    <div className="page">
+      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+  <div 
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "55px",
+      width: "320px",
+      background: "#191A17",
+      borderRadius: "100px",
+      color: "#F6FFC0",
+      fontSize: 24,
+      gap: "10px"
+  
+    }}
+  >
+    <LocalFireDepartmentIcon sx={{fontSize: 35}} />
+    <p> {dayCount} DAY STREAK</p>
+  </div>
+</div>
+
+  
+
+            
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: "90vw",
+        maxWidth: "80%",
+        marginLeft: "150px"
+    }}>
+
+        <h1 className="heading" style={{ fontSize: 24, fontWeight: 900 }}>
+          <span style={{ color: "#fff" }}>TARGET MILESTONES</span>
+        </h1>
+
+        <CustomButton
+          onClick={() => setShowPopUp(true)}
+        >
+          + Add Goal
+        </CustomButton>
+
+        {ShowPopUp && <AddGoalPopup onClose={() => setShowPopUp(false)} />}
+      </div>
+        
+        <div style={{
+        width: "90vw",
+        maxWidth: "75%",
+    }}>
+        <RadioToggle />
         </div>
-        <div style={{marginLeft: "200px"}}>
-              <h1 className="heading" style={{ fontSize: 46, fontWeight: 900 }}>
-                <span style={{ color: "#fff" }}>DASHBOARD</span>
-              </h1>
-        </div>
-          <button
-            style={{
-              display: "grid",
-              color: "#DFFF00",
-              background: "black",
-              justifySelf: "end"
-            }}
-            onClick={() => setShowPopUp(true)}
-          >
-            + Add Goal
-          </button>
-          
-          {ShowPopUp && <AddGoalPopup onClose={() => setShowPopUp(false)} />}
 
     </div>
   );
 }
 
+// To James: this function is the code for the pop up to add goal 
 function AddGoalPopup({ onClose }) {
   return (
-    <div style={overlayStyle}>
-      <div style={popupStyle}>
+    <div style={overlayStyle}> // this is at the bottom of the page setting out the layout
+      <div style={popupStyle}>  // same with this 
         <h2>Popup Content</h2>
         <p>This is a simple popup.</p>
+        <div style={{display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center', 
+        marginTop: '30%'
+        }}> 
+        <CustomButton BGColor='Black' Txtcolor='Gray' onClick={onClose}>
+          Cancel
+        </CustomButton>
 
-        <button
-          style={{ color: "#ADAAAA", background: "#1A1A1A" }}
-          onClick={onClose}
-        >
-          Discard
-        </button>
+        <CustomButton> Save </CustomButton>
+        </div>
       </div>
     </div>
   );
@@ -57,25 +96,117 @@ function checkIfNewDay() {
   const cntDay = JSON.parse(localStorage.getItem("DayCount")) || 0;
   const SavedDay = JSON.parse(localStorage.getItem("NextDay")) || null;
   const currentDay = new Date().getDate();
-  const NextDay = (SavedDay + 1) % 31; // Assuming a month has 31 days for simplicity
+  const NextDay = (currentDay + 1) % 31;
 
+    if (currentDay < SavedDay){
 
-
-  if ((currentDay == SavedDay) && (SavedDay != null) && (cntDay != 0)) {
-    localStorage.setItem("DayCount", JSON.stringify(cntDay + 1));
-    localStorage.setItem("NextDay", JSON.stringify(SavedDay));
-    return cntDay + 1;
+    return cntDay;
   }
 
+  else if ((currentDay === SavedDay) && (SavedDay !== null) && (cntDay !== 0)) {
+    localStorage.setItem("DayCount", JSON.stringify(cntDay + 1));
+    localStorage.setItem("NextDay", JSON.stringify(NextDay));
+    return cntDay + 1;
+  } 
+
   else {
-    localStorage.setItem("NextDay", JSON.stringify((currentDay +1) % 31));
-    localStorage.setItem("DayCount", JSON.stringify(1));    
+    localStorage.setItem("NextDay", JSON.stringify(NextDay));
+    localStorage.setItem("DayCount", JSON.stringify(1));
     return 1;
+  }
 }
+
+
+
+
+function RadioToggle() {
+  const [selectedValue, setSelectedValue] = useState(true);
+  const [crossedOut, setCrossedOut] = useState(null);
+
+  const clicked = () => {
+    setSelectedValue(prev => {
+      const newValue = !prev;
+      setCrossedOut(newValue ? null : "line-through");
+      return newValue;
+    });
+  };
+
+  return (
+    <div style={styles.box}>  
+    <label
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "50px",
+        cursor: "pointer",
+        userSelect: "none",
+        color: "#FFFF",
+        fontSize: 12
+      }}
+    >
+      <input
+        style={{ display: "none" }}
+        type="checkbox"
+        name="myCheckbox"
+        onChange={clicked}
+      />
+
+      <span
+        style={{
+          ...styles.radio,
+          backgroundColor: selectedValue ? "black" : "#F6FFC0",
+          borderColor: selectedValue ? "#555" : "#F6FFC0",
+        }}
+      >
+        
+        {!selectedValue && (
+          <span style={styles.checkmark}>✓</span>
+        )}
+      </span>
+      
+        <div style={{display: "flex", flexDirection: "column"}} >
+      <h2 style={{margin: 2, textDecoration: crossedOut}}>Option 1 </h2>
+          <h3 style={{color: "#ADAAAA", margin: 2, textDecoration: crossedOut}}>text1</h3>
+          </div>
+    </label>
+        </div>
+
+  );
 }
 
+const styles = {
+  box: {
+    display: "flex",
+    backgroundColor: "#212020",
+    flex: 1,
 
-
+    border: "1px solid #2a2a2a",
+    borderRadius: 14,
+    padding: "12px 28px 12px 40px",
+    width: '100%',
+    marginRight: "100px",
+    maxHeight: "90vh",
+    marginLeft: "150px",
+    fontFamily: "'lexend', sans-serif",
+  },
+  radio: {
+    width: "22px",
+    height: "22px",
+    borderRadius: "50%",
+    border: "2px solid #555",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "16px",
+    color: "black",
+    transition: "0.2s"
+  },
+  checkmark: {
+    fontSize: "16px",
+    lineHeight: 1,
+    pointerEvents: "none"
+  }
+};
 
 const overlayStyle = {
   position: "fixed",
@@ -83,7 +214,7 @@ const overlayStyle = {
   left: 0,
   width: "100%",
   height: "100%",
-  backgroundColor: "rgba(0, 0, 0, 0.5)", // FIXED
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
   display: "grid",
   justifyContent: "center",
   alignItems: "center",
