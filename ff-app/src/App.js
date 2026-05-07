@@ -7,39 +7,8 @@ import {LogWorkoutPlan} from './Pages/WLPlans';
 import {LW} from './Pages/LW';
 import {History} from './Pages/History';
 import {Settings} from './Pages/Settings';
-/* function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Fitness First</h1>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-        Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-*/
-
-/*function App() {
-  return (
-    <div className="App">
-      <Sidebar />
-    </div>
-  );
-}
-
-export default App;
-*/
+import {login} from './Pages/login';
+import {CreateAcc} from './Pages/CreateAcc';
 
 function App() {
   return (
@@ -60,6 +29,8 @@ function App() {
         <Route path="/LW" element={<LW />} />
         <Route path="/history" element={<History />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/history" element={<History />} />
+        <Route path="/login" element={<Login/>} />
         
         </Routes>
           </div>

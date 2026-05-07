@@ -15,7 +15,11 @@ export function Settings() {
           <h1 className='heading' style={{ fontSize: 46, fontWeight: 900, marginLeft: "150px"}}>
             <span style={{ color: "#fff" }}>SETTINGS </span>
           </h1>
+                <GreenButton>
+        aaaaaaaa
+      </GreenButton>
       </div>
+
       </div>
   );
 }

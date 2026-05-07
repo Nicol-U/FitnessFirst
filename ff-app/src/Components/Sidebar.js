@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../App.css";
 import { SidebarHeader, SidebarData, profileIcon } from "./SidebarData";
 import { Link, useLocation, useNavigate } from "react-router-dom"; // ✅ import useLocation
@@ -6,6 +6,8 @@ import GreenButton from "./CustomButton";
 function Sidebar() {
     const location = useLocation(); // ✅ call the hook here
     const navigate = useNavigate(); // ✅ call the hook here
+    const [UserOptions, SetUserOptions] = useState(false);
+    const [isLoged, SetLog] = useState(false);
 
     return (
     <div className="Sidebar">
@@ -43,11 +45,31 @@ function Sidebar() {
     LOG WORKOUT
 </GreenButton>
 
-    <div className="profile" onClick={() => navigate("/settings")}>
+    <div className="profile" onMouseEnter={() => SetUserOptions(true)} onMouseLeave={() => SetUserOptions(false)} >
         {profileIcon}
+        {
+            UserOptions && 
+            <div >
+                <button style={buttonStyle} onClick={() => {if (!isLoged) {navigate("/login");}}} >{isLoged ? "sign out" : " Loggin "}</button>
+                <button style={buttonStyle} onClick={() => navigate("/settings")}>Settings</button>
+            </div>
+        }
     </div>
     </div>);
-
 }
 
 export default Sidebar;
+//style={{display: 'flex', flexDirection: "column", color: 'black', alignItems: "center"
+//}}>
+const buttonStyle = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: '30px',
+    width: "50px",
+    
+    color: "#191A17",
+    background: "#F6FFC0",
+    fontSize: 10,
+  
+}

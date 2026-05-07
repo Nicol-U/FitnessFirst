@@ -1,15 +1,16 @@
-import Sidebar from '../Components/Sidebar';
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import GreenButton, { GrayRactangles } from '../Components/CustomButton';
-
+import { Link, useLocation, useNavigate } from "react-router-dom"; // ✅ import useLocation
 import Input from '@mui/material/Input';
 import { Checkbox } from "@mui/material";
+import DescriptionIcon from '@mui/icons-material/Description';
+import EventNoteIcon from '@mui/icons-material/EventNote';
 
 export function Dashboard() {
   const [ShowPopUp, setShowPopUp] = useState(false);
   const [dayCount, setDayCount] = useState(checkIfNewDay());
+  const location = useLocation();
 
   return (
     <div className="page">
@@ -32,12 +33,7 @@ export function Dashboard() {
     <LocalFireDepartmentIcon sx={{fontSize: 35}} />
     <p> {dayCount} DAY STREAK</p>
   </div>
-
 </div>
-
-  
-
-            
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -63,12 +59,28 @@ export function Dashboard() {
         <div >
         <RadioToggle />
         </div>
-      
-      <div >
-       
+          <div style={{...styles.box, width: "400px"}}>
+             <div style={styles.circle}> <DescriptionIcon /> </div>     
 
+            <div style={{display: "flex", flexDirection: "column"}} >
+
+            <h2 style={{margin: 2, fontSize:22}}>VIEW WORKOUT PLANS</h2>
+          <h3 style={{color: "#ADAAAA", margin: 2, fontSize:15}}>Access your custom elite archive</h3>
+          </div>
+        </div>
+        
+        <div style={{...styles.box, width: "400px"}}>
+             <div style={styles.circle}> <EventNoteIcon /> </div>     
+
+            <div style={{display: "flex", flexDirection: "column", }} >
+
+            <h2 style={{margin: 2, fontSize:22}}>VIEW WORKOUT HISTORY</h2>
+          <h3 style={{color: "#ADAAAA", margin: 2, fontSize:15}}>Track your evolution and consistency</h3>
+          </div>
+
+          
+        </div>
       </div>
-    </div>
   );
 }
 
@@ -144,7 +156,8 @@ function RadioToggle() {
         cursor: "pointer",
         userSelect: "none",
         color: "#FFFF",
-        fontSize: 12
+        fontSize: 12,
+      
       }}
     >
       <input
@@ -176,7 +189,7 @@ function RadioToggle() {
 
   );
 }
-
+const boxwidth = "75%";
 const styles = {
   box: {
     display: "flex",
@@ -188,7 +201,7 @@ const styles = {
     padding: "12px 28px 12px 40px",
     width: "90vw",
     marginRight: "100px",
-    maxHeight: "90vh",
+    maxHeight: "9vh",
     marginLeft: "150px",
     fontFamily: "'lexend', sans-serif",
     maxWidth: "75%",
@@ -207,6 +220,21 @@ const styles = {
     color: "black",
     transition: "0.2s"
   },
+
+  circle: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "50px",
+    height: "50px",
+    borderRadius: "50%",
+    backgroundColor: "#3a3a3a",
+    marginRight: "25px",
+    marginLeft: 0,
+    marginTop: "5px",
+    
+  },
+
   checkmark: {
     fontSize: "16px",
     lineHeight: 1,
@@ -237,5 +265,6 @@ const popupStyle = {
   minHeight: "300px",
   boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)"
 };
+
 
 export default Dashboard;
