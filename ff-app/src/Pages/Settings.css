@@ -1,0 +1,29 @@
+/* responsive design */
+.avatarPlaceholder{
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 52px;
+    height: 52px;
+    color: #888;
+  }
+
+.displayIconBg{
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 48px;
+    height: 96px;
+    opacity: 0.5;
+    margin-top: 15px;
+  }
+
+  @media (max-width: 1000px) {
+  .avatarPlaceholder {
+    display: none !important;
+  }
+
+  .displayIconBg {
+    display: none !important;
+  }
+}
