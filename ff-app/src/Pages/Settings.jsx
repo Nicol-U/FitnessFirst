@@ -197,7 +197,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    borderBottom: `1px solid ${INPUT_BORDER}`,
+    //borderBottom: `1px solid ${INPUT_BORDER}`,
     paddingBottom: "6px",
   },
   passwordDots: {
@@ -305,6 +305,7 @@ const styles = {
   //   //justifyContent: "center",
   //   opacity: 0.5,
   //   marginTop: "15px",
+
   // },
   actionRow: {
     display: "flex",
@@ -344,6 +345,16 @@ const styles = {
     color: "#09f114d1",
     fontFamily: "inherit",
   },
+  showHideButton: {
+    padding: "10px 16px",
+    borderRadius: "10px",
+    border: `1px solid ${INPUT_BORDER}`,
+    background: MUTED,
+    color: TEXT,
+    cursor: "pointer",
+    fontWeight: "600",
+    transition: "0.2s ease",
+    },
 };
 
 //define toggle component
@@ -393,6 +404,7 @@ export function Settings() {
     currentWeight: "85.0",
     targetWeight: "82.5",
     email: "alex.rivera@example.com",
+    password: "12345678",
   });
 
   const [workoutReminders, setWorkoutReminders] = useState(true);
@@ -401,6 +413,7 @@ export function Settings() {
   const [ampm, setAmpm] = useState("AM");
   const [fontDensity, setFontDensity] = useState("STANDARD");
   const [confirmMessage, setConfirmMessage] = useState("");
+  const [show, setShow] = useState(false);
 
   // function handleField takes a parameter "key" and returns a function that takes parameter "e" and calls the function setForm. The value of "e" comes from the user input because function handleField is used in function onChange
   const handleField = (key) => (e) =>
@@ -414,6 +427,7 @@ export function Settings() {
       currentWeight: "85.0",
       targetWeight: "82.5",
       email: "alex.rivera@example.com",
+      password: "12345678"
     });
     setWorkoutReminders(true);
     setDarkMode(true);
@@ -486,15 +500,18 @@ export function Settings() {
           <div>
             <div style={styles.fieldLabel}>Password</div>
             <div style={styles.passwordRow}>
-              <span style={styles.passwordDots}>••••••••••••</span>
-              <button style={styles.changeBtn}>Change</button>
+              <input type = {show ? "text" : "password"} style={styles.fieldInput} value={form.password} onChange={handleField("password")}></input>
+              <button style={styles.showHideButton} onClick={() => setShow(!show)}>
+                {show ? "Hide" : "Show"}
+              </button>
+              {/* <button style={styles.changeBtn}>Change</button> */}
             </div>
           </div>
-          <div style={styles.securityNote}>
+          {/* <div style={styles.securityNote}>
             Two-factor authentication is currently{" "}
             <span style={styles.securityNoteHighlight}>ENABLED</span> for enhanced
             archive security.
-          </div>
+          </div> */}
         </div>
       </div>
 
