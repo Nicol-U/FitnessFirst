@@ -59,30 +59,56 @@ export function Dashboard() {
         <div >
         <RadioToggle />
         </div>
-          <div style={{...styles.box, width: "400px"}}>
-             <div style={styles.circle}> <DescriptionIcon /> </div>     
-
-            <div style={{display: "flex", flexDirection: "column"}} >
-
-            <h2 style={{margin: 2, fontSize:22}}>VIEW WORKOUT PLANS</h2>
-          <h3 style={{color: "#ADAAAA", margin: 2, fontSize:15}}>Access your custom elite archive</h3>
-          </div>
+      
+{LinksData.map((val, key) => {
+  return (
+    <Link
+      key={key}
+      to={val.link}
+      style={{ textDecoration: "none" }}
+      id={location.pathname === val.link ? "active" : ""}
+    >
+      <div
+        style={{
+          ...styles.box,
+          width: "400px",
+          display: "flex",
+          alignItems: "center",
+          gap: "15px"
+        }}
+      >
+        <div style={styles.circle}>
+          {val.icon}
         </div>
-        
-        <div style={{...styles.box, width: "400px"}}>
-             <div style={styles.circle}> <EventNoteIcon /> </div>     
 
-            <div style={{display: "flex", flexDirection: "column", }} >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column"
+          }}
+        >
+          <h2 style={{ margin: 0, fontSize: 22 }}>
+            {val.title}
+          </h2>
 
-            <h2 style={{margin: 2, fontSize:22}}>VIEW WORKOUT HISTORY</h2>
-          <h3 style={{color: "#ADAAAA", margin: 2, fontSize:15}}>Track your evolution and consistency</h3>
-          </div>
-
-          
+          <h3
+            style={{
+              color: "#ADAAAA",
+              margin: 0,
+              fontSize: 15
+            }}
+          >
+            {val.subTitle}
+          </h3>
         </div>
+      </div>
+    </Link>
+  );
+})}
       </div>
   );
 }
+
 
 // To James: this function is the code for the pop up to add goal 
 function AddGoalPopup({ onClose }) {
@@ -268,3 +294,18 @@ const popupStyle = {
 
 
 export default Dashboard;
+
+const LinksData = [
+  {
+    title: "VIEW WORKOUT PLANS",
+    subTitle: "Access your custom elite archive",
+    icon: <DescriptionIcon />,
+    link: "/logworkoutplan"
+  },
+  {
+    title: "VIEW WORKOUT HISTORY",
+    subTitle: "Track your evolution and consistency",
+    icon: <EventNoteIcon/>,
+    link: "/history"
+  }
+]

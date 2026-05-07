@@ -44,8 +44,61 @@ function Sidebar() {
 >
     LOG WORKOUT
 </GreenButton>
+    
+    <div
+  className="profile"
+  onMouseEnter={() => SetUserOptions(true)}
+  onMouseLeave={() => SetUserOptions(false)}
+  style={{ position: "fixed" }}
+>
+  {profileIcon}
 
-    <div className="profile" onMouseEnter={() => SetUserOptions(true)} onMouseLeave={() => SetUserOptions(false)} >
+  {UserOptions && (
+    <div
+      style={{
+        position: "absolute",
+        top: "100%",
+        right: 0,
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "#ffffff",
+        border: "1px solid #2a2a2a",
+        borderRadius: "10px",
+        padding: "8px",
+        gap: "1px",
+        minWidth: "40px",
+        zIndex: 1000,
+      }}
+    >
+      <button
+        onClick={() => {
+          if (isLoged) {
+            SetLog(false);
+          } else {
+            navigate("/login");
+          }
+        }}
+      >
+        {isLoged ? "Sign Out" : "Login"}
+      </button>
+
+      <button
+        onClick={() => navigate("/settings")}
+      >
+        Settings
+      </button>
+    </div>
+  )}
+</div>
+    </div>);
+}
+
+export default Sidebar;
+//style={{display: 'flex', flexDirection: "column", color: 'black', alignItems: "center"
+//}}>
+
+/*
+<div className="profile" onMouseEnter={() => SetUserOptions(true)} onMouseLeave={() => SetUserOptions(false)} >
         {profileIcon}
         {
             UserOptions && 
@@ -55,12 +108,8 @@ function Sidebar() {
             </div>
         }
     </div>
-    </div>);
-}
+*/
 
-export default Sidebar;
-//style={{display: 'flex', flexDirection: "column", color: 'black', alignItems: "center"
-//}}>
 const buttonStyle = {
     display: "flex",
     justifyContent: "center",
