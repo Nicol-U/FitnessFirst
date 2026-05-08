@@ -23,7 +23,6 @@
 }
 
 .profile {
-  
   position: fixed;
   bottom: 40px;
   right: 20px;
@@ -104,13 +103,11 @@ body{
 
 .SidebarList {
   height: auto;
-  width: 100%;
   padding: 5px;
   /*background-color: var(--main-gray);  */
 }
 
 .SidebarList .row {
-width: 100%;
 height: 40px;
 background-color: var(--primary-bg-color);
 border-start-end-radius: 1px solid var(--main-gray);

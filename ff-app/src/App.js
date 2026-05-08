@@ -15,13 +15,15 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
-        
+        <Route path="/CreateAccount" element={<CreateAcc/>} />
+
         <Route path="/*" element={
          <div classname="AppLayout">
           <Sidebar />
           <div classname="MainContent">
             <Routes>
 
+          
 
          
         <Route path="/" element={<Dashboard />} />
@@ -31,7 +33,7 @@ function App() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/history" element={<History />} />
         <Route path="/login" element={<Login/>} />
-        
+
         </Routes>
           </div>
         </div>
