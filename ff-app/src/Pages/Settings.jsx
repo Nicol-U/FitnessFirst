@@ -117,13 +117,13 @@ const styles = {
   },
   grid: {
     display: "grid",
-    gridTemplateColumns: "1.8fr 1fr",
+    gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
     gap: "16px",
     marginTop: "24px",
   },
   grid2: {
     display: "grid",
-    gridTemplateColumns: "1fr 1fr",
+    gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
     gap: "16px",
     marginTop: "16px",
   },
@@ -157,7 +157,7 @@ const styles = {
   },
   fieldGrid: {
     display: "grid",
-    gridTemplateColumns: "1fr 1fr",
+    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
     gap: "20px 32px",
   },
   fieldLabel: {
@@ -179,6 +179,7 @@ const styles = {
     paddingBottom: "6px",
     outline: "none",
     fontFamily: "inherit",
+    minWidth: 0,
   },
   securityNote: {
     fontSize: "11px",
@@ -311,8 +312,9 @@ const styles = {
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "center",
-    gap: "24px",
+    gap: "16px",
     marginTop: "28px",
+    flexWrap: "wrap",
   },
   discardBtn: {
     background: "none",
@@ -475,11 +477,11 @@ export function Settings() {
             </div>
             <div>
               <div style={styles.fieldLabel}>Current Weight (kg)</div>
-              <input style={styles.fieldInput} value={form.currentWeight} onChange={handleField("currentWeight")} />
+              <input type = "number" style={styles.fieldInput} value={form.currentWeight} onChange={handleField("currentWeight")} />
             </div>
             <div>
               <div style={styles.fieldLabel}>Target Weight (kg)</div>
-              <input style={styles.fieldInput} value={form.targetWeight} onChange={handleField("targetWeight")} />
+              <input type = "number" style={styles.fieldInput} value={form.targetWeight} onChange={handleField("targetWeight")} />
             </div>
           </div>
         </div>
@@ -586,7 +588,7 @@ export function Settings() {
       </div>
 
       {/* Action Buttons */}
-      <div style={styles.actionRow}>
+      <div style={styles.actionRow} className="actionRowResponsive">
         <button style={styles.discardBtn} onClick={handleDiscard}>Discard Changes</button>
         <button style={styles.updateBtn} onClick={handleSave}>Update Archive</button>
         <p style = {styles.confrimMessage}>{confirmMessage}</p>
