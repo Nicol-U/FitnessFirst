@@ -23,6 +23,7 @@
 }
 
 .profile {
+  
   position: fixed;
   bottom: 40px;
   right: 20px;
@@ -203,7 +204,6 @@ font-family: var(--primary-font);
   padding-top: 50px;
   box-sizing: boarder-box;
   min-height: 100vh;
-  padding-right: 40px;
 
 }
 
