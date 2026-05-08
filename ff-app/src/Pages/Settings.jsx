@@ -3,7 +3,6 @@ import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import SecurityIcon from '@mui/icons-material/Security';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import "./Settings.css";
 import { useState } from "react";
 /*
 export function Settings() {
@@ -15,11 +14,7 @@ export function Settings() {
           <h1 className='heading' style={{ fontSize: 46, fontWeight: 900, marginLeft: "150px"}}>
             <span style={{ color: "#fff" }}>SETTINGS </span>
           </h1>
-                <GreenButton>
-        aaaaaaaa
-      </GreenButton>
       </div>
-
       </div>
   );
 }
@@ -278,34 +273,34 @@ const styles = {
     pointerEvents: "none",
     fontSize: "16px",
   },
-  // avatarPlaceholder: {
-  //   position: "absolute",
-  //   top: "24px",
-  //   right: "24px",
-  //   width: "52px",
-  //   height: "52px",
-  //   //borderRadius: "50%",
-  //   //backgroundColor: "#2a2a2a",
-  //   //border: `1px solid ${CARD_BORDER}`,
-  //   //display: "flex",
-  //   //alignItems: "center",
-  //   //justifyContent: "center",
-  //   color: MUTED,
-  // },
-  // displayIconBg: {
-  //   position: "absolute",
-  //   top: "8px",
-  //   right: "8px",
-  //   width: "48px",
-  //   height: "96px",
-  //   //borderRadius: "50%",
-  //   //backgroundColor: "#222",
-  //   //display: "flex",
-  //   //alignItems: "center",
-  //   //justifyContent: "center",
-  //   opacity: 0.5,
-  //   marginTop: "15px",
-  // },
+  avatarPlaceholder: {
+    position: "absolute",
+    top: "24px",
+    right: "24px",
+    width: "52px",
+    height: "52px",
+    //borderRadius: "50%",
+    //backgroundColor: "#2a2a2a",
+    //border: `1px solid ${CARD_BORDER}`,
+    //display: "flex",
+    //alignItems: "center",
+    //justifyContent: "center",
+    color: MUTED,
+  },
+  displayIconBg: {
+    position: "absolute",
+    top: "8px",
+    right: "8px",
+    width: "48px",
+    height: "96px",
+    //borderRadius: "50%",
+    //backgroundColor: "#222",
+    //display: "flex",
+    //alignItems: "center",
+    //justifyContent: "center",
+    opacity: 0.5,
+    marginTop: "15px",
+  },
   actionRow: {
     display: "flex",
     justifyContent: "flex-end",
@@ -449,7 +444,7 @@ export function Settings() {
             <div style={styles.cardDot} />
             <span style={styles.cardTitle}>Profile Identity</span>
           </div>
-          <PermIdentityIcon className='avatarPlaceholder'></PermIdentityIcon>
+          <PermIdentityIcon style = {styles.avatarPlaceholder}></PermIdentityIcon>
           <div style={styles.fieldGrid}>
             <div>
               <div style={styles.fieldLabel}>Full Name</div>
@@ -476,7 +471,7 @@ export function Settings() {
             <div style={styles.cardDot} />
             <span style={styles.cardTitle}>Security</span>
           </div>
-          <div className='displayIconBg'>
+          <div style={styles.displayIconBg}>
             <SecurityIcon></SecurityIcon>
           </div>
           <div style={{ marginBottom: "20px" }}>
@@ -507,7 +502,7 @@ export function Settings() {
             <div style={styles.cardDot} />
             <span style={styles.cardTitle}>Notifications</span>
           </div>
-          <div className='displayIconBg'>
+          <div style={styles.displayIconBg}>
             <NotificationsNoneIcon></NotificationsNoneIcon>
           </div>
           <div style={styles.toggleRow}>
@@ -540,7 +535,7 @@ export function Settings() {
             <div style={styles.cardDot} />
             <span style={styles.cardTitle}>Display</span>
           </div>
-          <div className='displayIconBg'>
+          <div style={styles.displayIconBg}>
             <ColorLensIcon></ColorLensIcon>
           </div>
           <div style={styles.toggleRow}>
