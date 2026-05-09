@@ -21,11 +21,12 @@ export function Dashboard() {
       justifyContent: "center",
       alignItems: "center",
       height: "55px",
-      width: "320px",
+      width: "90%",
+      maxWidth: "320px",
+      fontSize: "clamp(16px, 4vw, 24px)",
       background: "#191A17",
       borderRadius: "100px",
       color: "#F6FFC0",
-      fontSize: 24,
       gap: "10px"
   
     }}
@@ -34,14 +35,18 @@ export function Dashboard() {
     <p> {dayCount} DAY STREAK</p>
   </div>
 </div>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: "90vw",
-        maxWidth: "80%",
-        marginLeft: "150px"
-    }}>
+      <div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: "15px",
+    width: "90%",
+    maxWidth: "1100px",
+    margin: "20px auto",
+  }}
+>
 
         <h1 className="heading" style={{ fontSize: 24, fontWeight: 900 }}>
           <span style={{ color: "#fff" }}>TARGET MILESTONES</span>
@@ -60,51 +65,78 @@ export function Dashboard() {
         <RadioToggle />
         </div>
       
-{LinksData.map((val, key) => {
-  return (
-    <Link
-      key={key}
-      to={val.link}
-      style={{ textDecoration: "none" }}
-      id={location.pathname === val.link ? "active" : ""}
-    >
-      <div
-        style={{
-          ...styles.box,
-          width: "400px",
-          display: "flex",
-          alignItems: "center",
-          gap: "15px"
-        }}
+<div
+  style={{
+    width: "90%",
+    maxWidth: "1100px",
+    margin: "0 auto",
+    display: "flex",
+    flexDirection: "column",
+    gap: "15px",
+  }}
+>
+  {LinksData.map((val, key) => {
+    return (
+      <Link
+        key={key}
+        to={val.link}
+        style={{ textDecoration: "none", width: "100%" }}
+        id={location.pathname === val.link ? "active" : ""}
       >
-        <div style={styles.circle}>
-          {val.icon}
-        </div>
-
         <div
           style={{
+            ...styles.box,
+
             display: "flex",
-            flexDirection: "column"
+            alignItems: "center",
+            gap: "15px",
+
+            width: "100%",
+            maxWidth: "900px",
+
+            margin: 0,
+
+            boxSizing: "border-box",
           }}
         >
-          <h2 style={{ margin: 0, fontSize: 22 }}>
-            {val.title}
-          </h2>
+          <div style={styles.circle}>
+            {val.icon}
+          </div>
 
-          <h3
+          <div
             style={{
-              color: "#ADAAAA",
-              margin: 0,
-              fontSize: 15
+              display: "flex",
+              flexDirection: "column",
+              flex: 1,
+              minWidth: 0,
             }}
           >
-            {val.subTitle}
-          </h3>
+            <h2
+              style={{
+                margin: 0,
+                fontSize: "clamp(16px, 3vw, 22px)",
+                wordBreak: "break-word",
+              }}
+            >
+              {val.title}
+            </h2>
+
+            <h3
+              style={{
+                color: "#ADAAAA",
+                margin: 0,
+                fontSize: "clamp(12px, 2vw, 15px)",
+                wordBreak: "break-word",
+              }}
+            >
+              {val.subTitle}
+            </h3>
+          </div>
         </div>
-      </div>
-    </Link>
-  );
-})}
+      </Link>
+    );
+  })}
+</div>
       </div>
   );
 }
@@ -175,17 +207,19 @@ function RadioToggle() {
   return (
     <div style={styles.box}>  
     <label
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "50px",
-        cursor: "pointer",
-        userSelect: "none",
-        color: "#FFFF",
-        fontSize: 12,
-      
-      }}
-    >
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+    cursor: "pointer",
+    userSelect: "none",
+    color: "#FFFF",
+    fontSize: 12,
+
+    width: "100%",
+    flexWrap: "wrap",
+  }}
+>
       <input
         style={{ display: "none" }}
         type="checkbox"
@@ -205,8 +239,14 @@ function RadioToggle() {
           <span style={styles.checkmark}>✓</span>
         )}
       </span>
-      
-        <div style={{display: "flex", flexDirection: "column"}} >
+      <div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    flex: 1,
+    minWidth: 0,
+  }}
+>
       <h2 style={{margin: 2, textDecoration: crossedOut}}>Option 1 </h2>
           <h3 style={{color: "#ADAAAA", margin: 2, textDecoration: crossedOut}}>text1</h3>
           </div>
@@ -228,9 +268,12 @@ const styles = {
     width: "90vw",
     marginRight: "100px",
     maxHeight: "9vh",
-    marginLeft: "150px",
+    alignItems: "center",
+    margin: "20px auto",
+ //aaaaaaaaaaaaaaaaaaaaaa
     fontFamily: "'lexend', sans-serif",
     maxWidth: "75%",
+    flexWrap: "wrap",
   },
 
   
@@ -240,26 +283,27 @@ const styles = {
     borderRadius: "50%",
     border: "2px solid #555",
     display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
     fontSize: "16px",
     color: "black",
     transition: "0.2s"
   },
 
-  circle: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "50px",
-    height: "50px",
-    borderRadius: "50%",
-    backgroundColor: "#3a3a3a",
-    marginRight: "25px",
-    marginLeft: 0,
-    marginTop: "5px",
-    
-  },
+circle: {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+
+  minWidth: "50px",
+  minHeight: "50px",
+
+  width: "50px",
+  height: "50px",
+
+  borderRadius: "50%",
+  backgroundColor: "#3a3a3a",
+
+  marginTop: "5px",
+},
 
   checkmark: {
     fontSize: "16px",

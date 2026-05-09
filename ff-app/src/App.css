@@ -195,13 +195,13 @@ font-family: var(--primary-font);
   justify-content: flex-start; /* start at top */
   align-items: stretch;  /* align LEFT */
   gap: 20px;
-  margin-left: 150px;       /* space for sidebar */
   background-color: var(--primary-bg-color);
   font-family: var(--primary-font);
   padding-top: 50px;
   box-sizing: boarder-box;
   min-height: 100vh;
-
+  width: 100%;
+  overflow-x: hidden;
 }
 
 
