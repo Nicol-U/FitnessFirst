@@ -14,9 +14,10 @@ function App() {
   return (
     <Router>
       <Routes>
+        
         <Route path="/login" element={<Login />} />
-        <Route path="/CreateAccount" element={<CreateAcc/>} />
-
+        <Route path="/createacc" element={<CreateAcc />} />
+        
         <Route path="/*" element={
          <div classname="AppLayout">
           <Sidebar />

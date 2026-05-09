@@ -1,204 +1,260 @@
-import React from 'react';
-import ReactDom from 'react-dom/client';
-import Sidebar from '../Components/Sidebar';
-import backgoundI from '../Asset/image1.jpg'
-import { fontSize } from '@mui/system';
-import GreenButton, { GrayRactangles } from '../Components/CustomButton';
-import { Button } from 'bootstrap';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import GreenButton from "../Components/CustomButton";
+import bgImage from "../Asset/image1.jpg";
 
 export function CreateAcc() {
+  const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPswd] = useState("");
+  const [birthdate, setBirth] = useState("");
+  const navigate = useNavigate();
+
+  const handleCreateAccount = () => {
+    navigate("/");
+  };
+
   return (
-    <div
-      style={{
-        backgroundImage: `url(${backgoundI})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
+    <div style={styles.page}>
+      <h1 style={styles.logo}>FITNESSFIRST</h1>
 
-        width: "100vw",
-        height: "100vh",
-      }}
-    > 
-    <div
-  style={{
-    display: "flex",
-    width: "100%",
-    height: "100vh",
-  }}
->
-  {/* LEFT SIDE */}
-  <div
-    style={{
-      flex: 1,
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-    <h1 style={{ color: "white" }}>
-      Content goes here
-    </h1>
-  </div>
-
-  {/* RIGHT SIDE */}
-  <div
-    style={{
-        marginTop: "70px",
-        marginBottom: "70px",
-        marginRight: "20px",
-        borderRadius: '15px', 
-        flexDirection: 'column',
-        padding: "40px",
-      flex: 1,
-      display: "flex",
-      alignItems: "flex-start",
-      backgroundColor: "rgba(26,26,26,0.6)",
-    }}
-  >
-
-    <div>
-    <h1 style={{ color: "white", fontFamily: "sans-serif"}}>
-      IDENTITY SETUP
-    </h1>
-    <h2 style={{color: "#ADAAAA", fontFamily: "'lexend', sans-serif", fontSize: 15}}>Foundational data for your performance profile.</h2>
-    </div>
-
-    {RenderCards()}
-          <div style={{marginTop: "150px", }}>
-          <button style={submitBtn}> INITIALIZE PROFILE</button>
-      </div>
-  </div>
-  
-</div>
-</div>
-  );
-}
-
-
-export default CreateAcc;
-
-
-const RenderCards = () => {
-  return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: "5px",
-        width: "100%",
-      }}
-    >
-      {cards.map((card, index) => (
-        <div
-          key={index}
-          style={{
-            borderRadius: "10px",
-            color: "#DFFF00",
-            fontSize: 10,
-            fontFamily: "sans-serif",
-
-
-            // 3rd item spans entire row
-            gridColumn: index === 2 ? "1 / span 2" : "auto",
-          }}
-        >
-          <h2>{card.title}</h2>
-
-          <input
-            type="text"
-            placeholder={card.example}
-            style={{
-              width: "100%",
-              padding: "10px",
-              borderRadius: "6px",
-              border: "none",
-              outline: "none",
-              backgroundColor: "#5a5a5a",
-              color: "white",
-              boxSizing: "border-box",
-            }}
-          />
+      <div style={styles.mainLayout}>
+        {/* Headers on the Left */}
+        <div style={styles.leftSide}>
+          <h2 style={styles.heroText}>
+            THE<br />
+            <span style={{ color: "#DFFF00" }}>ARCHIVE</span><br />
+            AWAITS.
+          </h2>
+          <p style={styles.heroSubtext}>
+            Enter the elite performance ecosystem. Your data, refined. Your potential, archived.
+          </p>
         </div>
-      ))}
 
+        {/* Form Fields */}
+        <div style={styles.rightSide}>
+          <h2 style={styles.formTitle}>IDENTITY SETUP</h2>
 
+          {/* name + username */}
+          <div style={styles.row}>
+            <div style={styles.halfField}>
+              <label style={styles.label}>FULL NAME</label>
+              <div style={styles.inputWrapper}>
+                <input
+                  type="text"
+                  placeholder="Alex Rivera"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  style={styles.input}
+                />
+              </div>
+            </div>
+
+            <div style={styles.halfField}>
+              <label style={styles.label}>USERNAME</label>
+              <div style={styles.inputWrapper}>
+                <input
+                  type="text"
+                  placeholder="@archive_user"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  style={styles.input}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* email field */}
+          <div style={styles.fieldGroup}>
+            <label style={styles.label}>EMAIL ADDRESS</label>
+            <div style={styles.inputWrapper}>
+              <input
+                type="email"
+                placeholder="alex@performance.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={styles.input}
+              />
+            </div>
+          </div>
+
+          {/* pswd + birthday */}
+          <div style={styles.row}>
+            <div style={styles.halfField}>
+              <label style={styles.label}>PASSWORD</label>
+              <div style={styles.inputWrapper}>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPswd(e.target.value)}
+                  style={styles.input}
+                />
+              </div>
+            </div>
+
+            <div style={styles.halfField}>
+              <label style={styles.label}>BIRTHDATE</label>
+              <div style={styles.inputWrapper}>
+                <input
+                  type="text"
+                  placeholder="mm/dd/yyyy"
+                  value={birthdate}
+                  onChange={(e) => {
+                    let val = e.target.value.replace(/[^0-9]/g, "");
+                    if (val.length > 2) val = val.slice(0, 2) + "/" + val.slice(2);
+                    if (val.length > 5) val = val.slice(0, 5) + "/" + val.slice(5);
+                    if (val.length > 10) val = val.slice(0, 10);
+                    setBirth(val);
+                  }}
+                  maxLength={10}
+                  style={styles.input}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* initialize green button */}
+          <div style={{ marginTop: "10px" }}>
+            <GreenButton width="100%" onClick={handleCreateAccount}>
+              INITIALIZE PROFILE
+            </GreenButton>
+          </div>
+
+          {/* accept terms line */}
+          <p style={styles.termsText}>
+            BY CONTINUING, YOU AGREE TO THE{" "}
+            <span style={styles.termsLink}>ARCHIVE PROTOCOL & PRIVACY</span>
+          </p>
+        </div>
+      </div>
     </div>
+
     
   );
-};
-
-const submitBtn = {
-  background: "yellow",
-  color: "black",
-  border: "none",
-
-
-  width: "45%",
-  height: "9%",
-
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-
-  textAlign: "center",
-
-
-  borderRadius: "4px",
-  cursor: "pointer",
-
-  position: "absolute",
-
-  fontFamily: "'lexend', sans-serif",
-  fontSize: "20px",
-
-  boxSizing: "border-box",
-};
-
-const cards = [
-    {
-        title: "FULL NAME",
-        example: "ALEX RIVERA",
-    },
-
-    {
-        title: "USERNAME",
-        example: "@archive_user",
-    },
-
-    {
-        title: "EMAIL ADDRESS",
-        example: "alex@performance.com",
-    },
-
-    {
-        title: "PASSWORD",
-        example: "••••••••",
-    },
-
-    {
-        title: "BIRTHDATE",
-        example: "...."
-    }
-]
-
-const Right = {
-    UserInfo: {
-    color: "#DAF900",
-    fontFamily: "sans-serif",
-    fontSize: 10,
-    },
-
-    header: {
-
-    },
-
-    InfoFill: {
-
-    },
-
-    WeightBtns: {
-
-    },
-
-
 }
+
+const styles = {
+  page: {
+    display: "flex",
+    flexDirection: "column",
+    minHeight: "100vh",
+    width: "100%",
+
+    backgroundImage: `url(${bgImage})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+
+    fontFamily: "'Lexend', sans-serif",
+    padding: "30px 50px",
+    boxSizing: "border-box",
+  },
+  logo: {
+    color: "#DFFF00",
+    fontSize: "24px",
+    fontWeight: 700,
+    letterSpacing: "4px",
+    fontStyle: "italic",
+    marginBottom: "40px",
+  },
+  mainLayout: {
+    display: "flex",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "80px",
+    flexWrap: "wrap",
+  },
+  leftSide: {
+    flex: 1,
+    minWidth: "280px",
+    maxWidth: "450px",
+  },
+  heroText: {
+    color: "#fff",
+    fontSize: "64px",
+    fontWeight: 800,
+    lineHeight: 1.05,
+    margin: "0 0 20px 0",
+  },
+  heroSubtext: {
+    color: "#aaa",
+    fontSize: "16px",
+    lineHeight: 1.6,
+    maxWidth: "350px",
+  },
+  rightSide: {
+    flex: 1,
+    minWidth: "320px",
+    maxWidth: "480px",
+    backgroundColor: "#111",
+    borderRadius: "16px",
+    padding: "40px 36px",
+    border: "1px solid #2a2a2a",
+  },
+  formTitle: {
+    color: "#fff",
+    fontSize: "22px",
+    fontWeight: 600,
+    letterSpacing: "2px",
+    marginBottom: "28px",
+  },
+  row: {
+    display: "flex",
+    gap: "16px",
+    marginBottom: "18px",
+  },
+  halfField: {
+    flex: 1,
+  },
+  fieldGroup: {
+    width: "100%",
+    marginBottom: "18px",
+  },
+  label: {
+    color: "#aaa",
+    fontSize: "11px",
+    fontWeight: 500,
+    letterSpacing: "1.5px",
+    marginBottom: "8px",
+    display: "block",
+  },
+  inputWrapper: {
+    display: "flex",
+    alignItems: "center",
+    backgroundColor: "#1a1a1a",
+    border: "1px solid #2a2a2a",
+    borderRadius: "8px",
+    padding: "14px 16px",
+    width: "100%",
+    boxSizing: "border-box",
+  },
+  input: {
+    flex: 1,
+    backgroundColor: "transparent",
+    border: "none",
+    outline: "none",
+    color: "#fff",
+    fontSize: "15px",
+    fontFamily: "'Lexend', sans-serif",
+    width: "100%",
+  },
+  termsText: {
+    color: "#666",
+    fontSize: "10px",
+    letterSpacing: "1px",
+    textAlign: "center",
+    marginTop: "20px",
+  },
+  termsLink: {
+    color: "#fff",
+    fontWeight: 600,
+    cursor: "pointer",
+  },
+};
+
+export default CreateAcc;
