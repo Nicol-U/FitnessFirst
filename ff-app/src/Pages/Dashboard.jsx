@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, forwardRef } from 'react';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import GreenButton, { GrayRactangles } from '../Components/CustomButton';
 import { Link, useLocation, useNavigate } from "react-router-dom"; // ✅ import useLocation
@@ -11,6 +11,25 @@ export function Dashboard() {
   const [ShowPopUp, setShowPopUp] = useState(false);
   const [dayCount, setDayCount] = useState(checkIfNewDay());
   const location = useLocation();
+  const popupRef = useRef(null);
+  
+  useEffect(() => {
+    function handleOutClick(event){
+      if (popupRef.current && !popupRef.current.contains(event.target)){
+        setShowPopUp(false);
+      }
+    }
+
+    if (ShowPopUp){
+      document.addEventListener('mousedown', handleOutClick);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutClick);
+
+    };
+
+  }, [ShowPopUp]);
 
   return (
     <div className="page">
@@ -51,14 +70,12 @@ export function Dashboard() {
         <h1 className="heading" style={{ fontSize: 24, fontWeight: 900 }}>
           <span style={{ color: "#fff" }}>TARGET MILESTONES</span>
         </h1>
-
         <GreenButton
           onClick={() => setShowPopUp(true)}
         >
           + Add Goal
         </GreenButton>
-
-        {ShowPopUp && <AddGoalPopup onClose={() => setShowPopUp(false)} />}
+          {ShowPopUp && <AddGoalPopup ref={popupRef} onClose={() => setShowPopUp(false)} />}
       </div>
         
 
@@ -146,17 +163,20 @@ export function Dashboard() {
 
 
 // To James: this function is the code for the pop up to add goal 
-function AddGoalPopup({ onClose }) {
+const AddGoalPopup = forwardRef(({ onClose }, ref ) => {
+  
+
   return (
-    <div style={overlayStyle}> // this is at the bottom of the page setting out the layout
-      <div style={popupStyle}>  // same with this 
+    <div style={overlayStyle}>
+      <div ref={ref} style={popupStyle}>
         <h2>Popup Content</h2>
         <p>This is a simple popup.</p>
         <div style={{display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center', 
-        marginTop: '30%'
+        marginTop: '30%',
         }}> 
+        
         <GreenButton BGColor='Black' Txtcolor='Gray' onClick={onClose}>
           Cancel
         </GreenButton>
@@ -166,7 +186,7 @@ function AddGoalPopup({ onClose }) {
       </div>
     </div>
   );
-}
+});
 
 function checkIfNewDay() {
   const cntDay = JSON.parse(localStorage.getItem("DayCount")) || 0;
@@ -317,10 +337,12 @@ circle: {
 const overlayStyle = {
   position: "fixed",
   top: 0,
-  width: "100%",
-  height: "100%",
+  left: 0,
+  width: "100vw",
+  height: "100vh",
   backgroundColor: "rgba(0, 0, 0, 0.5)",
-  display: "flex",        // changed from "grid"
+
+  display: "flex",
   justifyContent: "center",
   alignItems: "center",
 
@@ -331,14 +353,18 @@ const popupStyle = {
   backgroundColor: "#20201F",
   color: "#DFFF00",
   fontFamily: "'lexend', sans-serif",
+
   padding: "20px",
   borderRadius: "5px",
-  minWidth: "75%",
+
+  width: "75%",
+  maxWidth: "700px",
+
   minHeight: "300px",
+
   boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
   boxSizing: "border-box"
 };
-
 
 export default Dashboard;
 

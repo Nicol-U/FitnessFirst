@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "../App.css";
 import { SidebarHeader, SidebarData, profileIcon } from "./SidebarData";
 import { Link, useLocation, useNavigate } from "react-router-dom"; // ✅ import useLocation
@@ -11,6 +11,25 @@ function Sidebar() {
     const [UserOptions, SetUserOptions] = useState(false);
     const [isLoged, SetLog] = useState(true);
     const [isVisible, setIsVisible] = useState(false);
+    const popupRef = useRef(null);
+      
+      useEffect(() => {
+        function handleOutClick(event){
+          if (popupRef.current && !popupRef.current.contains(event.target)){
+            setIsVisible(false);
+          }
+        }
+    
+        if (isVisible){
+          document.addEventListener('mousedown', handleOutClick);
+        }
+    
+        return () => {
+          document.removeEventListener('mousedown', handleOutClick);
+    
+        };
+    
+      }, [isVisible]);
 
     return (
         <div>
@@ -66,11 +85,8 @@ function Sidebar() {
       </button>
     } 
     { isVisible && 
-    <div className="Sidebar" >
-        
-      <div style={{display: "flex",  flexDirection: 'row',
-    flexWrap: 'wrap',         justifyContent: 'space-between',
-}}>
+    <div ref={popupRef} className="Sidebar" >
+        <div  style={{display: "flex",  flexDirection: 'row', flexWrap: 'wrap',         justifyContent: 'space-between',}}>
         <div> <h1 className="SidebarTitle">FITNESS FIRST</h1> </div>
         <div style={{display: "flex", alignItems: "center", marginTop: "10px", color: "yellow",     cursor: "pointer",
 }} onClick={() => setIsVisible(!isVisible)}>
