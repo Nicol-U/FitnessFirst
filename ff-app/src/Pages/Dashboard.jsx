@@ -61,9 +61,7 @@ export function Dashboard() {
         {ShowPopUp && <AddGoalPopup onClose={() => setShowPopUp(false)} />}
       </div>
         
-        <div >
-        <RadioToggle />
-        </div>
+
       
 <div
   style={{
@@ -75,6 +73,11 @@ export function Dashboard() {
     gap: "15px",
   }}
 >
+
+  <div >
+  <RadioToggle />
+  </div>
+
   {LinksData.map((val, key) => {
     return (
       <Link
@@ -91,12 +94,12 @@ export function Dashboard() {
             alignItems: "center",
             gap: "15px",
 
-            width: "100%",
+            width: "85%",
             maxWidth: "900px",
 
             margin: 0,
-
             boxSizing: "border-box",
+            minHeight: "50px",
           }}
         >
           <div style={styles.circle}>
@@ -205,7 +208,7 @@ function RadioToggle() {
   };
 
   return (
-    <div style={styles.box}>  
+    <div style={{...styles.box, boxSizing: "border-box", marginLeft: "0px", width: "100%"}}>  
     <label
   style={{
     display: "flex",
@@ -215,7 +218,6 @@ function RadioToggle() {
     userSelect: "none",
     color: "#FFFF",
     fontSize: 12,
-
     width: "100%",
     flexWrap: "wrap",
   }}
@@ -242,12 +244,13 @@ function RadioToggle() {
       <div
   style={{
     display: "flex",
+  
     flexDirection: "column",
     flex: 1,
     minWidth: 0,
   }}
 >
-      <h2 style={{margin: 2, textDecoration: crossedOut}}>Option 1 </h2>
+      <h2 style={{margin: 0, textDecoration: crossedOut}}>Option 1 </h2>
           <h3 style={{color: "#ADAAAA", margin: 2, textDecoration: crossedOut}}>text1</h3>
           </div>
     </label>
@@ -255,7 +258,6 @@ function RadioToggle() {
 
   );
 }
-const boxwidth = "75%";
 const styles = {
   box: {
     display: "flex",
@@ -265,14 +267,13 @@ const styles = {
     border: "1px solid #2a2a2a",
     borderRadius: 14,
     padding: "12px 28px 12px 40px",
-    width: "90vw",
     marginRight: "100px",
-    maxHeight: "9vh",
     alignItems: "center",
+    
     margin: "20px auto",
- //aaaaaaaaaaaaaaaaaaaaaa
     fontFamily: "'lexend', sans-serif",
-    maxWidth: "75%",
+    maxWidth: "900px",
+    width: "100%",
     flexWrap: "wrap",
   },
 
@@ -284,6 +285,8 @@ const styles = {
     border: "2px solid #555",
     display: "flex",
     fontSize: "16px",
+    alignItems: "center",
+    justifyContent: "center",
     color: "black",
     transition: "0.2s"
   },
@@ -292,7 +295,6 @@ circle: {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-
   minWidth: "50px",
   minHeight: "50px",
 
@@ -302,10 +304,10 @@ circle: {
   borderRadius: "50%",
   backgroundColor: "#3a3a3a",
 
-  marginTop: "5px",
 },
 
   checkmark: {
+    
     fontSize: "16px",
     lineHeight: 1,
     pointerEvents: "none"
@@ -315,13 +317,13 @@ circle: {
 const overlayStyle = {
   position: "fixed",
   top: 0,
-  left: 0,
   width: "100%",
   height: "100%",
   backgroundColor: "rgba(0, 0, 0, 0.5)",
-  display: "grid",
+  display: "flex",        // changed from "grid"
   justifyContent: "center",
   alignItems: "center",
+
   zIndex: 9999
 };
 
@@ -331,9 +333,10 @@ const popupStyle = {
   fontFamily: "'lexend', sans-serif",
   padding: "20px",
   borderRadius: "5px",
-  minWidth: "500px",
+  minWidth: "75%",
   minHeight: "300px",
-  boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)"
+  boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
+  boxSizing: "border-box"
 };
 
 
