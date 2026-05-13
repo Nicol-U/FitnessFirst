@@ -57,7 +57,8 @@ const INPUT_BORDER = "#444";
 const MUTED = "#888";
 const TEXT = "#ffffff";
 
-const SIDEBAR_WIDTH = "300px";
+// new min sidebar with is 40
+const SIDEBAR_WIDTH = "40px";
 
 const styles = {
   page: {
@@ -68,7 +69,7 @@ const styles = {
     marginLeft: SIDEBAR_WIDTH,
     paddingLeft: "40px",
     paddingRight: "40px",
-    paddingTop: "0",
+    paddingTop: "40px",
     paddingBottom: "80px",
     boxSizing: "border-box",
   },

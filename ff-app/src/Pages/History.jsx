@@ -2,6 +2,7 @@ import { useState } from "react";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import { height } from "@mui/system";
 
 const DAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 const MONTHS = [
@@ -203,12 +204,13 @@ export function History() {
 
 const s = {
   page: {
-    paddingLeft: 290,
+    paddingLeft: 40,
     paddingRight: 40,
-    paddingTop: 40,
+    paddingTop: 60,
     paddingBottom: 64,
     minHeight: "100vh",
     width: "100%",
+    height: "100%",
     backgroundColor: "#000",
     color: "#fff",
     boxSizing: "border-box",

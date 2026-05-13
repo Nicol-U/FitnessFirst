@@ -32,7 +32,7 @@ export function Dashboard() {
   }, [ShowPopUp]);
 
   return (
-    <div className="page">
+    <div className="page" >
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
   <div 
     style={{
@@ -46,7 +46,7 @@ export function Dashboard() {
       background: "#191A17",
       borderRadius: "100px",
       color: "#F6FFC0",
-      gap: "10px"
+      gap: "10px",
   
     }}
   >
@@ -63,7 +63,8 @@ export function Dashboard() {
     gap: "15px",
     width: "90%",
     maxWidth: "1100px",
-    margin: "20px auto",
+    margin: "10px auto",
+    marginLeft: "30px"
   }}
 >
 

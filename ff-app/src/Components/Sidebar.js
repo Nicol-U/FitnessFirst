@@ -8,8 +8,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 function Sidebar() {
     const location = useLocation(); // ✅ call the hook here
     const navigate = useNavigate(); // ✅ call the hook here
-    const [UserOptions, SetUserOptions] = useState(false);
-    const [isLoged, SetLog] = useState(true);
+
     const [isVisible, setIsVisible] = useState(false);
     const popupRef = useRef(null);
       
@@ -32,18 +31,41 @@ function Sidebar() {
       }, [isVisible]);
 
     return (
-        <div>
-              { !isVisible &&
-        <div style={{display: "flex", alignItems: "center", marginTop: "20px", color: "yellow", marginLeft:"30px",  width:"30px",  cursor: "pointer",
-}} onClick={() => setIsVisible(!isVisible)}>
-        <MenuIcon/>
-        {isVisible}
-      </div>
-    } 
+        <div style={{position: "fixed", zIndex: 100}}>
+          <header style={{
+  position: "fixed",
+  top: 0,
+  left: 0,
+  right: 0,           // ✅ spans full width reliably
+  zIndex: 100,
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  flexWrap: "wrap",
+  flexDirection: "row",
+  color: "#DFFF00",
+  background: "black",
+  height: "80px",     // ✅ use px not % for headers
+  padding: "0 30px",  // ✅ instead of marginLeft
+
+          }}>
+
+    {!isVisible &&
+        <div style={{ width:"30px",  cursor: "pointer"}} onClick={() => setIsVisible(!isVisible)}>
+          <MenuIcon style={{marginLeft: "30px"}}/>
+          {isVisible}
+        </div>
+    }
+
+    <span style={{ fontFamily: "sans-serif", fontSize: 25}}> FITNESS FIRST </span>
+
+    <div ><ProfileObject/> </div>
+    </header>
+
     { isVisible && 
     <div ref={popupRef} className="Sidebar" >
         <div  style={{display: "flex",  flexDirection: 'row', flexWrap: 'wrap',         justifyContent: 'space-between',}}>
-        <div> <h1 className="SidebarTitle">FITNESS FIRST</h1> </div>
+        <div> <h1 className="SidebarTitle">FITNESS FIRST</h1></div>
 
       </div>
         <ul className="SidebarHeader">
@@ -79,19 +101,27 @@ function Sidebar() {
     
     
     </div>}
-            <div
-  className="profile"
-  onMouseEnter={() => SetUserOptions(true)}
-  onMouseLeave={() => SetUserOptions(false)}
-  style={{ position: "fixed" }}
->
-  {profileIcon}
 
-  {UserOptions && (
+    </div>);
+}
+
+
+const ProfileObject  = () => {
+  const navigate = useNavigate(); 
+  const [UserOptions, SetUserOptions] = useState(false);
+  const [isLoged, SetLog] = useState(true);
+  
+  return(
+  <div  onMouseEnter={() => SetUserOptions(true)} onMouseLeave={() => SetUserOptions(false)}
+  onClick={(e) => {e.stopPropagation(); SetUserOptions(prev => !prev);}} 
+  >
+    {profileIcon}
+
+    {UserOptions && (
     <div
       style={{
         position: "absolute",
-        top: "100%",
+        top: "10%",
         right: 0,
         display: "flex",
         flexDirection: "column",
@@ -101,14 +131,15 @@ function Sidebar() {
         padding: "8px",
         gap: "1px",
         minWidth: "40px",
-        zIndex: 1000,
       }}
     >
       <button
         onClick={() => {
           if (isLoged) {
             SetLog(false);
-          } else {
+          }
+           else {
+
             navigate("/login");
           }
         }}
@@ -116,22 +147,13 @@ function Sidebar() {
         {isLoged ? "Log Out" : "Login"}
       </button>
 
-      <button
-        onClick={() => navigate("/settings")}
-      >
+      <button onClick={() =>  navigate("/settings")}>
         Settings
       </button>
     </div>
   )}
-</div>
-
-
-
-    </div>);
+</div>);
 }
-
-
-
 
 
 export default Sidebar;

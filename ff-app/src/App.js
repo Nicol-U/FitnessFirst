@@ -19,9 +19,9 @@ function App() {
         <Route path="/createacc" element={<CreateAcc />} />
         
         <Route path="/*" element={
-         <div classname="AppLayout">
+         <div className="AppLayout">
           <Sidebar />
-          <div classname="MainContent">
+          <div className="MainContent">
             <Routes>
 
           
