@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useRef, forwardRef } from 'react';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import GreenButton, { GrayRactangles } from '../Components/CustomButton';
-import { Link, useLocation, useNavigate } from "react-router-dom"; // ✅ import useLocation
-import Input from '@mui/material/Input';
-import { Checkbox } from "@mui/material";
+import GreenButton from '../Components/CustomButton';
+import { Link, useLocation } from "react-router-dom"; // ✅ import useLocation
 import DescriptionIcon from '@mui/icons-material/Description';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 
@@ -163,26 +161,86 @@ export function Dashboard() {
 }
 
 
-// To James: this function is the code for the pop up to add goal 
-const AddGoalPopup = forwardRef(({ onClose }, ref ) => {
-  
+const AddGoalPopup = forwardRef(({ onClose }, ref) => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [addingDescription, setAddingDescription] = useState(false);
+
+  const handleSave = () => {
+    // First save = save title + switch popup to description mode
+    if (!addingDescription) {
+      if (title.trim() === "") return;
+
+      console.log("Goal Title Saved:", title);
+
+      setAddingDescription(true);
+      return;
+    }
+
+    // Final save with optional description
+    const newGoal = {
+      title,
+      description,
+    };
+
+    console.log("Final Goal Saved:", newGoal);
+
+    onClose();
+  };
 
   return (
     <div style={overlayStyle}>
       <div ref={ref} style={popupStyle}>
-        <h2>Popup Content</h2>
-        <p>This is a simple popup.</p>
-        <div style={{display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center', 
-        marginTop: '30%',
-        }}> 
-        
-        <GreenButton BGColor='Black' Txtcolor='Gray' onClick={onClose}>
-          Cancel
-        </GreenButton>
+        <h2>
+          {addingDescription ? "Add Description" : "New Goal"}
+        </h2>
 
-        <GreenButton> Save </GreenButton>
+        <p>
+          {addingDescription ? "Goal Description" : "Goal Title"}
+        </p>
+
+        {!addingDescription ? (
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Beast Mode"
+            style={TxtBoxStyle}
+          />
+        ) : (
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Describe your goal..."
+            style={{
+              width: "100%",
+              height: "120px",
+              padding: "10px",
+              borderRadius: "10px",
+              resize: "none",
+            }}
+          />
+        )}
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: "30px",
+          }}
+        >
+          <GreenButton
+            BGColor="Black"
+            Txtcolor="Gray"
+            onClick={onClose}
+          >
+            Cancel
+          </GreenButton>
+
+          <GreenButton onClick={handleSave}>
+            {addingDescription ? "Finish" : "Save"}
+          </GreenButton>
         </div>
       </div>
     </div>
@@ -383,3 +441,12 @@ const LinksData = [
     link: "/history"
   }
 ]
+
+const TxtBoxStyle = {
+  padding: "8px",
+  fontSize: "16px",
+  border: "1px solid #DAF900",
+  borderRadius: "4px",
+  fontSize: 20,
+  backgroundColor: "rgba(72, 72, 71, .3)"
+}
