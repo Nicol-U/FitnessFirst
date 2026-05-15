@@ -166,24 +166,45 @@ const AddGoalPopup = forwardRef(({ onClose }, ref) => {
   const [description, setDescription] = useState("");
   const [addingDescription, setAddingDescription] = useState(false);
 
+  // Save goal to local storage
+  const saveGoalToLocalStorage = (goal) => {
+    // Get existing goals
+    const existingGoals =
+      JSON.parse(localStorage.getItem("goals")) || [];
+
+    // Add new goal
+    existingGoals.push(goal);
+
+    // Save updated array
+    localStorage.setItem(
+      "goals",
+      JSON.stringify(existingGoals)
+    );
+  };
+
   const handleSave = () => {
-    // First save = save title + switch popup to description mode
+    // First save = save title + move to description page
     if (!addingDescription) {
       if (title.trim() === "") return;
-
-      console.log("Goal Title Saved:", title);
 
       setAddingDescription(true);
       return;
     }
 
-    // Final save with optional description
+    // Final goal object
     const newGoal = {
+      id: Date.now(), // unique id
       title,
       description,
+      completed: false,
     };
 
-    console.log("Final Goal Saved:", newGoal);
+    // Save to local storage
+    saveGoalToLocalStorage(newGoal);
+
+    console.log("Saved Goals:",
+      JSON.parse(localStorage.getItem("goals"))
+    );
 
     onClose();
   };
@@ -212,13 +233,7 @@ const AddGoalPopup = forwardRef(({ onClose }, ref) => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Describe your goal..."
-            style={{
-              width: "100%",
-              height: "120px",
-              padding: "10px",
-              borderRadius: "10px",
-              resize: "none",
-            }}
+            style={TxtBoxStyle}
           />
         )}
 
@@ -275,68 +290,119 @@ function checkIfNewDay() {
 
 
 function RadioToggle() {
-  const [selectedValue, setSelectedValue] = useState(true);
-  const [crossedOut, setCrossedOut] = useState(null);
+  const [goals, setGoals] = useState(
+    JSON.parse(localStorage.getItem("goals")) || []
+  );
 
-  const clicked = () => {
-    setSelectedValue(prev => {
-      const newValue = !prev;
-      setCrossedOut(newValue ? null : "line-through");
-      return newValue;
-    });
+  const clicked = (id) => {
+    const updatedGoals = goals.map((goal) =>
+      goal.id === id
+        ? {
+            ...goal,
+            completed: !goal.completed,
+          }
+        : goal
+    );
+
+    // Update state
+    setGoals(updatedGoals);
+
+    // Update local storage
+    localStorage.setItem(
+      "goals",
+      JSON.stringify(updatedGoals)
+    );
   };
 
   return (
-    <div style={{...styles.box, boxSizing: "border-box", marginLeft: "0px", width: "100%"}}>  
-    <label
-  style={{
-    display: "flex",
-    alignItems: "center",
-    gap: "15px",
-    cursor: "pointer",
-    userSelect: "none",
-    color: "#FFFF",
-    fontSize: 12,
-    width: "100%",
-    flexWrap: "wrap",
-  }}
->
-      <input
-        style={{ display: "none" }}
-        type="checkbox"
-        name="myCheckbox"
-        onChange={clicked}
-      />
+    <>
+      {goals.map((goal) => (
+        <div
+          key={goal.id}
+          style={{
+            ...styles.box,
+            boxSizing: "border-box",
+            marginLeft: "0px",
+            width: "100%",
+          }}
+        >
+          <label
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "15px",
+              cursor: "pointer",
+              userSelect: "none",
+              color: "#FFFF",
+              fontSize: 12,
+              width: "100%",
+              flexWrap: "wrap",
+            }}
+          >
+            <input
+              style={{ display: "none" }}
+              type="checkbox"
+              checked={goal.completed}
+              onChange={() => clicked(goal.id)}
+            />
 
-      <span
-        style={{
-          ...styles.radio,
-          backgroundColor: selectedValue ? "black" : "#F6FFC0",
-          borderColor: selectedValue ? "#555" : "#F6FFC0",
-        }}
-      >
-        
-        {!selectedValue && (
-          <span style={styles.checkmark}>✓</span>
-        )}
-      </span>
-      <div
-  style={{
-    display: "flex",
-  
-    flexDirection: "column",
-    flex: 1,
-    minWidth: 0,
-  }}
->
-      <h2 style={{margin: 0, textDecoration: crossedOut}}>Option 1 </h2>
-          <h3 style={{color: "#ADAAAA", margin: 2, textDecoration: crossedOut}}>text1</h3>
-          </div>
-    </label>
+            <span
+              style={{
+                ...styles.radio,
+                backgroundColor: goal.completed
+                  ? "#F6FFC0"
+                  : "black",
+
+                borderColor: goal.completed
+                  ? "#F6FFC0"
+                  : "#555",
+              }}
+            >
+              {goal.completed && (
+                <span style={styles.checkmark}>
+                  ✓
+                </span>
+              )}
+            </span>
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                flex: 1,
+                minWidth: 0,
+              }}
+            >
+              <h2
+                style={{
+                  margin: 0,
+                  textDecoration: goal.completed
+                    ? "line-through"
+                    : "none",
+                }}
+              >
+                {goal.title}
+              </h2>
+
+              <h3
+                style={{
+                  color: "#ADAAAA",
+                  margin: 2,
+                  textDecoration: goal.completed
+                    ? "line-through"
+                    : "none",
+                }}
+              >
+                {goal.description}
+              </h3>
+            </div>
+          </label>
         </div>
-
+      ))}
+    </>
   );
 }
+
 const styles = {
   box: {
     display: "flex",
@@ -400,7 +466,6 @@ const overlayStyle = {
   width: "100vw",
   height: "100vh",
   backgroundColor: "rgba(0, 0, 0, 0.5)",
-
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -448,5 +513,7 @@ const TxtBoxStyle = {
   border: "1px solid #DAF900",
   borderRadius: "4px",
   fontSize: 20,
-  backgroundColor: "rgba(72, 72, 71, .3)"
+  width: '100%',
+  backgroundColor: "rgba(72, 72, 71, .3)",
+  color: 'white'
 }
