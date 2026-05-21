@@ -200,7 +200,7 @@ font-family: var(--primary-font);
   font-family: var(--primary-font);
   padding-top: 80px;
   box-sizing: boarder-box;
-  margin-left: 15px;
+  margin-left: 20px;
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;

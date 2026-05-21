@@ -65,116 +65,14 @@ export function GrayRactangles({widthSize="75%", heightSize="90vh", children}){
 }
 
 
-const DropDownButton = ({ children, open, toggle }) => {
-  return (
-    <div
-      onClick={toggle}
-      style={{
-        ...dropdownS.DropDownBtn,
-        ...(open ? dropdownS.buttonOpen : {}),
-      }}
-    >
-      <span>{children}</span>
-
-      <span style={dropdownS.toggleIcon}>
-        <ExpandMoreIcon
-          style={{
-            transform: open ? "rotate(180deg)" : "rotate(0deg)",
-            transition: "0.2s",
-          }}
-        />
-      </span>
-    </div>
-  );
-};
-
-const DropDownContent = ({ children, open }) => {
-  if (!open) return null;
-
-  return <div style={dropdownS.content}>{children}</div>;
-};
-
-export const DropdownItem = ({ children, onClick }) => {
-  return (
-    <div style={dropdownS.DropdownItem} onClick={onClick}>
-      {children}
-    </div>
-  );
-};
-
-export function DropDown({ buttonText, content }){
-  const [open, setOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setOpen((prev) => !prev);
-  };
+const DropdownMenu = () => {
+  const [activeMenu, setActiveMenu] = useState(false);
+  const [activeItem, setActiveItem] = useState(null);
 
   return (
-    <div style={dropdownS.DropDownStyle}>
-      <DropDownButton toggle={toggleDropdown} open={open}>
-        {buttonText}
-      </DropDownButton>
+    <div style={{}}>
 
-      <DropDownContent open={open}>
-        {content}
-      </DropDownContent>
     </div>
   );
-};
-
-
-const dropdownS = {
-  DropDownBtn: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "220px",
-    padding: "1rem",
-    backgroundColor: "black",
-    color: "white",
-    borderRadius: "0.5rem",
-    cursor: "pointer",
-    border: "1px solid white",
-  },
-
-  buttonOpen: {
-    backgroundColor: "#333",
-  },
-
-  toggleIcon: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    marginLeft: "1rem",
-  },
-
-  content: {
-    position: "absolute",
-    top: "100%",
-    left: 0,
-    minWidth: "220px",
-    display: "flex",
-    flexDirection: "column",
-    backgroundColor: "white",
-    color: "black",
-    borderRadius: "0.5rem",
-    marginTop: "0.5rem",
-    overflow: "hidden",
-    zIndex: 1000,
-    boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-  },
-
-  DropDownStyle: {
-    display: "flex",
-    flexDirection: "column",
-    position: "relative",
-    width: "fit-content",
-  },
-
-  DropdownItem: {
-    padding: "0.75rem 1rem",
-    cursor: "pointer",
-    borderBottom: "1px solid #ddd",
-  },
-};
+}
 
