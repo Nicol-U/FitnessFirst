@@ -50,28 +50,38 @@ export default Settings;*/
 
 
 const ACCENT = "#DFFF00";
-const DARK_BG = "#0E0E0E";
-const CARD_BG = "#1a1a1a";
-const CARD_BORDER = "#2a2a2a";
-const INPUT_BORDER = "#444";
-const MUTED = "#888";
-const TEXT = "#ffffff";
 
 // new min sidebar with is 40
 const SIDEBAR_WIDTH = "40px";
 
-const styles = {
+const getTheme = (darkMode) => ({
+  accent: darkMode ? "#DFFF00" : "#dfff00",
+  pageBg: darkMode ? "#0E0E0E" : "#f5f6f8",
+  cardBg: darkMode ? "#1a1a1a" : "#ffffff",
+  cardBorder: darkMode ? "#2a2a2a" : "#d9dce2",
+  inputBorder: darkMode ? "#444" : "#c7cad1",
+  text: darkMode ? "#ffffff" : "#111827",
+  muted: darkMode ? "#888" : "#5f6570",
+  watermark: darkMode ? "#2a2a2a" : "#d9dce2",
+  securityNoteBg: darkMode ? "#111" : "#f0f2f5",
+  selectBg: darkMode ? "#333333" : "#f0f2f5",
+  toggleOffBg: darkMode ? "#444" : "#c7cad1",
+  toggleOffKnob: darkMode ? "#888" : "#ffffff",
+});
+
+const createStyles = (theme) => ({
   page: {
-    backgroundColor: DARK_BG,
+    backgroundColor: theme.pageBg,
     minHeight: "100vh",
     fontFamily: "'lexend', 'Arial Black', 'Arial', sans-serif",
-    color: TEXT,
+    color: theme.text,
     marginLeft: SIDEBAR_WIDTH,
     paddingLeft: "40px",
     paddingRight: "40px",
     paddingTop: "40px",
     paddingBottom: "80px",
     boxSizing: "border-box",
+    transition: "background-color 0.2s ease, color 0.2s ease",
   },
   topRow: {
     display: "flex",
@@ -87,10 +97,10 @@ const styles = {
   },
   subheading: {
     fontSize: "12px",
-    color: MUTED,
+    color: theme.muted,
     letterSpacing: "0.15em",
     textTransform: "uppercase",
-    borderLeft: `3px solid ${ACCENT}`,
+    borderLeft: `3px solid ${theme.accent}`,
     paddingLeft: "10px",
     marginBottom: "4px",
   },
@@ -99,14 +109,14 @@ const styles = {
     fontWeight: 900,
     letterSpacing: "-0.2px",
     lineHeight: 1,
-    color: TEXT,
+    color: theme.text,
     margin: 0,
     textTransform: "uppercase",
   },
   binaryWatermark: {
     fontSize: "48px",
     fontWeight: 900,
-    color: "#2a2a2a",
+    color: theme.watermark,
     letterSpacing: "4px",
     userSelect: "none",
     lineHeight: 1,
@@ -124,12 +134,13 @@ const styles = {
     marginTop: "16px",
   },
   card: {
-    backgroundColor: CARD_BG,
-    border: `1px solid ${CARD_BORDER}`,
+    backgroundColor: theme.cardBg,
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: "12px",
     padding: "28px",
     position: "relative",
     overflow: "hidden",
+    transition: "background-color 0.2s ease, border-color 0.2s ease",
   },
   cardHeader: {
     display: "flex",
@@ -141,7 +152,7 @@ const styles = {
     width: "10px",
     height: "10px",
     borderRadius: "50%",
-    backgroundColor: ACCENT,
+    backgroundColor: theme.accent,
     flexShrink: 0,
   },
   cardTitle: {
@@ -149,7 +160,7 @@ const styles = {
     fontWeight: 900,
     letterSpacing: "0.2em",
     textTransform: "uppercase",
-    color: TEXT,
+    color: theme.text,
   },
   fieldGrid: {
     display: "grid",
@@ -160,17 +171,16 @@ const styles = {
     fontSize: "10px",
     letterSpacing: "0.15em",
     textTransform: "uppercase",
-    color: MUTED,
+    color: theme.muted,
     marginBottom: "8px",
   },
   fieldInput: {
     fontSize: "20px",
     fontWeight: 700,
-    color: TEXT,
+    color: theme.text,
     background: "transparent",
     border: "none",
-    borderBottom: `1px solid ${INPUT_BORDER}`,
-    //borderBottom: "none",
+    borderBottom: `1px solid ${theme.inputBorder}`,
     width: "100%",
     paddingBottom: "6px",
     outline: "none",
@@ -179,34 +189,34 @@ const styles = {
   },
   securityNote: {
     fontSize: "11px",
-    color: MUTED,
+    color: theme.muted,
     lineHeight: 1.6,
     marginTop: "16px",
     padding: "12px",
-    backgroundColor: "#111",
+    backgroundColor: theme.securityNoteBg,
     borderRadius: "6px",
   },
   securityNoteHighlight: {
-    color: ACCENT,
+    color: theme.accent,
     fontWeight: 700,
   },
   passwordRow: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    borderBottom: `1px solid ${INPUT_BORDER}`,
+    borderBottom: `1px solid ${theme.inputBorder}`,
     paddingBottom: "6px",
   },
   passwordDots: {
     fontSize: "18px",
     letterSpacing: "3px",
-    color: MUTED,
+    color: theme.muted,
   },
   changeBtn: {
     fontSize: "11px",
     fontWeight: 700,
     letterSpacing: "0.1em",
-    color: ACCENT,
+    color: theme.accent,
     background: "none",
     border: "none",
     cursor: "pointer",
@@ -223,21 +233,21 @@ const styles = {
   toggleLabel: {
     fontSize: "15px",
     fontWeight: 700,
-    color: TEXT,
+    color: theme.text,
   },
   toggleSub: {
     fontSize: "10px",
     letterSpacing: "0.12em",
     textTransform: "uppercase",
-    color: MUTED,
+    color: theme.muted,
     marginTop: "2px",
   },
   ampmBadge: {
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#333",
-    color: TEXT,
+    backgroundColor: theme.selectBg,
+    color: theme.text,
     fontSize: "12px",
     fontWeight: 700,
     letterSpacing: "0.1em",
@@ -251,10 +261,10 @@ const styles = {
     position: "relative",
   },
   selectField: {
-    background: "#333333",
+    background: theme.selectBg,
     border: "none",
-    borderBottom: `1px solid ${INPUT_BORDER}`,
-    color: TEXT,
+    borderBottom: `1px solid ${theme.inputBorder}`,
+    color: theme.text,
     fontSize: "16px",
     fontWeight: 700,
     fontFamily: "inherit",
@@ -271,7 +281,7 @@ const styles = {
     right: "4px",
     top: "50%",
     transform: "translateY(-60%)",
-    color: MUTED,
+    color: theme.muted,
     pointerEvents: "none",
     fontSize: "16px",
   },
@@ -281,13 +291,7 @@ const styles = {
     right: "24px",
     width: "52px",
     height: "52px",
-    //borderRadius: "50%",
-    //backgroundColor: "#2a2a2a",
-    //border: `1px solid ${CARD_BORDER}`,
-    //display: "flex",
-    //alignItems: "center",
-    //justifyContent: "center",
-    color: MUTED,
+    color: theme.muted,
   },
   displayIconBg: {
     position: "absolute",
@@ -295,11 +299,7 @@ const styles = {
     right: "8px",
     width: "48px",
     height: "96px",
-    //borderRadius: "50%",
-    //backgroundColor: "#222",
-    //display: "flex",
-    //alignItems: "center",
-    //justifyContent: "center",
+    color: theme.muted,
     opacity: 0.5,
     marginTop: "15px",
   },
@@ -314,7 +314,7 @@ const styles = {
   discardBtn: {
     background: "none",
     border: "none",
-    color: MUTED,
+    color: theme.muted,
     fontSize: "12px",
     fontWeight: 700,
     letterSpacing: "0.15em",
@@ -324,7 +324,7 @@ const styles = {
     fontFamily: "inherit",
   },
   updateBtn: {
-    backgroundColor: ACCENT,
+    backgroundColor: theme.accent,
     color: "#000",
     border: "none",
     borderRadius: "8px",
@@ -342,11 +342,10 @@ const styles = {
     color: "#09f114d1",
     fontFamily: "inherit",
   },
-};
+});
 
 //define toggle component
-
-function Toggle({ checked, onChange }) {
+function Toggle({ checked, onChange, theme }) {
   //checked: state of the button (true or false)
   //onChange: function that sets the value of checked
   return (
@@ -357,10 +356,10 @@ function Toggle({ checked, onChange }) {
         width: "48px",
         height: "26px",
         borderRadius: "13px",
-        backgroundColor: checked ? ACCENT : "#444",
+        backgroundColor: checked ? theme.accent : theme.toggleOffBg,
         position: "relative",
         cursor: "pointer",
-        transition: "background 0.2s",
+        transition: "background 0.2s ease",
         flexShrink: 0,
       }}
     >
@@ -373,8 +372,9 @@ function Toggle({ checked, onChange }) {
           width: "20px",
           height: "20px",
           borderRadius: "50%",
-          backgroundColor: checked ? "#000" : "#888",
-          transition: "left 0.2s",
+          backgroundColor: checked ? "#000" : theme.toggleOffKnob,
+          transition: "left 0.2s ease, background-color 0.2s ease",
+          boxShadow: checked ? "none" : "0 1px 3px rgba(0, 0, 0, 0.25)",
         }}
       />
       
@@ -399,6 +399,9 @@ export function Settings() {
   const [ampm, setAmpm] = useState("AM");
   const [fontDensity, setFontDensity] = useState("STANDARD");
   const [confirmMessage, setConfirmMessage] = useState("");
+
+  const theme = getTheme(darkMode);
+  const styles = createStyles(theme);
 
   // function handleField takes a parameter "key" and returns a function that takes parameter "e" and calls the function setForm. The value of "e" comes from the user input because function handleField is used in function onChange
   const handleField = (key) => (e) =>
@@ -513,7 +516,7 @@ export function Settings() {
               <div style={styles.toggleLabel}>Workout Reminders</div>
               <div style={styles.toggleSub}>Push notification triggers</div>
             </div>
-            <Toggle checked={workoutReminders} onChange={setWorkoutReminders} />
+            <Toggle checked={workoutReminders} onChange={setWorkoutReminders} theme={theme} />
           </div>
           <div style={{ marginTop: "20px" }}>
             <div style={styles.fieldLabel}>Preferred Alert Time</div>
@@ -546,7 +549,7 @@ export function Settings() {
               <div style={styles.toggleLabel}>Dark Mode</div>
               <div style={styles.toggleSub}>High-contrast performance theme</div>
             </div>
-            <Toggle checked={darkMode} onChange={setDarkMode} />
+            <Toggle checked={darkMode} onChange={setDarkMode} theme={theme}/>
           </div>
           <div style={{ marginTop: "24px" }}>
             <div style={styles.fieldLabel}>Font Density</div>
