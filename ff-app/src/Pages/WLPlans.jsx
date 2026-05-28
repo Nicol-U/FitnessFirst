@@ -148,11 +148,20 @@ export function LogWorkoutPlan() {
   }
 
   return (
-    <div style={s.page}>
+    <div style={s.page} className="wlp-page">
+      <style>{`
+        @media (max-width: 768px) {
+          .wlp-page { padding-left: 16px !important; padding-right: 16px !important; }
+          .wlp-toprow { flex-direction: column !important; align-items: flex-start !important; }
+          .wlp-heading { font-size: 32px !important; }
+          .wlp-icon-color-row { flex-direction: column !important; }
+          .wlp-modal { margin: 0 12px !important; padding: 20px 16px 18px !important; }
+        }
+      `}</style>
       {/* Header */}
-      <div style={s.topRow}>
+      <div style={s.topRow} className="wlp-toprow">
         <div>
-          <h1 style={s.heading}>
+          <h1 style={s.heading} className="wlp-heading">
             <span style={{ color: "#fff" }}>WORKOUT </span>
             <span style={{ color: "#DFFF00" }}>PLANS</span>
           </h1>
@@ -251,7 +260,7 @@ export function LogWorkoutPlan() {
       {/* Modal */}
       {modalOpen && (
         <div style={s.overlay} onClick={closeModal}>
-          <div style={s.modal} onClick={(e) => e.stopPropagation()}>
+          <div style={s.modal} className="wlp-modal" onClick={(e) => e.stopPropagation()}>
             <div style={s.modalHeader}>
               <h2 style={s.modalTitle}>
                 {editingId !== null ? "Edit Workout Plan" : "New Workout Plan"}
@@ -272,7 +281,7 @@ export function LogWorkoutPlan() {
             />
 
             {/* Icon + Color side by side */}
-            <div style={{ display: "flex", gap: 24, marginBottom: 4 }}>
+            <div style={{ display: "flex", gap: 24, marginBottom: 4 }} className="wlp-icon-color-row">
               <div style={{ flex: 1 }}>
                 <label style={s.label}>Icon</label>
                 <div style={s.iconGrid}>
@@ -421,9 +430,9 @@ export function LogWorkoutPlan() {
 
 const s = {
   page: {
-    paddingLeft: 290,
+    paddingLeft: 40,
     paddingRight: 40,
-    paddingTop: 40,
+    paddingTop: 100,
     paddingBottom: 64,
     minHeight: "100vh",
     width: "100%",
@@ -437,10 +446,11 @@ const s = {
     justifyContent: "space-between",
     alignItems: "flex-start",
     marginBottom: 36,
-    paddingTop: 30,
+    flexWrap: "wrap",
+    gap: 16,
   },
   heading: {
-    fontSize: 48,
+    fontSize: "clamp(28px, 5vw, 48px)",
     fontWeight: 900,
     margin: "0 0 10px",
     letterSpacing: 2,
