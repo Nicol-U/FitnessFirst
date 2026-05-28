@@ -2,7 +2,7 @@
 :root {
   --primary-color: #DFFF00;
   --primary-font: 'lexend', sans-serif;
-  --primary-bg-color: #0E0E0E;
+  --primary-bg-color: black;
   --selection-black: #393939;
   --main-gray: #ADAAAA;
 }
@@ -77,7 +77,6 @@ body{
   width: 90%;
   padding-left: 10px;
   background-color: var(--primary-bg-color);
-  padding-top: 10%; /*this controls the dist from bottom of sub header*/
   padding-bottom: 10%;
 }
 

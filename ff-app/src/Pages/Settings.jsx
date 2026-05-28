@@ -56,7 +56,7 @@ const SIDEBAR_WIDTH = "40px";
 
 const getTheme = (darkMode) => ({
   accent: darkMode ? "#DFFF00" : "#dfff00",
-  pageBg: darkMode ? "#0E0E0E" : "#f5f6f8",
+  pageBg: darkMode ? "#000000" : "#f5f6f8",
   cardBg: darkMode ? "#1a1a1a" : "#ffffff",
   cardBorder: darkMode ? "#2a2a2a" : "#d9dce2",
   inputBorder: darkMode ? "#444" : "#c7cad1",

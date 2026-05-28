@@ -93,7 +93,7 @@ export default function Sidebar() {
             {isVisible &&
                 <div ref={popupRef} className="Sidebar" style={{
     position: "fixed",
-    top: "60px",
+    top: "40px",
     left: 0,
     bottom: 0,
     width: "280px",
@@ -137,9 +137,11 @@ export default function Sidebar() {
 
 {/* button always at bottom */}
 <div style={{ 
-    padding: "20px 0",
+    padding: "20px 20px",
     marginTop: "auto",     /* pushes to bottom */
-    flexShrink: 0,         /* never shrinks */
+    flexShrink: 0,
+    marginBottom: '50px'
+            /* never shrinks */
 }}>
     <GreenButton
         size="medium"
