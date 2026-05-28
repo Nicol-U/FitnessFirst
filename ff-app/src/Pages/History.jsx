@@ -206,11 +206,10 @@ const s = {
   page: {
     paddingLeft: 40,
     paddingRight: 40,
-    paddingTop: 60,
+    //paddingTop: 10,
     paddingBottom: 64,
     minHeight: "100vh",
     width: "100%",
-    height: "100%",
     backgroundColor: "#000",
     color: "#fff",
     boxSizing: "border-box",
@@ -224,7 +223,7 @@ const s = {
     paddingTop: 30,
   },
   heading: {
-    fontSize: 48,
+    fontSize: "clamp(28px, 5vw, 48px)",  /* responsive font size */
     fontWeight: 900,
     margin: "0 0 10px",
     letterSpacing: 2,
@@ -241,14 +240,17 @@ const s = {
     display: "flex",
     gap: 24,
     alignItems: "flex-start",
+    flexWrap: "wrap",         /* allows stacking */
   },
-  card: {
+   card: {
     backgroundColor: "#1a1a1a",
     border: "1px solid #2a2a2a",
     borderRadius: 14,
     padding: "28px 32px",
     flexShrink: 0,
-    width: 420,
+    width: "100%",            /* fluid instead of fixed 420px */
+    maxWidth: 420,            /* caps at 420px on large screens */
+    boxSizing: "border-box",
     fontFamily: "'lexend', sans-serif",
   },
   nav: {
@@ -315,9 +317,12 @@ const s = {
     padding: "6px 14px",
     fontFamily: "'lexend', sans-serif",
   },
+  
   logPanel: {
     flex: 1,
     minWidth: 0,
+    width: "100%",            /* full width when stacked */
+    boxSizing: "border-box",
   },
   logTitle: {
     fontSize: 11,

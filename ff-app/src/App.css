@@ -189,23 +189,31 @@ font-family: var(--primary-font);
   position: relative;
   z-index: 1;
 }
-
 .page {
   display: flex;
-  flex-direction: column;   /* stack vertically */
-  justify-content: flex-start; /* start at top */
-  align-items: stretch;  /* align LEFT */
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   gap: 20px;
   background-color: var(--primary-bg-color);
   font-family: var(--primary-font);
-  padding-top: 80px;
-  box-sizing: boarder-box;
-  margin-left: 20px;
+  padding-top: 20px;        /* reduced */
+  padding-left: 40px;       /* matches settings */
+  padding-right: 40px;      /* matches settings */
+  box-sizing: border-box;
+  margin-left: 0;
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
 }
 
+@media (max-width: 768px) {
+  .page {
+    padding-top: 16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
 
 
 
@@ -247,6 +255,11 @@ font-family: var(--primary-font);
 
 .App-link {
   color: #61dafb;
+}
+
+#root, .app, main {
+  padding-top: 60px;   /* match header height */
+  box-sizing: border-box;
 }
 
 

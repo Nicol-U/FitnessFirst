@@ -432,7 +432,7 @@ const s = {
   page: {
     paddingLeft: 40,
     paddingRight: 40,
-    paddingTop: 100,
+    paddingTop: 30,
     paddingBottom: 64,
     minHeight: "100vh",
     width: "100%",
@@ -481,7 +481,7 @@ const s = {
   },
   empty: { marginTop: 100, textAlign: "center" },
   emptyText: { fontSize: 18, color: "#444", marginBottom: 8 },
-  emptyHint: { fontSize: 14, color: "#333" },
+  emptyHint: { fontSize: 16, color: "#333" },
   planList: { display: "flex", flexDirection: "column", gap: 12 },
   planCard: {
     backgroundColor: "#1a1a1a",
@@ -587,7 +587,7 @@ const s = {
     border: "1px solid #2a2a2a",
     borderRadius: 8,
     color: "#fff",
-    fontSize: 14,
+    fontSize: 16,
     padding: "9px 12px",
     marginBottom: 12,
     outline: "none",

@@ -68,7 +68,9 @@ function newExercise() {
           type="text"
           value={planName}
           onChange={e => setPlanName(e.target.value)}
-          placeholder="Plan name..."
+          placeholder="Add qualitative data: energy 
+levels, soreness, specific 
+challenges..."
           style={{ ...styles.input, flex: 1 }}
         />
       </div>

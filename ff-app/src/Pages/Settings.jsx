@@ -70,19 +70,19 @@ const getTheme = (darkMode) => ({
 });
 
 const createStyles = (theme) => ({
-  page: {
+page: {
     backgroundColor: theme.pageBg,
     minHeight: "100vh",
     fontFamily: "'lexend', 'Arial Black', 'Arial', sans-serif",
     color: theme.text,
-    marginLeft: SIDEBAR_WIDTH,
     paddingLeft: "40px",
     paddingRight: "40px",
-    paddingTop: "40px",
+    //paddingTop: "80px",        /* accounts for fixed header */
     paddingBottom: "80px",
     boxSizing: "border-box",
+    width: "100%",
     transition: "background-color 0.2s ease, color 0.2s ease",
-  },
+},
   topRow: {
     display: "flex",
     alignItems: "flex-end",
@@ -105,22 +105,22 @@ const createStyles = (theme) => ({
     marginBottom: "4px",
   },
   heading: {
-    fontSize: 48,
+    fontSize: "clamp(28px, 5vw, 48px)",   /* responsive */
     fontWeight: 900,
     letterSpacing: "-0.2px",
     lineHeight: 1,
     color: theme.text,
     margin: 0,
     textTransform: "uppercase",
-  },
-  binaryWatermark: {
-    fontSize: "48px",
+},
+binaryWatermark: {
+    fontSize: "clamp(24px, 4vw, 48px)",   /* responsive */
     fontWeight: 900,
     color: theme.watermark,
     letterSpacing: "4px",
     userSelect: "none",
     lineHeight: 1,
-  },
+},
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
@@ -174,8 +174,8 @@ const createStyles = (theme) => ({
     color: theme.muted,
     marginBottom: "8px",
   },
-  fieldInput: {
-    fontSize: "20px",
+fieldInput: {
+    fontSize: "16px",          /* was 20px but number inputs need exactly 16px minimum */
     fontWeight: 700,
     color: theme.text,
     background: "transparent",
@@ -186,7 +186,7 @@ const createStyles = (theme) => ({
     outline: "none",
     fontFamily: "inherit",
     minWidth: 0,
-  },
+},
   securityNote: {
     fontSize: "11px",
     color: theme.muted,
@@ -260,12 +260,12 @@ const createStyles = (theme) => ({
   selectWrapper: {
     position: "relative",
   },
-  selectField: {
+selectField: {
     background: theme.selectBg,
     border: "none",
     borderBottom: `1px solid ${theme.inputBorder}`,
     color: theme.text,
-    fontSize: "16px",
+    fontSize: "16px",          /* was 16px, keep it */
     fontWeight: 700,
     fontFamily: "inherit",
     width: "100%",
@@ -275,7 +275,7 @@ const createStyles = (theme) => ({
     cursor: "pointer",
     appearance: "none",
     WebkitAppearance: "none",
-  },
+},
   selectArrow: {
     position: "absolute",
     right: "4px",

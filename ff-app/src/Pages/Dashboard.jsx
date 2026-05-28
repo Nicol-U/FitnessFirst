@@ -51,49 +51,67 @@ export function Dashboard() {
   }, [showPopUp]);
 
   return (
-    <div className="page">
+  <div className="page" style={{
+    paddingLeft: '40px',
+    paddingRight: '40px',
+    paddingTop: '20px',    /* reduced top padding */
+  }}>
+{/* Streak badge */}
+<div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+  <div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '55px',
+    width: '100%',
+    maxWidth: '320px',
+    fontSize: 'clamp(14px, 4vw, 24px)',
+    background: '#191A17',
+    borderRadius: '100px',
+    color: '#F6FFC0',
+    gap: '10px',
+  }}>
+    <LocalFireDepartmentIcon sx={{ fontSize: 35 }} />
+    <p style={{ margin: 0 }}>{dayCount} DAY STREAK</p>
+  </div>
+</div>
 
-      {/* Streak badge */}
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-        <div style={{
-          display: 'flex', justifyContent: 'center', alignItems: 'center',
-          height: '55px', width: '90%', maxWidth: '320px',
-          fontSize: 'clamp(16px, 4vw, 24px)', background: '#191A17',
-          borderRadius: '100px', color: '#F6FFC0', gap: '10px',
-        }}>
-          <LocalFireDepartmentIcon sx={{ fontSize: 35 }} />
-          <p>{dayCount} DAY STREAK</p>
-        </div>
-      </div>
+{/* Header row */}
+<div style={{
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  flexWrap: 'wrap',
+  gap: '15px',
+  width: '100%',           /* was 90% with marginLeft */
+  maxWidth: '1100px',
+  margin: '0 auto',        /* center instead of marginLeft: 20px */
+  boxSizing: 'border-box',
+}}>
+  <h1 style={{ fontSize: 'clamp(18px, 4vw, 28px)', fontWeight: 900, margin: 0 }}>
+    <span style={{ color: '#fff' }}>TARGET MILESTONES</span>
+  </h1>
+  <GreenButton onClick={() => setShowPopUp(true)}>+ Add Goal</GreenButton>
+  {showPopUp && (
+    <AddGoalPopup
+      ref={popupRef}
+      onClose={() => setShowPopUp(false)}
+      goals={goals}
+      setGoals={setGoals}
+    />
+  )}
+</div>
 
-      {/* Header row */}
-      <div style={{
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        flexWrap: 'wrap', gap: '15px', width: '90%', maxWidth: '1100px',
-        margin: '10px 10px', marginLeft: `20px`
-      }}>
-        <h1 className="heading" style={{ fontSize: 24, fontWeight: 900 }}>
-          <span style={{ color: '#fff' }}>TARGET MILESTONES</span>
-        </h1>
-
-        <GreenButton onClick={() => setShowPopUp(true)}>+ Add Goal</GreenButton>
-
-        {/* Pass goals + setGoals so popup can update shared state */}
-        {showPopUp && (
-          <AddGoalPopup
-            ref={popupRef}
-            onClose={() => setShowPopUp(false)}
-            goals={goals}
-            setGoals={setGoals}
-          />
-        )}
-      </div>
-
-      {/* Goals + links */}
-      <div style={{
-        width: '90%', maxWidth: '1100px', margin: '0 auto',
-        display: 'flex', flexDirection: 'column', gap: '15px',
-      }}>
+{/* Goals + links */}
+<div style={{
+  width: '100%',
+  maxWidth: '1100px',
+  margin: '0 auto',        /* center instead of 0 auto with 90% width */
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '15px',
+  boxSizing: 'border-box',
+}}>
 
         {/*  Pass goals + setGoals so toggle/delete update shared state */}
         <RadioToggle goals={goals} setGoals={setGoals} />
@@ -236,7 +254,8 @@ function RadioToggle({ goals, setGoals }) {
                 {goal.description}
               </h3>
             </div>
-                      {/* Delete button now works */}
+          
+          {/* Delete button now works */}
           <button
             onClick={() => deleteGoal(goal.id)}
             style={deleteButtonStyle}
@@ -252,7 +271,7 @@ function RadioToggle({ goals, setGoals }) {
   );
 }
 
-// ─── Static Data ─────────────────────────────────────────────────────────────
+// ─── Data Info for links ─────────────────────────────────────────────────────────────
 
 const LinksData = [
   {
