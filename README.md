@@ -1,11 +1,14 @@
 # FitnessFirst
---   TEST 1 2 33
+
+-- TEST 1 2 33
 Inf 124 app project focused around creating a fitness app.
 
 might need to install:
-    react
-    mui materials
+react
+mui materials
 
-to run:
-    cd ff-app
-    npm start
+to run the app:
+cd ff-app
+npm start
+
+To run the server:
