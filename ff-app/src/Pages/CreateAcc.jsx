@@ -11,8 +11,27 @@ export function CreateAcc() {
   const [birthdate, setBirth] = useState("");
   const navigate = useNavigate();
 
-  const handleCreateAccount = () => {
-    navigate("/");
+  const handleCreateAccount = async () => {
+    if (!fullName || !username || !email || !password) {
+      alert("Please fill in all required fields");
+      return;
+    }
+    try {
+      const res = await fetch("http://localhost:3001/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ fullName, username, email, password, birthdate }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Registration failed");
+        return;
+      }
+      navigate("/");
+    } catch {
+      alert("Could not connect to server");
+    }
   };
 
   return (

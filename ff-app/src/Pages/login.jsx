@@ -8,12 +8,22 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (username === "arivera_88" && password === "12345678") {
-      localStorage.setItem("isLoggedIn", "true");
+  const handleLogin = async () => {
+    try {
+      const res = await fetch("http://localhost:3001/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Invalid username or password");
+        return;
+      }
       navigate("/");
-    } else {
-      alert("Invalid username or password");
+    } catch {
+      alert("Could not connect to server");
     }
   };
 
