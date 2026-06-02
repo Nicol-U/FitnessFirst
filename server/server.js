@@ -185,33 +185,48 @@ app.post('/goals/add', requireAuth, async (req, res) => {
   //console.log('title:', title, 'description:', description);
 
   try {
-    console.log("Adding goal for user", req.user.id, title, description);
+    //console.log("Adding goal for user", req.user.id, title, description);
     const { rows } = await db.query(
       'INSERT INTO goals (user_id, title, description) VALUES ($1, $2, $3) RETURNING *',
       [req.user.id, title, description]
     );
     res.status(201).json({ goal: rows[0] });
-    console.log("added goal for user", res.rows);
+    // console.log("added goal for user", rows);
   } catch (err) {
 
     res.status(500).json({ error: err.message });
   }
 });
 
-app.post('/goals/:id/complete', requireAuth, async (req, res) => {
-  const { completed } = req.body;
+app.patch('/goals/:id/complete', requireAuth, async (req, res) => {
+  const { is_completed } = req.body;
+
   try {
+    // console.log("check input", is_completed);
     const { rows } = await db.query(
-      'UPDATE GOALS SET completed = $1 WHERE id = $2 RETURNING *',
-      [completed, req.user.id]
+      'UPDATE goals SET is_completed = $1 WHERE id = $2 and user_id = $3 RETURNING *',
+      [is_completed, req.params.id, req.user.id]
     );
     res.status(201).json({ goal: rows[0] });
-    console.log("added goal for user", res.rows);
+    // console.log(" goal changed for user", rows);
   } catch (err) {
 
     res.status(500).json({ error: err.message });
   }
 });
 
-app.get(''
-)
+app.delete('/goals/:id', requireAuth, async (req, res) => {
+  try {
+    const { rows } = await db.query(
+      'DELETE FROM goals WHERE id = $1 and user_id = $2',
+      [req.params.id, req.user.id]
+    );
+
+    console.log("goal gone", rows);
+  }
+
+  catch(err){
+    res.status(500).json({ error: err.message});
+    console.error("Error deleting goal:", err);
+  }
+});

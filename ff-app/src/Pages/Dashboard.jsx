@@ -227,19 +227,48 @@ const AddGoalPopup = forwardRef(({ onClose, goals, setGoals }, ref) => {
 // Receives goals + setGoals as props — no local state needed
 function RadioToggle({ goals, setGoals }) {
 
-  const toggle = (id) => {
-    const updated = goals.map((g) =>
-      g.id === id ? { ...g, completed: !g.completed } : g
-    );
-    setGoals(updated);
-    localStorage.setItem('goals', JSON.stringify(updated));
-  };
+  const toggle = async (id) => {
+    const updated = goals.find((g) => g.id === id);
+    console.log("check input in front", updated.is_completed);
+
+    try {
+
+      const res = await fetch(`http://localhost:3001/goals/${id}/complete`, {
+        method: 'PATCH',
+        headers: { 'Content-Type' : 'application/json'},
+        credentials: 'include', 
+        body: JSON.stringify({ is_completed: !updated.is_completed }),
+      });
+
+      const data = await res.json();
+      console.log("toggle response:", data);
+      setGoals(prev => prev.map(g => g.id === id ? data.goal : g));
+
+      }
+      catch (err){
+        alert("Failed to update goal status");
+      }
+    
+    };
 
   // deleteGoal is now defined and wired up
-  const deleteGoal = (id) => {
-    const updated = goals.filter((g) => g.id !== id);
-    setGoals(updated);
-    localStorage.setItem('goals', JSON.stringify(updated));
+  const deleteGoal = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:3001/goals/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to delete goal");
+      }
+
+      const updated = goals.filter((g) => g.id !== id);
+      setGoals(updated);
+      localStorage.setItem('goals', JSON.stringify(updated));
+    } catch (err) {
+      alert("Failed to delete goal");
+    }
   };
 
   return (
@@ -254,23 +283,23 @@ function RadioToggle({ goals, setGoals }) {
             <input
               style={{ display: 'none' }}
               type="checkbox"
-              checked={goal.completed}
+              checked={goal.is_completed}
               onChange={() => toggle(goal.id)}
             />
 
             <span style={{
               ...styles.radio,
-              backgroundColor: goal.completed ? '#F6FFC0' : 'black',
-              borderColor:     goal.completed ? '#F6FFC0' : '#555',
+              backgroundColor: goal.is_completed ? '#F6FFC0' : 'black',
+              borderColor:     goal.is_completed ? '#F6FFC0' : '#555',
             }}>
-              {goal.completed && <span style={styles.checkmark}>✓</span>}
+              {goal.is_completed && <span style={styles.checkmark}>✓</span>}
             </span>
 
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
-              <h2 style={{ margin: 0, textDecoration: goal.completed ? 'line-through' : 'none' }}>
+              <h2 style={{ margin: 0, textDecoration: goal.is_completed ? 'line-through' : 'none' }}>
                 {goal.title}
               </h2>
-              <h3 style={{ color: '#ADAAAA', margin: 2, textDecoration: goal.completed ? 'line-through' : 'none' }}>
+              <h3 style={{ color: '#ADAAAA', margin: 2, textDecoration: goal.is_completed ? 'line-through' : 'none' }}>
                 {goal.description}
               </h3>
             </div>
