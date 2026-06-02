@@ -32,10 +32,15 @@ export function Dashboard() {
   const [showPopUp, setShowPopUp] = useState(false);
   const [dayCount]                = useState(checkIfNewDay);
 
-  // Single source of truth for goals — shared with popup and toggle
-  const [goals, setGoals] = useState(
-    () => JSON.parse(localStorage.getItem('goals')) || []
-  );
+  const [goals, setGoals] = useState([]);
+
+useEffect(() => {
+  fetch('http://localhost:3001/goals', { credentials: 'include' })
+    .then(res => res.json())
+    .then(data => setGoals(data.goals))
+    .catch(err => console.error(err));
+}, []);
+
 
   const location = useLocation();
   const popupRef = useRef(null);
@@ -153,21 +158,36 @@ const AddGoalPopup = forwardRef(({ onClose, goals, setGoals }, ref) => {
   const [description,        setDescription]        = useState('');
   const [addingDescription,  setAddingDescription]  = useState(false);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!addingDescription) {
       if (title.trim() === '') return;
       setAddingDescription(true);
       return;
     }
 
-    const newGoal = { id: Date.now(), title, description, completed: false };
+    try{
+      console.log('sending:', { title, description });
+      const res = await fetch('http://localhost:3001/goals/add/', {
+        method: 'POST',
+        headers: { 'Content-Type' : 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ title, description }),
+      });
+      const data = await res.json();
 
-    // Derive next state from current, persist, then lift up
-    const updated = [...goals, newGoal];
-    localStorage.setItem('goals', JSON.stringify(updated));
-    setGoals(updated);   // ← causes RadioToggle to re-render immediately
+      if (!res.ok) {
+        alert(data.error || "Registration failed");
+        return;
+      }
 
-    onClose();
+      setGoals(prev => [...prev, data.goal]);
+      onClose();
+
+    }
+
+    catch(err){
+      console.error(err);
+    };
   };
 
   return (

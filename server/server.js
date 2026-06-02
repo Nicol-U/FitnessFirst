@@ -164,3 +164,54 @@ app.get("/health", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+
+// ── Goal stuff IDK ─────────────────────────────────────────────────────────────
+
+app.get('/goals', requireAuth, async (req, res) => {
+  try {
+    const { rows } = await db.query('SELECT * FROM goals WHERE user_id = $1', [req.user.id]);
+    console.log('goals fetched:', rows);
+    res.json({ goals: rows });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/goals/add', requireAuth, async (req, res) => {
+  //console.log('raw body:', req.body);
+  //console.log('user:', req.user);
+  const { title, description } = req.body;
+  //console.log('title:', title, 'description:', description);
+
+  try {
+    console.log("Adding goal for user", req.user.id, title, description);
+    const { rows } = await db.query(
+      'INSERT INTO goals (user_id, title, description) VALUES ($1, $2, $3) RETURNING *',
+      [req.user.id, title, description]
+    );
+    res.status(201).json({ goal: rows[0] });
+    console.log("added goal for user", res.rows);
+  } catch (err) {
+
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/goals/:id/complete', requireAuth, async (req, res) => {
+  const { completed } = req.body;
+  try {
+    const { rows } = await db.query(
+      'UPDATE GOALS SET completed = $1 WHERE id = $2 RETURNING *',
+      [completed, req.user.id]
+    );
+    res.status(201).json({ goal: rows[0] });
+    console.log("added goal for user", res.rows);
+  } catch (err) {
+
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get(''
+)
