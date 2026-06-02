@@ -10,13 +10,6 @@ const passport = require("./src/auth");
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Add reset token columns if they don't exist yet
-db.query(`
-  ALTER TABLE users
-  ADD COLUMN IF NOT EXISTS reset_token VARCHAR(255),
-  ADD COLUMN IF NOT EXISTS reset_token_expires TIMESTAMPTZ
-`).catch((err) => console.error("Migration error:", err.message));
-
 app.use(
   cors({
     origin: process.env.CLIENT_URL || "http://localhost:3000",
@@ -94,18 +87,21 @@ app.post("/auth/forgot-password", async (req, res) => {
   if (!email) return res.status(400).json({ error: "Email is required" });
 
   try {
-    const { rows } = await db.query("SELECT id FROM users WHERE email = $1", [email]);
+    const { rows } = await db.query("SELECT id FROM users WHERE email = $1", [
+      email,
+    ]);
     if (rows.length === 0) {
-      // Return success anyway to avoid revealing which emails exist
-      return res.json({ message: "If that email exists, a reset link has been sent." });
+      return res.json({
+        message: "If that email exists, a reset link has been sent.",
+      });
     }
 
     const token = crypto.randomBytes(32).toString("hex");
-    const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    const expires = new Date(Date.now() + 60 * 60 * 1000);
 
     await db.query(
       "UPDATE users SET reset_token = $1, reset_token_expires = $2 WHERE id = $3",
-      [token, expires, rows[0].id]
+      [token, expires, rows[0].id],
     );
 
     const resetUrl = `${process.env.CLIENT_URL || "http://localhost:3000"}/#/reset-password?token=${token}`;
@@ -121,20 +117,24 @@ app.post("/auth/forgot-password", async (req, res) => {
 
 app.post("/auth/reset-password", async (req, res) => {
   const { token, password } = req.body;
-  if (!token || !password) return res.status(400).json({ error: "Token and password are required" });
+  if (!token || !password)
+    return res.status(400).json({ error: "Token and password are required" });
 
   try {
     const { rows } = await db.query(
       "SELECT id FROM users WHERE reset_token = $1 AND reset_token_expires > NOW()",
-      [token]
+      [token],
     );
 
-    if (rows.length === 0) return res.status(400).json({ error: "Reset link is invalid or has expired" });
+    if (rows.length === 0)
+      return res
+        .status(400)
+        .json({ error: "Reset link is invalid or has expired" });
 
     const hash = await bcrypt.hash(password, 12);
     await db.query(
       "UPDATE users SET password_hash = $1, reset_token = NULL, reset_token_expires = NULL WHERE id = $2",
-      [hash, rows[0].id]
+      [hash, rows[0].id],
     );
 
     res.json({ message: "Password updated successfully" });
