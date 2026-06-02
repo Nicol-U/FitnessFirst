@@ -9,6 +9,8 @@ import { LW } from './Pages/LW';
 import { History } from './Pages/History';
 import { Settings } from './Pages/Settings';
 import { CreateAcc } from './Pages/CreateAcc';
+import { ForgotPassword } from './Pages/ForgotPassword';
+import { ResetPassword } from './Pages/ResetPassword';
 
 function ProtectedLayout() {
   const [authChecked, setAuthChecked] = useState(false);
@@ -48,6 +50,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/createacc" element={<CreateAcc />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/*" element={<ProtectedLayout />} />
       </Routes>
     </Router>

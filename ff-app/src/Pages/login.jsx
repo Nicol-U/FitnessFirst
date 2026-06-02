@@ -59,7 +59,7 @@ export function Login() {
         <div style={styles.fieldGroup}>
           <div style={styles.labelRow}>
             <label style={styles.label}>PASSWORD</label>
-            <span style={styles.forgot}>FORGOT?</span>
+            <Link to="/forgot-password" style={styles.forgot}>FORGOT?</Link>
           </div>
           <div style={styles.inputWrapper}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: "12px", flexShrink: 0 }}>

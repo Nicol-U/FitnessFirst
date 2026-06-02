@@ -1,58 +1,78 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const session = require('express-session');
-const bcrypt = require('bcrypt');
-const db = require('./src/db');
-const passport = require('./src/auth');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const session = require("express-session");
+const bcrypt = require("bcrypt");
+const crypto = require("crypto");
+const db = require("./src/db");
+const passport = require("./src/auth");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
-  credentials: true,
-}));
+// Add reset token columns if they don't exist yet
+db.query(`
+  ALTER TABLE users
+  ADD COLUMN IF NOT EXISTS reset_token VARCHAR(255),
+  ADD COLUMN IF NOT EXISTS reset_token_expires TIMESTAMPTZ
+`).catch((err) => console.error("Migration error:", err.message));
+
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'dev-secret-change-me',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { httpOnly: true, sameSite: 'lax', maxAge: 7 * 24 * 60 * 60 * 1000 },
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "dev-secret-change-me",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    },
+  }),
+);
 app.use(passport.initialize());
 app.use(passport.session());
 
-// ── Auth routes ──────────────────────────────────────────────────────────────
+// Auth routes
 
-app.post('/auth/register', async (req, res) => {
+app.post("/auth/register", async (req, res) => {
   const { fullName, username, email, password, birthdate } = req.body;
   if (!fullName || !username || !email || !password) {
-    return res.status(400).json({ error: 'All fields are required' });
+    return res.status(400).json({ error: "All fields are required" });
   }
   try {
     const hash = await bcrypt.hash(password, 12);
     const { rows } = await db.query(
-      'INSERT INTO users (full_name, username, email, password_hash, birthdate) VALUES ($1, $2, $3, $4, $5) RETURNING id, full_name, username, email',
-      [fullName, username, email, hash, birthdate || null]
+      "INSERT INTO users (full_name, username, email, password_hash, birthdate) VALUES ($1, $2, $3, $4, $5) RETURNING id, full_name, username, email",
+      [fullName, username, email, hash, birthdate || null],
     );
     req.login(rows[0], (err) => {
-      if (err) return res.status(500).json({ error: 'Login after register failed' });
+      if (err)
+        return res.status(500).json({ error: "Login after register failed" });
       res.status(201).json({ user: rows[0] });
     });
   } catch (err) {
-    if (err.code === '23505') {
-      return res.status(409).json({ error: 'Username or email already taken' });
+    if (err.code === "23505") {
+      return res.status(409).json({ error: "Username or email already taken" });
     }
     res.status(500).json({ error: err.message });
   }
 });
 
-app.post('/auth/login', (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
+app.post("/auth/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
     if (err) return next(err);
-    if (!user) return res.status(401).json({ error: info?.message || 'Invalid credentials' });
+    if (!user)
+      return res
+        .status(401)
+        .json({ error: info?.message || "Invalid credentials" });
     req.login(user, (err) => {
       if (err) return next(err);
       res.json({ user });
@@ -60,28 +80,82 @@ app.post('/auth/login', (req, res, next) => {
   })(req, res, next);
 });
 
-app.post('/auth/logout', (req, res) => {
-  req.logout(() => res.json({ message: 'Logged out' }));
+app.post("/auth/logout", (req, res) => {
+  req.logout(() => res.json({ message: "Logged out" }));
 });
 
-app.get('/auth/me', (req, res) => {
-  if (!req.user) return res.status(401).json({ error: 'Not authenticated' });
+app.get("/auth/me", (req, res) => {
+  if (!req.user) return res.status(401).json({ error: "Not authenticated" });
   res.json({ user: req.user });
 });
 
-// ── Middleware for protected routes ──────────────────────────────────────────
+app.post("/auth/forgot-password", async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: "Email is required" });
+
+  try {
+    const { rows } = await db.query("SELECT id FROM users WHERE email = $1", [email]);
+    if (rows.length === 0) {
+      // Return success anyway to avoid revealing which emails exist
+      return res.json({ message: "If that email exists, a reset link has been sent." });
+    }
+
+    const token = crypto.randomBytes(32).toString("hex");
+    const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await db.query(
+      "UPDATE users SET reset_token = $1, reset_token_expires = $2 WHERE id = $3",
+      [token, expires, rows[0].id]
+    );
+
+    const resetUrl = `${process.env.CLIENT_URL || "http://localhost:3000"}/#/reset-password?token=${token}`;
+    console.log("\n--- PASSWORD RESET LINK (dev mode) ---");
+    console.log(resetUrl);
+    console.log("--------------------------------------\n");
+
+    res.json({ message: "If that email exists, a reset link has been sent." });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post("/auth/reset-password", async (req, res) => {
+  const { token, password } = req.body;
+  if (!token || !password) return res.status(400).json({ error: "Token and password are required" });
+
+  try {
+    const { rows } = await db.query(
+      "SELECT id FROM users WHERE reset_token = $1 AND reset_token_expires > NOW()",
+      [token]
+    );
+
+    if (rows.length === 0) return res.status(400).json({ error: "Reset link is invalid or has expired" });
+
+    const hash = await bcrypt.hash(password, 12);
+    await db.query(
+      "UPDATE users SET password_hash = $1, reset_token = NULL, reset_token_expires = NULL WHERE id = $2",
+      [hash, rows[0].id]
+    );
+
+    res.json({ message: "Password updated successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Middleware for protected routes
 
 function requireAuth(req, res, next) {
   if (req.isAuthenticated()) return next();
-  res.status(401).json({ error: 'Not authenticated' });
+  res.status(401).json({ error: "Not authenticated" });
 }
 
-// ── Health check ─────────────────────────────────────────────────────────────
+//Health check
 
-app.get('/health', async (req, res) => {
+app.get("/health", async (req, res) => {
   try {
-    await db.query('SELECT 1');
-    res.json({ status: 'connected' });
+    await db.query("SELECT 1");
+    res.json({ status: "connected" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
