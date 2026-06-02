@@ -3,12 +3,25 @@
 -- TEST 1 2 33
 Inf 124 app project focused around creating a fitness app.
 
-might need to install:
+## Might need to install:
+
 react
 mui materials
 
-to run the app:
+### 1. Backend
+
+cd server
+npm install
+
+Place a `.env` file inside `server/`:
+
+npm run dev  
+Server runs on `http://localhost:3001`.
+
+### 2. Frontend
+
 cd ff-app
+npm install
 npm start
 
-To run the server:
+App runs on `http://localhost:3000`.
