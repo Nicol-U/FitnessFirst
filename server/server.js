@@ -293,6 +293,50 @@ const getRoutes = [
     SQLparams: (req) => [req.user.id],
     JGetRow: 'goals', 
   },
+
+{
+    name: '/workoutsessions/dates',
+    SQL: `
+      SELECT DISTINCT DATE(date) AS date 
+      FROM workout_sessions 
+      WHERE user_id = $1 
+      ORDER BY date DESC
+    `,
+    SQLparams: (req) => [req.user.id],
+    JGetRow: 'dates',
+  },
+  {
+  name: '/workoutsessions',
+  SQL: `
+    SELECT
+      ws.id,
+      ws.user_id,
+      ws.date,
+      ws.created_at,
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id',          se.id,
+            'name',        se.name,
+            'sets',        se.sets,
+            'reps',        se.reps,
+            'load',        se.load,
+            'order_index', se.order_index
+          )
+          ORDER BY se.order_index
+        ) FILTER (WHERE se.id IS NOT NULL),
+        '[]'
+      ) AS exercises
+    FROM workout_sessions ws
+    LEFT JOIN session_exercises se ON se.session_id = ws.id
+    WHERE ws.user_id = $1
+      AND ($2::date IS NULL OR ws.date = $2::date)
+    GROUP BY ws.id, ws.user_id, ws.date, ws.created_at
+    ORDER BY ws.created_at DESC
+  `,
+  SQLparams: (req) => [req.user.id, req.query.date || null],
+  JGetRow: 'sessions',
+},
 ];
 
 
@@ -376,7 +420,25 @@ const PatchElem = [
     SQLparams: (req) => [req.body.name, req.body.sets, req.body.reps, req.params.id, req.body.Plan_id],
     JGetRow: 'exercise',
 
-  }
+  },
+
+  {
+    name: '/user/streak',
+    SQL: `UPDATE users 
+   SET 
+     last_logged_in = CURRENT_DATE,
+     day_tally = CASE 
+       WHEN last_logged_in = CURRENT_DATE - INTERVAL '1 day' THEN day_tally + 1
+       WHEN last_logged_in = CURRENT_DATE THEN day_tally
+       ELSE 1
+     END
+   WHERE id = $1
+   RETURNING day_tally`,
+  SQLparams: (req) => [req.user.id],
+      JGetRow: 'streak',
+
+  },
+
 ];
 
 getRoutes.forEach(({ name, SQL, SQLparams, JGetRow }) => {

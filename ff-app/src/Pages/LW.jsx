@@ -111,14 +111,14 @@ async function saveDBArray(key, value){
     const data = await res.json();
     const planId = data.Sesh[0].id;   //  grab id from { plan: [{ id: 21 }] }
 
-    // step 2 — save each exercise using planId
+    // step 2: save each exercise using planId
     for (const exercise of value.exercises) {
       let exRes = await fetch('http://localhost:3001/LW/add/EX', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          plan_id: planId,        // ← connect to the plan
+          plan_id: planId,        // join with plan
           name: exercise.name,
           sets: exercise.sets,
           reps: exercise.reps,
@@ -257,6 +257,7 @@ const quickLog = {
     resetQuickLogFields();
     setLogDateTime(getDateTimeLocalNow());
     setStatusMessage(`${exerciseName} was logged for ${date}.`);
+    
     // New might break something 
   
     saveDBArray(WORKOUT_LOGS_KEY, quickLog)

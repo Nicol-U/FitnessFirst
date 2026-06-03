@@ -7,22 +7,22 @@ import EventNoteIcon from '@mui/icons-material/EventNote';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
-function checkIfNewDay() {
-  const cntDay   = JSON.parse(localStorage.getItem('DayCount')) || 0;
-  const savedDay = JSON.parse(localStorage.getItem('NextDay'))  || null;
-  const currentDay = new Date().getDate();
-  const nextDay    = (currentDay + 1) % 31;
+async function checkIfNewDay() {
+  try {
+    const res = await fetch('http://localhost:3001/user/streak', {
+      method: 'PATCH',    // put get by accident took forever 
+      credentials: 'include',
+    });
 
-  if (currentDay < savedDay) {
-    return cntDay;
-  } else if (currentDay === savedDay && savedDay !== null && cntDay !== 0) {
-    localStorage.setItem('DayCount', JSON.stringify(cntDay + 1));
-    localStorage.setItem('NextDay',  JSON.stringify(nextDay));
-    return cntDay + 1;
-  } else {
-    localStorage.setItem('NextDay',  JSON.stringify(nextDay));
-    localStorage.setItem('DayCount', JSON.stringify(1));
-    return 1;
+    if (!res.ok) throw new Error('Failed to update streak');
+
+    const data = await res.json();
+    console.log('streak data:', data);  // check shape
+    return data.streak[0].day_tally;
+
+  } catch (err) {
+    console.error(err);
+    return 0;
   }
 }
 
@@ -30,17 +30,23 @@ function checkIfNewDay() {
 
 export function Dashboard() {
   const [showPopUp, setShowPopUp] = useState(false);
-  const [dayCount]                = useState(checkIfNewDay);
+  const [dayCount, setStreak] = useState(0);
+
+  useEffect(() => {
+    checkIfNewDay().then(streak => setStreak(streak));
+  }, []);  
 
   const [goals, setGoals] = useState([]);
 
-// fix 1 — fetch goals correctly with fallback
+// fix 1: fetch goals correctly with fallback
 useEffect(() => {
   fetch('http://localhost:3001/goals', { credentials: 'include' })
     .then(res => res.json())
     .then(data => setGoals(data.goals || []))
     .catch(err => console.error(err));
 }, []);
+
+ 
 
 
   const location = useLocation();
@@ -60,7 +66,7 @@ useEffect(() => {
   <div className="page" style={{
     paddingLeft: '40px',
     paddingRight: '40px',
-    paddingTop: '20px',    /* reduced top padding */
+    paddingTop: '20px',    
   }}>
 {/* Streak badge */}
 <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -78,7 +84,7 @@ useEffect(() => {
     gap: '10px',
   }}>
     <LocalFireDepartmentIcon sx={{ fontSize: 35 }} />
-    <p style={{ margin: 0 }}>{dayCount} DAY STREAK</p>
+    <p style={{ margin: 0 }}>{dayCount } DAY STREAK</p>
   </div>
 </div>
 
@@ -112,7 +118,7 @@ useEffect(() => {
 <div style={{
   width: '100%',
   maxWidth: '1100px',
-  margin: '0 auto',        /* center instead of 0 auto with 90% width */
+  margin: '0 auto',       
   display: 'flex',
   flexDirection: 'column',
   gap: '15px',
@@ -182,7 +188,8 @@ const AddGoalPopup = forwardRef(({ onClose, goals, setGoals }, ref) => {
 
 const updated = await fetch('http://localhost:3001/goals', { credentials: 'include' });
     const updatedData = await updated.json();
-    setGoals(updatedData.goals || []);      onClose();
+    setGoals(updatedData.goals || []);
+    onClose();
 
     }
 
@@ -225,7 +232,7 @@ const updated = await fetch('http://localhost:3001/goals', { credentials: 'inclu
 
 // ─── Goal Toggle List ────────────────────────────────────────────────────────
 
-// Receives goals + setGoals as props — no local state needed
+// Receives goals + setGoals 
 function RadioToggle({ goals, setGoals }) {
 
   const toggle = async (id) => {
@@ -252,7 +259,7 @@ function RadioToggle({ goals, setGoals }) {
     
     };
 
-    const deleteGoal = async (id) => {
+const deleteGoal = async (id) => {
   try {
     const res = await fetch(`http://localhost:3001/goals/${id}`, {
       method: 'DELETE',
@@ -261,7 +268,7 @@ function RadioToggle({ goals, setGoals }) {
 
     if (!res.ok) throw new Error("Failed to delete goal");
 
-    setGoals(prev => prev.filter(p => p.id !== id));  // only this line needed
+    setGoals(prev => prev.filter(p => p.id !== id)); 
 
   } catch (err) {
     alert("Failed to delete goal");
@@ -293,7 +300,7 @@ function RadioToggle({ goals, setGoals }) {
         userSelect: 'none',
         color: '#FFFF',
         fontSize: 12,
-        flex: 1,           // takes up remaining space
+        flex: 1,           // takes up rest of space
         flexWrap: 'wrap',
       }}>
         <input

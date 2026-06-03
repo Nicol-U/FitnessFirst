@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
@@ -35,26 +35,160 @@ function formatDisplayDate(dateStr) {
   return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
 }
 
+function DayBanner({ log, selectedDate }) {
+  if (!log || log.length === 0) return null;
+
+  const totalSessions = log.length;
+  const totalExercises = log.reduce((acc, session) => 
+    acc + (session.exercises?.length || 0), 0
+  );
+  const totalSets = log.reduce((acc, session) =>
+    acc + (session.exercises?.reduce((a, ex) => a + (Number(ex.sets) || 0), 0) || 0), 0
+  );
+
+  // bar graph data
+  const bars = [
+    { label: 'Sessions', value: totalSessions, max: 5,  color: '#DFFF00' },
+    { label: 'Exercises', value: totalExercises, max: 20, color: '#0891b2' },
+    { label: 'Total Sets', value: totalSets, max: 50, color: '#9333ea' },
+  ];
+
+  return (
+    <div style={{
+      backgroundColor: '#1a1a1a',
+      border: '1px solid #2a2a2a',
+      borderRadius: 12,
+      padding: '16px 20px',
+      marginBottom: 16,
+    }}>
+      {/* title */}
+      <p style={{
+        fontSize: 11,
+        color: '#555',
+        textTransform: 'uppercase',
+        letterSpacing: 0.8,
+        margin: '0 0 14px',
+      }}>
+        {selectedDate ? formatDisplayDate(selectedDate) : 'All Time'} — Summary
+      </p>
+
+      {/* stat pills */}
+      <div style={{
+        display: 'flex',
+        gap: 12,
+        marginBottom: 16,
+        flexWrap: 'wrap',
+      }}>
+        {[
+          { label: 'Sessions',  value: totalSessions },
+          { label: 'Exercises', value: totalExercises },
+          { label: 'Sets',      value: totalSets },
+        ].map(({ label, value }) => (
+          <div key={label} style={{
+            backgroundColor: '#212020',
+            border: '1px solid #2a2a2a',
+            borderRadius: 8,
+            padding: '8px 14px',
+            textAlign: 'center',
+          }}>
+            <p style={{ margin: 0, fontSize: 22, fontWeight: 900, color: '#DFFF00' }}>{value}</p>
+            <p style={{ margin: 0, fontSize: 10, color: '#555', textTransform: 'uppercase', letterSpacing: 0.8 }}>{label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* bar graph */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {bars.map(({ label, value, max, color }) => {
+          const pct = Math.min((value / max) * 100, 100);
+          return (
+            <div key={label}>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginBottom: 4,
+              }}>
+                <span style={{ fontSize: 11, color: '#888', textTransform: 'uppercase', letterSpacing: 0.6 }}>
+                  {label}
+                </span>
+                <span style={{ fontSize: 11, color: '#fff', fontWeight: 700 }}>
+                  {value}
+                </span>
+              </div>
+              {/* bar track */}
+              <div style={{
+                height: 6,
+                backgroundColor: '#2a2a2a',
+                borderRadius: 4,
+                overflow: 'hidden',
+              }}>
+                {/* fill */}
+                <div style={{
+                  height: '100%',
+                  width: `${pct}%`,
+                  backgroundColor: color,
+                  borderRadius: 4,
+                  transition: 'width 0.4s ease',
+                }} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function History() {
   const today = new Date();
-  const [viewYear,      setViewYear]      = useState(today.getFullYear());
-  const [viewMonth,     setViewMonth]     = useState(today.getMonth());
-  const [selectedDate,  setSelectedDate]  = useState(null);
+  const [viewYear,     setViewYear]     = useState(today.getFullYear());
+  const [viewMonth,    setViewMonth]    = useState(today.getMonth());
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [log,          setLog]          = useState([]);
+  const [logDates,     setLogDates]     = useState(new Set());
+  const [loading,      setLoading]      = useState(false);
 
-  const log = (() => {
-    try { return JSON.parse(localStorage.getItem("workoutLog")) || []; }
-    catch { return []; }
-  })();
 
-  const logDates = new Set(log.map((e) => e.date));
+  
+  // fetch all dates on mount — separate from selected date logic
+useEffect(() => {
+fetch('http://localhost:3001/workoutsessions/dates', { credentials: 'include' })
+  .then(res => res.json())
+  .then(data => {
+    setLogDates(new Set((data.dates || []).map(d =>
+      typeof d === 'string' ? d : d.date?.slice(0, 10)  // normalize to YYYY-MM-DD
+    )));
+  })
+    .catch(err => console.error('failed to fetch dates:', err));
+}, []);  // empty array — runs once on mount only
+
+// fetch sessions when selected date changes
+useEffect(() => {
+  setLoading(true);
+
+  const url = selectedDate
+    ? `http://localhost:3001/workoutsessions?date=${selectedDate}`
+    : 'http://localhost:3001/workoutsessions';
+
+  fetch(url, { credentials: 'include' })
+    .then(res => res.json())
+    .then(data => {
+      console.log('sessions response:', data);  // check what comes back
+      setLog(data.sessions || []);
+    })
+    .catch(err => console.error('failed to fetch sessions:', err))
+    .finally(() => setLoading(false));
+
+}, [selectedDate]);
 
   function prevMonth() {
-    if (viewMonth === 0) { setViewMonth(11); setViewYear((y) => y - 1); }
-    else setViewMonth((m) => m - 1);
+    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
+    else setViewMonth(m => m - 1);
   }
+
   function nextMonth() {
-    if (viewMonth === 11) { setViewMonth(0); setViewYear((y) => y + 1); }
-    else setViewMonth((m) => m + 1);
+    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
+    else setViewMonth(m => m + 1);
   }
 
   const cells = getCalendarDays(viewYear, viewMonth);
@@ -76,12 +210,8 @@ export function History() {
   function handleDayClick(cell) {
     if (!cell.currentMonth) return;
     const ds = toDateStr(viewYear, viewMonth, cell.day);
-    setSelectedDate((prev) => (prev === ds ? null : ds));
+    setSelectedDate(prev => prev === ds ? null : ds);
   }
-
-  const filteredLog = selectedDate
-    ? log.filter((e) => e.date === selectedDate)
-    : [...log].sort((a, b) => b.date.localeCompare(a.date));
 
   return (
     <div style={s.page}>
@@ -97,9 +227,10 @@ export function History() {
       </div>
 
       {/* Two-column layout */}
-      <div style={s.columns}>
+      <div style={s.columns} className="history-columns">
+        
         {/* Calendar */}
-        <div style={s.card}>
+        <div style={s.card} className="history-card">
           <div style={s.nav}>
             <span style={s.monthLabel}>{MONTHS[viewMonth].toUpperCase()} {viewYear}</span>
             <div style={{ display: "flex", gap: 8 }}>
@@ -123,16 +254,8 @@ export function History() {
                 style={{
                   ...s.cell,
                   cursor: cell.currentMonth ? "pointer" : "default",
-                  backgroundColor: isSelected(cell)
-                    ? "#DFFF00"
-                    : isToday(cell)
-                    ? "#2a2a2a"
-                    : "transparent",
-                  color: isSelected(cell)
-                    ? "#000"
-                    : cell.currentMonth
-                    ? "#fff"
-                    : "#333",
+                  backgroundColor: isSelected(cell) ? "#DFFF00" : isToday(cell) ? "#2a2a2a" : "transparent",
+                  color: isSelected(cell) ? "#000" : cell.currentMonth ? "#fff" : "#333",
                   fontWeight: isSelected(cell) || isToday(cell) ? 700 : 400,
                   outline: isToday(cell) && !isSelected(cell) ? "1px solid #DFFF00" : "none",
                 }}
@@ -153,42 +276,67 @@ export function History() {
               Clear filter
             </button>
           )}
+          
         </div>
+        
 
+        
         {/* Workout log */}
         <div style={s.logPanel}>
           <p style={s.logTitle}>
             {selectedDate ? formatDisplayDate(selectedDate) : "ALL SESSIONS"}
           </p>
-
-          {filteredLog.length === 0 ? (
+{  /* graph banner here */}
+          <DayBanner log={log} selectedDate={selectedDate} />
+          {loading ? (
+            <div style={s.empty}>
+              <p style={s.emptyText}>Loading...</p>
+            </div>
+          ) : log.length === 0 ? (
             <div style={s.empty}>
               <p style={s.emptyText}>No workouts logged{selectedDate ? " on this day" : " yet"}.</p>
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {filteredLog.map((entry) => (
+              {log.map((entry) => (
                 <div key={entry.id} style={s.logCard}>
                   <div style={s.logCardHeader}>
                     <div style={s.logIcon}>
                       <FitnessCenterIcon style={{ fontSize: 18, color: "#DFFF00" }} />
                     </div>
                     <div>
-                      <p style={s.logPlanName}>{entry.planName}</p>
-                      <p style={s.logDate}>{formatDisplayDate(entry.date)}</p>
+                      {/* show plan name for plan logs, category for quick logs */}
+                      <p style={s.logPlanName}>
+                        {entry.session_type === 'plan' ? entry.plan_name : `Quick Log`}
+                      </p>
+                      <p style={s.logDate}>{formatDisplayDate(entry.logged_at?.slice(0, 10) || entry.date)}</p>
                     </div>
                   </div>
+
+                  {entry.notes && (
+                    <p style={{ color: '#888', fontSize: 12, margin: '6px 0 0' }}>{entry.notes}</p>
+                  )}
+
                   <div style={{ marginTop: 10 }}>
                     <div style={s.exHeader}>
                       <span style={{ flex: 3 }}>Exercise</span>
                       <span style={{ flex: 1, textAlign: "center" }}>Sets</span>
                       <span style={{ flex: 1, textAlign: "center" }}>Reps</span>
+                      <span style={{ flex: 1, textAlign: "center" }}>Load</span>
                     </div>
                     {entry.exercises.map((ex, i) => (
                       <div key={i} style={s.exRow}>
-                        <span style={{ flex: 3 }}>{ex.name}</span>
+                        <span style={{ flex: 3 }}>
+                          {ex.name}
+                          {ex.category && (
+                            <span style={{ color: '#555', fontSize: 11, marginLeft: 6 }}>
+                              {ex.category}
+                            </span>
+                          )}
+                        </span>
                         <span style={{ flex: 1, textAlign: "center" }}>{ex.sets}</span>
                         <span style={{ flex: 1, textAlign: "center" }}>{ex.reps}</span>
+                        <span style={{ flex: 1, textAlign: "center" }}>{ex.load ?? '—'}</span>
                       </div>
                     ))}
                   </div>
