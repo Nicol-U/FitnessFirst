@@ -177,8 +177,9 @@ app.listen(PORT, () => {
     res.status(500).json({ error: err.message });
   }
 });
+*/
 
-app.post('/goals/add', requireAuth, async (req, res) => {
+/* app.post('/goals/add', requireAuth, async (req, res) => {
   //console.log('raw body:', req.body);
   //console.log('user:', req.user);
   const { title, description } = req.body;
@@ -197,7 +198,7 @@ app.post('/goals/add', requireAuth, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
+*/ 
 app.patch('/goals/:id/complete', requireAuth, async (req, res) => {
   const { is_completed } = req.body;
 
@@ -215,7 +216,7 @@ app.patch('/goals/:id/complete', requireAuth, async (req, res) => {
   }
 });
 
-app.delete('/goals/:id', requireAuth, async (req, res) => {
+/*app.delete('/goals/:id', requireAuth, async (req, res) => {
   try {
     const { rows } = await db.query(
       'DELETE FROM goals WHERE id = $1 and user_id = $2',
@@ -230,3 +231,200 @@ app.delete('/goals/:id', requireAuth, async (req, res) => {
     console.error("Error deleting goal:", err);
   }
 });
+*/
+
+// ── Workout Plan stuff IDK ─────────────────────────────────────────────────────────────
+
+/* app.get('/plans', requireAuth, async (req, res) => {
+  try {
+    const { rows } = await db.query(
+      'SELECT * FROM workout_plans WHERE user_id = $1 ORDER BY created_at DESC',
+      [req.user.id]
+    );
+
+    res.json({ rows });
+  }
+
+  catch(err){
+    res.status(500).json({ error: err.message});
+    console.error("Error fetching plans:", err);
+  }
+})
+
+*/ 
+
+
+
+const getRoutes = [
+  
+    {
+  name: '/plans',
+  // INTO workout_plans (user_id, planame, icon, color )
+  SQL: `
+  SELECT 
+    workout_plans.id,
+    workout_plans.planname,
+    workout_plans.icon,
+    workout_plans.color,
+    workout_plans.created_at,
+    json_agg(
+      json_build_object(
+        'id',          plan_exercises.id,
+        'name',        plan_exercises.name,
+        'sets',        plan_exercises.sets,
+        'reps',        plan_exercises.reps,
+        'order_index', plan_exercises.order_index
+      ) ORDER BY plan_exercises.order_index
+    ) AS exercises
+  FROM workout_plans
+  INNER JOIN plan_exercises ON plan_exercises.plan_id = workout_plans.id
+  WHERE workout_plans.user_id = $1
+  GROUP BY workout_plans.id
+  ORDER BY workout_plans.created_at DESC
+
+  `,
+  SQLparams: (req) => [req.user.id],
+  JGetRow: 'plans',
+},
+
+    {
+    name: '/goals',
+    SQL: 'SELECT * FROM goals WHERE user_id = $1',
+    SQLparams: (req) => [req.user.id],
+    JGetRow: 'goals', 
+  },
+];
+
+
+
+
+const PostElem = [
+  {
+    name: '/goals/add',
+    SQL: 'INSERT INTO goals (user_id, title, description) VALUES ($1, $2, $3) RETURNING *',
+    SQLparams: (req) => [req.user.id, req.body.title, req.body.description],
+    JGetRow: 'goal',
+  },
+
+  {
+    name: '/plans/add',
+    SQL: 'INSERT INTO workout_plans (user_id, planname, icon, color ) VALUES ($1, $2, $3, $4) RETURNING id',
+    SQLparams: (req) => [req.user.id, req.body.PlanName, req.body.icon, req.body.color],
+    JGetRow: 'plan',
+  },
+
+  {
+    name: '/plansEX/add',
+    SQL: 'INSERT INTO plan_exercises (plan_id, name, sets, reps ) VALUES ($1, $2, $3, $4) RETURNING *',
+    SQLparams: (req) => [req.body.plan_id, req.body.name, req.body.sets, req.body.reps],
+    JGetRow: 'plan',
+  }
+];
+
+const delElm = [
+  {
+    name: '/goals/:id',
+    SQL: 'DELETE FROM goals WHERE id = $1 and user_id = $2',
+    SQLparams: (req) => [req.params.id, req.user.id],
+  },
+
+  {
+    name: '/plans/:id',
+    SQL: 'DELETE FROM workout_plans WHERE id = $1 and user_id = $2',
+    SQLparams: (req) => [req.params.id, req.user.id],
+  },
+
+   {
+    name: '/Excercise/DEL',
+    SQL: 'DELETE FROM plan_exercises WHERE id = $1 and plan_id = $2',
+    SQLparams: (req) => [req.body.id, req.body.plan_id],
+    JGetRow: 'exercise',
+
+  },
+  
+];
+
+const PatchElem = [
+  {
+    name: '/goals/:id/complete',
+    SQL: 'UPDATE goals SET is_completed = $1 WHERE id = $2 and user_id = $3 RETURNING *',
+    SQLparams: (req) => [req.body.is_completed, req.params.id, req.user.id],
+  },
+    {
+    name: '/plans/:id/edit',   
+    SQL: 'UPDATE workout_plans SET planname = $1, icon = $2, color = $3 WHERE id = $4 and user_id = $5 RETURNING *',
+    SQLparams: (req) => [req.body.planname, req.body.icon, req.body.color , req.params.id, req.user.id],
+  },
+
+    {
+    name: '/excercise/:id/edit',   
+    SQL: 'UPDATE plan_exercises SET name = $1, sets = $2, reps = $3 WHERE id = $4 and plan_id = $5 RETURNING *',
+    SQLparams: (req) => [req.body.name, req.body.sets, req.body.reps, req.params.id, req.body.Plan_id],
+    JGetRow: 'exercise',
+
+  }
+];
+getRoutes.forEach(({ name, SQL, SQLparams, JGetRow }) => {
+  app.get(name, requireAuth, async (req, res) => {
+    try {
+      const { rows } = await db.query(SQL, SQLparams(req));
+      console.log('fetched:', rows);
+      res.json({ [JGetRow]: rows });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  })
+})
+
+PostElem.forEach(({ name, SQL, SQLparams, JGetRow }) => {
+  app.post(name, requireAuth, async (req, res) => {
+    try {
+      const { rows } = await db.query(SQL, SQLparams(req));
+      console.log('fetched:', rows);
+      res.status(201).json({ [JGetRow]: rows });
+
+      console.log("added for user", rows);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  })
+})
+
+delElm.forEach(({ name, SQL, SQLparams, JGetRow }) => {
+
+  app.delete(name, requireAuth, async (req, res) => {
+    try {
+      const { rows } = await db.query(
+        SQL,
+        SQLparams(req)
+      );
+      res.status(201).json({ [JGetRow]: rows });
+      console.log("gone: ", rows);
+    }
+
+    catch(err){
+      res.status(500).json({ error: err.message});
+      console.error("Error deleting goal:", err);
+    }
+  });
+})
+
+
+PatchElem.forEach(({ name, SQL, SQLparams, JGetRow }) => {
+
+  app.patch(name, requireAuth, async (req, res) => {
+    try {
+      const { rows } = await db.query(
+        SQL,
+        SQLparams(req)
+      );
+      res.status(201).json({ [JGetRow]: rows });
+      console.log("patched: ", rows);
+    }
+
+    catch(err){
+      res.status(500).json({ error: err.message});
+      console.error("Error patching:", err);
+    }
+  });
+})

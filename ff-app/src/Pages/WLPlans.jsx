@@ -74,6 +74,40 @@ const getPlans = async () => {
   }
 };
 
+/*
+  
+    const FixEX = async (id) => {
+
+     // console.log("check input in front", updated.is_completed);
+
+    try {
+
+      const res = await fetch(`http://localhost:3001/excercise/${id}/edit`, {
+        method: 'PATCH',
+        headers: { 'Content-Type' : 'application/json'},
+        credentials: 'include', 
+        body: JSON.stringify({ 
+          name: value.name,
+          sets: value.sets,
+          reps: value.reps,
+         }),
+      });
+
+      const data = await res.json();
+      console.log("Exercise update response:", data);
+      //setGoals(prev => prev.map(g => g.id === id ? data.goal : g));
+
+      }
+      catch (err){
+        alert("Failed to update Exercise status");
+      }
+    
+    };
+
+
+    FixEX(index);
+*/
+
 const handleUpdateWorkoutPlan = async (plan) => {
   try {
     const res = await fetch(`http://localhost:3001/plans/${plan.id}/edit`, {
@@ -90,11 +124,43 @@ const handleUpdateWorkoutPlan = async (plan) => {
     }
     const data = await res.json();
 
+    const exResults = [];
+
+    for (const ex of plan.exercises) {
+      let exRes;
+      if (ex.id) {
+        exRes = await fetch(`http://localhost:3001/excercise/${ex.id}/edit`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ name: ex.name, sets: ex.sets, reps: ex.reps, Plan_id: plan.id }),
+        });
+      }
+
+      else {
+          exRes = await fetch('http://localhost:3001/plansEX/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              plan_id: plan.id,
+              name: ex.name,
+              sets: ex.sets,
+              reps: ex.reps,
+            }),
+          });
+
+        }
+      exResults.push(exRes);
+
+    }
     console.log('plan updated:', data);
   } catch (err) {
     console.error('error updating plan:', err);
   }
 };
+
+
 
 export function LogWorkoutPlan() {
   const [plans, setPlans] = useState([]);  // start empty
@@ -113,6 +179,35 @@ export function LogWorkoutPlan() {
   const [exercises, setExercises] = useState([emptyExercise()]);
   const [expandedPlan, setExpandedPlan] = useState(null);
   const [error, setError] = useState("");
+
+async function handleDeleteExercise(ex, PlanID, i){
+    console.log("del thhis shit", ex);
+
+  if (ex){
+    console.log(ex);
+      try {
+        const res = await fetch(`http://localhost:3001/Excercise/DEL`, {
+          method: 'DELETE',
+          credentials: 'include',
+          body: JSON.stringify({
+            plan_id: PlanID,
+            id: ex
+          }),
+        });
+        
+      if (!res.ok) throw new Error("Failed to delete EXercise");
+         // setPlans(prev => prev.filter(p => p.id !== id)); 
+      }
+   
+     catch (err) {
+    alert("Failed to delete EX", err.message);
+  }}
+
+
+
+  setExercises((prev) => prev.filter((_, j) => j !== i))
+                    
+};
 
   const handleSaveWorkoutPlan = async (plan) => {
   try {
@@ -202,6 +297,7 @@ export function LogWorkoutPlan() {
   }
 
   function updateExercise(index, field, value) {
+  
     setExercises((prev) =>
       prev.map((ex, i) => (i === index ? { ...ex, [field]: value } : ex)),
     );
@@ -249,6 +345,9 @@ function handleSave() {
 
     closeModal();
   }
+
+
+
 
   function deletePlan(e, id) {
     const deleteWP = async () => {
@@ -517,13 +616,11 @@ function handleSave() {
                   />
                   <button
                     style={s.removeBtn}
-                    onClick={() =>
-                      setExercises((prev) => prev.filter((_, j) => j !== i))
-                    }
+                    onClick={() => handleDeleteExercise(ex.id, editingId, i)}
                     disabled={exercises.length === 1}
                   >
                   
-                    ✕
+                    X
                   </button>
                 </div>
               ))}
