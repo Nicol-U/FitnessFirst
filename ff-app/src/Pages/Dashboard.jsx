@@ -34,10 +34,11 @@ export function Dashboard() {
 
   const [goals, setGoals] = useState([]);
 
+// fix 1 — fetch goals correctly with fallback
 useEffect(() => {
   fetch('http://localhost:3001/goals', { credentials: 'include' })
     .then(res => res.json())
-    .then(data => setGoals(data.goals))
+    .then(data => setGoals(data.goals || []))
     .catch(err => console.error(err));
 }, []);
 
@@ -166,22 +167,22 @@ const AddGoalPopup = forwardRef(({ onClose, goals, setGoals }, ref) => {
     }
 
     try{
-      console.log('sending:', { title, description });
       const res = await fetch('http://localhost:3001/goals/add/', {
-        method: 'POST',
-        headers: { 'Content-Type' : 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ title, description }),
-      });
-      const data = await res.json();
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ title, description }),
+    });
+    const data = await res.json();
 
-      if (!res.ok) {
-        alert(data.error || "Registration failed");
-        return;
+    if (!res.ok) {
+      alert(data.error || "Failed to add goal");
+      return;
       }
 
-      setGoals(prev => [...prev, data.goal]);
-      onClose();
+const updated = await fetch('http://localhost:3001/goals', { credentials: 'include' });
+    const updatedData = await updated.json();
+    setGoals(updatedData.goals || []);      onClose();
 
     }
 
@@ -251,72 +252,83 @@ function RadioToggle({ goals, setGoals }) {
     
     };
 
-  // deleteGoal is now defined and wired up
-  const deleteGoal = async (id) => {
-    try {
-      const res = await fetch(`http://localhost:3001/goals/${id}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
+    const deleteGoal = async (id) => {
+  try {
+    const res = await fetch(`http://localhost:3001/goals/${id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
 
-      if (!res.ok) {
-        throw new Error("Failed to delete goal");
-      }
+    if (!res.ok) throw new Error("Failed to delete goal");
 
-      const updated = goals.filter((g) => g.id !== id);
-      setGoals(updated);
-      localStorage.setItem('goals', JSON.stringify(updated));
-    } catch (err) {
-      alert("Failed to delete goal");
-    }
-  };
+    setGoals(prev => prev.filter(p => p.id !== id));  // only this line needed
+
+  } catch (err) {
+    alert("Failed to delete goal");
+  }
+};
+
 
   return (
     <>
-      {goals.map((goal) => (
-        <div key={goal.id} style={{ ...styles.box, boxSizing: 'border-box', marginLeft: '0px', width: '100%' }}>
-          <label style={{
-            display: 'flex', alignItems: 'center', gap: '15px',
-            cursor: 'pointer', userSelect: 'none', color: '#FFFF',
-            fontSize: 12, width: '100%', flexWrap: 'wrap',
-          }}>
-            <input
-              style={{ display: 'none' }}
-              type="checkbox"
-              checked={goal.is_completed}
-              onChange={() => toggle(goal.id)}
-            />
-
-            <span style={{
-              ...styles.radio,
-              backgroundColor: goal.is_completed ? '#F6FFC0' : 'black',
-              borderColor:     goal.is_completed ? '#F6FFC0' : '#555',
-            }}>
-              {goal.is_completed && <span style={styles.checkmark}>✓</span>}
-            </span>
-
-            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
-              <h2 style={{ margin: 0, textDecoration: goal.is_completed ? 'line-through' : 'none' }}>
-                {goal.title}
-              </h2>
-              <h3 style={{ color: '#ADAAAA', margin: 2, textDecoration: goal.is_completed ? 'line-through' : 'none' }}>
-                {goal.description}
-              </h3>
-            </div>
-          
-          {/* Delete button now works */}
-          <button
-            onClick={() => deleteGoal(goal.id)}
-            style={deleteButtonStyle}
-          >
-            Delete
-          </button>
-          </label>
-
-
+  {goals.map((goal) => (
+    <div
+       key={`goal-${goal.id}`}
+      style={{
+        ...styles.box,
+        margin: "5px auto",
+        boxSizing: 'border-box',
+        marginLeft: '0px',
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+      }}
+    >
+      {/* label only wraps the checkbox and text */}
+      <label style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '15px',
+        cursor: 'pointer',
+        userSelect: 'none',
+        color: '#FFFF',
+        fontSize: 12,
+        flex: 1,           // takes up remaining space
+        flexWrap: 'wrap',
+      }}>
+        <input
+          style={{ display: 'none' }}
+          type="checkbox"
+          checked={goal.is_completed}
+          onChange={() => toggle(goal.id)}
+        />
+        <span style={{
+          ...styles.radio,
+          backgroundColor: goal.is_completed ? '#F6FFC0' : 'black',
+          borderColor: goal.is_completed ? '#F6FFC0' : '#555',
+        }}>
+          {goal.is_completed && <span style={styles.checkmark}>✓</span>}
+        </span>
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
+          <h2 style={{ margin: 0, textDecoration: goal.is_completed ? 'line-through' : 'none' }}>
+            {goal.title}
+          </h2>
+          <h3 style={{ color: '#ADAAAA', margin: 2, textDecoration: goal.is_completed ? 'line-through' : 'none' }}>
+            {goal.description}
+          </h3>
         </div>
-      ))}
-    </>
+      </label>
+
+      {/* delete button outside label so clicks don't conflict */}
+      <button
+        onClick={(e) => { e.stopPropagation(); deleteGoal(goal.id); }}
+        style={deleteButtonStyle}
+      >
+        Delete
+      </button>
+    </div>
+  ))}
+</>
   );
 }
 

@@ -31,12 +31,24 @@ function saveLocalStorageArray(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-function createTimestamp() {
+function getDateTimeLocalNow() {
   const now = new Date();
 
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+function createTimestamp(selectedDateTime) {
+  const logDate = selectedDateTime ? new Date(selectedDateTime) : new Date();
+
   return {
-    timestamp: now.toISOString(),
-    date: now.toISOString().slice(0, 10),
+    timestamp: logDate.toISOString(),
+    date: logDate.toISOString().slice(0, 10),
   };
 }
 
@@ -55,6 +67,8 @@ export function LW() {
   const [load, setLoad] = useState('');
   const [selectedPlanIndex, setSelectedPlanIndex] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
+
+  const [logDateTime, setLogDateTime] = useState(() => getDateTimeLocalNow());
 
   const [plans, setPlans] = useState(() => readLocalStorageArray(WORKOUT_PLANS_KEY));
   const [workoutLogs, setWorkoutLogs] = useState(() => readLocalStorageArray(WORKOUT_LOGS_KEY));
@@ -88,7 +102,7 @@ export function LW() {
       return;
     }
 
-    const { timestamp, date } = createTimestamp();
+    const { timestamp, date } = createTimestamp(logDateTime);
 
     const quickLog = {
       id: `${Date.now()}-${Math.random()}`,
@@ -106,6 +120,7 @@ export function LW() {
 
     appendWorkoutLog(quickLog);
     resetQuickLogFields();
+    setLogDateTime(getDateTimeLocalNow());
     setStatusMessage(`${exerciseName} was logged for ${date}.`);
   };
 
@@ -122,7 +137,7 @@ export function LW() {
       return;
     }
 
-    const { timestamp, date } = createTimestamp();
+    const { timestamp, date } = createTimestamp(logDateTime);
     const planName = getPlanName(selectedPlan, Number(selectedPlanIndex));
 
     const planLog = {
@@ -140,6 +155,7 @@ export function LW() {
 
     appendWorkoutLog(planLog);
     setSelectedPlanIndex('');
+    setLogDateTime(getDateTimeLocalNow());
     setStatusMessage(`${planName} was logged for ${date}.`);
   };
 
@@ -261,6 +277,16 @@ export function LW() {
                 style={styles.input}
               />
             </label>
+
+            <label style={{ ...styles.fieldLabel, gridColumn: '1 / -1' }}>
+                Workout Date / Time
+                <input
+                    type="datetime-local"
+                    value={logDateTime}
+                    onChange={e => setLogDateTime(e.target.value)}
+                    style={styles.input}
+                />
+            </label>
           </div>
 
           <button type="button" onClick={handleQuickLogSubmit} style={styles.primaryBtn}>
@@ -334,6 +360,16 @@ export function LW() {
               <strong>Ready to log:</strong> {getPlanName(selectedPlan, Number(selectedPlanIndex))}
             </div>
           )}
+
+          <label style={{...styles.fieldLabel, marginBottom: 14 }}>
+            Workout Date / Time 
+            <input 
+                type="datetime-local"
+                value={logDateTime}
+                onChange={e => setLogDateTime(e.target.value)}
+                style={styles.input}
+            />
+          </label>
 
           <button
             type="button"

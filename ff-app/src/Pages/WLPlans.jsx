@@ -42,14 +42,68 @@ function PlanIcon({ iconKey, color, size = 22 }) {
   return <match.Component style={{ color, fontSize: size }} />;
 }
 
-export function LogWorkoutPlan() {
-  const [plans, setPlans] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("workoutPlans")) || [];
-    } catch {
-      return [];
+
+const getPlans = async () => {
+  try {
+    const res = await fetch('http://localhost:3001/plans', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || "Failed to fetch plans");
     }
-  });
+
+    const data = await res.json();
+
+    // map the json shape to match what your component expects
+    return data.plans.map(plan => ({
+      id:        plan.id,
+      name:      plan.planname,    // planname → name
+      icon:      plan.icon,
+      color:     plan.color,
+      exercises: plan.exercises,
+      created_at: plan.created_at,
+    }));
+
+  } catch (err) {
+    console.error('error fetching plans:', err);
+    return [];
+  }
+};
+
+const handleUpdateWorkoutPlan = async (plan) => {
+  try {
+    const res = await fetch(`http://localhost:3001/plans/${plan.id}/edit`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({planname: plan.name, icon: plan.icon, color: plan.color}),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      alert(err.error || "Failed to update plan");
+      return;
+    }
+    const data = await res.json();
+
+    console.log('plan updated:', data);
+  } catch (err) {
+    console.error('error updating plan:', err);
+  }
+};
+
+export function LogWorkoutPlan() {
+  const [plans, setPlans] = useState([]);  // start empty
+
+  useEffect(() => {
+    getPlans().then(fetchedPlans => {
+      setPlans(fetchedPlans);
+    });
+  }, []);  // runs once on mount, fetches from DB instead of localStorage
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -60,8 +114,65 @@ export function LogWorkoutPlan() {
   const [expandedPlan, setExpandedPlan] = useState(null);
   const [error, setError] = useState("");
 
+  const handleSaveWorkoutPlan = async (plan) => {
+  try {
+    // step 1 — save the plan
+    let res = await fetch('http://localhost:3001/plans/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        PlanName: plan.name,
+        icon: plan.icon,
+        color: plan.color,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      alert(err.error || "Failed to save plan");
+      return;
+    }
+
+    const data = await res.json();
+    const planId = data.plan[0].id;   // ← grab id from { plan: [{ id: 21 }] }
+    console.log('plan saved with id:', planId);
+
+    // step 2 — save each exercise using planId
+    for (const exercise of plan.exercises) {
+      let exRes = await fetch('http://localhost:3001/plansEX/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          plan_id: planId,        // ← connect to the plan
+          name: exercise.name,
+          sets: exercise.sets,
+          reps: exercise.reps,
+        }),
+      });
+
+      if (!exRes.ok) {
+        const exErr = await exRes.json();
+        alert(exErr.error || "Failed to save exercise");
+        return;
+      }
+
+      const exData = await exRes.json();
+      console.log('exercise saved:', exData);
+    }
+
+    console.log('all done!');
+
+  } catch (err) {
+    console.error('error saving plan:', err);
+  }
+};
+
   useEffect(() => {
-    localStorage.setItem("workoutPlans", JSON.stringify(plans));
+    
+
+    //localStorage.setItem("workoutPlans", JSON.stringify(plans));
   }, [plans]);
 
   function openModal() {
@@ -96,7 +207,7 @@ export function LogWorkoutPlan() {
     );
   }
 
-  function handleSave() {
+function handleSave() {
     if (!planName.trim()) {
       setError("Plan name is required.");
       return;
@@ -112,38 +223,54 @@ export function LogWorkoutPlan() {
         return;
       }
     }
+
     if (editingId !== null) {
-      setPlans((prev) =>
-        prev.map((p) =>
-          p.id === editingId
-            ? {
-                ...p,
-                name: planName.trim(),
-                icon: selectedIcon,
-                color: selectedColor,
-                exercises: filled,
-              }
-            : p,
-        ),
-      );
+      const updatedPlan = {
+        ...plans.find(p => p.id === editingId),
+        name: planName.trim(),
+        icon: selectedIcon,
+        color: selectedColor,
+        exercises: filled,
+      };
+      handleUpdateWorkoutPlan(updatedPlan); // add later when you have an update endpoint
+      setPlans((prev) => prev.map((p) => p.id === editingId ? updatedPlan : p));
+
     } else {
-      setPlans((prev) => [
-        ...prev,
-        {
-          id: Date.now(),
-          name: planName.trim(),
-          icon: selectedIcon,
-          color: selectedColor,
-          exercises: filled,
-        },
-      ]);
+      const newPlan = {
+        id: Date.now(),
+        name: planName.trim(),
+        icon: selectedIcon,
+        color: selectedColor,
+        exercises: filled,
+      };
+      setPlans((prev) => [...prev, newPlan]);
+      handleSaveWorkoutPlan(newPlan);   
     }
+
     closeModal();
   }
 
   function deletePlan(e, id) {
+    const deleteWP = async () => {
+      try {
+        const res = await fetch(`http://localhost:3001/plans/${id}`, {
+          method: 'DELETE',
+          credentials: 'include',
+
+        });
+      if (!res.ok) throw new Error("Failed to delete plan");
+          setPlans(prev => prev.filter(p => p.id !== id)); 
+      }
+   
+     catch (err) {
+    alert("Failed to delete plan", err.message);
+  }
+
+    }
+
     e.stopPropagation();
-    setPlans((prev) => prev.filter((p) => p.id !== id));
+    deleteWP();
+    //setPlans((prev) => prev.filter((p) => p.id !== id));
     if (expandedPlan === id) setExpandedPlan(null);
   }
 
@@ -395,6 +522,7 @@ export function LogWorkoutPlan() {
                     }
                     disabled={exercises.length === 1}
                   >
+                  
                     ✕
                   </button>
                 </div>
