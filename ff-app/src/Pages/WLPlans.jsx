@@ -186,12 +186,11 @@ async function handleDeleteExercise(ex, PlanID, i){
   if (ex){
     console.log(ex);
       try {
-        const res = await fetch(`http://localhost:3001/Excercise/DEL`, {
+        const res = await fetch(`http://localhost:3001/Excercise/${ex}/DEL`, {
           method: 'DELETE',
           credentials: 'include',
           body: JSON.stringify({
-            plan_id: PlanID,
-            id: ex
+            plan_id: PlanID
           }),
         });
         

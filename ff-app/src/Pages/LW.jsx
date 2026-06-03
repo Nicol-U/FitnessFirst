@@ -11,25 +11,138 @@ const EXERCISES_BY_CATEGORY = {
   HIIT: ['Burpee', 'Box Jump', 'Mountain Climber', 'Kettlebell Swing', 'Battle Ropes', 'Sled Push'],
   Olympic: ['Clean & Jerk', 'Snatch', 'Power Clean', 'Hang Clean', 'Push Press', 'Front Squat'],
 };
-
 const PLACEHOLDER = { sets: 'Sets', reps: 'Reps', load: 'Load / Duration' };
-const WORKOUT_LOGS_KEY = 'workoutLogs';
-const WORKOUT_PLANS_KEY = 'workoutPlans';
+
+const WORKOUT_LOGS_KEY =  'WorkoutLogs'; //'workoutLogs';
+const WORKOUT_PLANS_KEY = 'plans'; // 'workoutPlans';
+
+async function readDBArray(key) {
+  if (typeof window === 'undefined') return [];
+  if (key === 'WorkoutLogs') return [];
+  
+  try {
+    const res = await fetch(`http://localhost:3001/${key}`, {
+      credentials: 'include'
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch");
+
+
+
+
+
+  const result = await res.json();
+
+
+const end = result.plans.map(plan => ({
+  id: plan.id,
+  name: plan.planname,
+  exercises: plan.exercises,
+  created_at: plan.created_at,
+}));
+
+
+  return end;
+    //console.log(`readDBArray result:`, result);
+    //return result.plans || result.plan || [];   // handle both response shapes
+
+  } catch (err) {
+    console.error('here', err);
+    return [];
+  }
+};
 
 function readLocalStorageArray(key) {
-  if (typeof window === 'undefined') return [];
+  /*if (typeof window === 'undefined') return [];
 
   try {
     return JSON.parse(localStorage.getItem(key)) || [];
   } catch {
     return [];
   }
+    */
+   return [];
 }
 
 function saveLocalStorageArray(key, value) {
+  /*
   if (typeof window === 'undefined') return;
   localStorage.setItem(key, JSON.stringify(value));
+  */
 }
+
+ /*   const planLog = {
+      id: `${Date.now()}-${Math.random()}`,
+      type: 'plan',
+      name: planName,
+      exercises: planExercises.map(exercise => ({
+        name: exercise.name || '',
+        sets: exercise.sets || '',
+        reps: exercise.reps || '',
+      })),
+      time: timestamp,
+      date: date,
+    };
+*/
+async function saveDBArray(key, value){
+  if (typeof window === 'undefined') return;
+
+  if (value === []) return;
+  try {
+
+    // step 1 — save the plan
+    let res = await fetch(`http://localhost:3001/LW/add/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        date: value.date,
+        duration_minutes: value.load,
+        created_at: value.time,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      alert(err.error || "Failed to save plan");
+      return;
+    }
+
+    const data = await res.json();
+    const planId = data.Sesh[0].id;   //  grab id from { plan: [{ id: 21 }] }
+
+    // step 2 — save each exercise using planId
+    for (const exercise of value.exercises) {
+      let exRes = await fetch('http://localhost:3001/LW/add/EX', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          plan_id: planId,        // ← connect to the plan
+          name: exercise.name,
+          sets: exercise.sets,
+          reps: exercise.reps,
+          load: exercise.load,
+
+        }),
+      });
+
+      if (!exRes.ok) {
+        const exErr = await exRes.json();
+        alert(exErr.error || "Failed to save exercise");
+        return;
+      }
+
+      const exData = await exRes.json();
+      console.log('exercise saved:', exData);
+    }
+
+    console.log('all done!');
+
+  } catch (err) {
+    console.error('error saving plan:', err);
+  }
+};
 
 function getDateTimeLocalNow() {
   const now = new Date();
@@ -69,13 +182,32 @@ export function LW() {
   const [statusMessage, setStatusMessage] = useState('');
 
   const [logDateTime, setLogDateTime] = useState(() => getDateTimeLocalNow());
+  // add this back in if the backend fails to work
+  // const [plans, setPlans] = useState(() => readLocalStorageArray(WORKOUT_PLANS_KEY));
+  // const [workoutLogs, setWorkoutLogs] = useState(() => readLocalStorageArray(WORKOUT_LOGS_KEY));
 
-  const [plans, setPlans] = useState(() => readLocalStorageArray(WORKOUT_PLANS_KEY));
-  const [workoutLogs, setWorkoutLogs] = useState(() => readLocalStorageArray(WORKOUT_LOGS_KEY));
+   const [plans, setPlans] = useState([]);
+   useEffect(() => {
+       readDBArray('plans').then(fetchedPlans => {
+         setPlans(fetchedPlans);
+       });
+     }, []);
+     const [workoutLogs, setWorkoutLogs] = useState([]);
+useEffect(() => {
+  async function loadLogs() {
+    const logs = await readDBArray(WORKOUT_LOGS_KEY);
+    setWorkoutLogs(logs);
+  }
 
-  useEffect(() => {
-    saveLocalStorageArray(WORKOUT_PLANS_KEY, plans);
-  }, [plans]);
+  loadLogs();
+}, []);
+   //const [workoutLogs, setWorkoutLogs] = useState(() => readDBArray(WORKOUT_LOGS_KEY));
+
+
+   
+  // useEffect(() => {
+  //  saveDBArray(WORKOUT_PLANS_KEY, plans, selectedPlan);
+  // }, [plans]);
 
   useEffect(() => {
     saveLocalStorageArray(WORKOUT_LOGS_KEY, workoutLogs);
@@ -104,24 +236,30 @@ export function LW() {
 
     const { timestamp, date } = createTimestamp(logDateTime);
 
-    const quickLog = {
-      id: `${Date.now()}-${Math.random()}`,
-      type: 'quick',
-      category,
-      exercise: {
-        name: exerciseName,
-        sets,
-        reps,
-        load,
-      },
-      timestamp,
-      date,
-    };
+
+const quickLog = {
+  id: `${Date.now()}-${Math.random()}`,
+  type: 'quick',
+  name: category,
+  exercises: [
+    {
+      name: exerciseName,
+      sets: sets,
+      reps: reps,
+      load: load,
+    },
+  ],
+  time: timestamp,
+  date: date,
+};
 
     appendWorkoutLog(quickLog);
     resetQuickLogFields();
     setLogDateTime(getDateTimeLocalNow());
     setStatusMessage(`${exerciseName} was logged for ${date}.`);
+    // New might break something 
+  
+    saveDBArray(WORKOUT_LOGS_KEY, quickLog)
   };
 
   const handlePlanLogSubmit = () => {
@@ -143,20 +281,22 @@ export function LW() {
     const planLog = {
       id: `${Date.now()}-${Math.random()}`,
       type: 'plan',
-      planName,
+      name: planName,
       exercises: planExercises.map(exercise => ({
         name: exercise.name || '',
         sets: exercise.sets || '',
         reps: exercise.reps || '',
       })),
-      timestamp,
-      date,
+      time: timestamp,
+      date: date,
     };
 
     appendWorkoutLog(planLog);
     setSelectedPlanIndex('');
     setLogDateTime(getDateTimeLocalNow());
     setStatusMessage(`${planName} was logged for ${date}.`);
+    saveDBArray(WORKOUT_PLANS_KEY, planLog);
+
   };
 
   const refreshPlansFromStorage = () => {

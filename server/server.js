@@ -318,7 +318,21 @@ const PostElem = [
     SQL: 'INSERT INTO plan_exercises (plan_id, name, sets, reps ) VALUES ($1, $2, $3, $4) RETURNING *',
     SQLparams: (req) => [req.body.plan_id, req.body.name, req.body.sets, req.body.reps],
     JGetRow: 'plan',
-  }
+  },
+
+  {
+    name: '/LW/add',
+    SQL: 'INSERT INTO workout_sessions (user_id, date, duration_minutes ) VALUES ($1, $2, $3) RETURNING *',
+    SQLparams: (req) => [req.user.id, req.body.date, req.body.duration_minutes],
+    JGetRow: 'Sesh',
+  },
+
+    {
+    name: '/LW/add/EX',
+    SQL: 'INSERT INTO session_exercises ( session_id, name, sets, reps, load ) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+    SQLparams: (req) => [req.body.plan_id, req.body.name, req.body.sets, req.body.reps, req.body.load],
+    JGetRow: 'SeshEx',
+  },
 ];
 
 const delElm = [
@@ -364,6 +378,7 @@ const PatchElem = [
 
   }
 ];
+
 getRoutes.forEach(({ name, SQL, SQLparams, JGetRow }) => {
   app.get(name, requireAuth, async (req, res) => {
     try {
@@ -382,6 +397,7 @@ PostElem.forEach(({ name, SQL, SQLparams, JGetRow }) => {
       const { rows } = await db.query(SQL, SQLparams(req));
       console.log('fetched:', rows);
       res.status(201).json({ [JGetRow]: rows });
+      //res.json({ [JGetRow]: rows });
 
       console.log("added for user", rows);
     } catch (err) {
