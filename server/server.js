@@ -168,7 +168,7 @@ app.listen(PORT, () => {
 
 // ── Goal stuff IDK ─────────────────────────────────────────────────────────────
 
-app.get('/goals', requireAuth, async (req, res) => {
+/* app.get('/goals', requireAuth, async (req, res) => {
   try {
     const { rows } = await db.query('SELECT * FROM goals WHERE user_id = $1', [req.user.id]);
     console.log('goals fetched:', rows);
