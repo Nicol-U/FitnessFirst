@@ -76,7 +76,6 @@ body{
   color: var(--primary-color);
   width: 90%;
   padding-left: 10px;
-  background-color: var(--primary-bg-color);
   padding-bottom: 10%;
 }
 
@@ -91,7 +90,6 @@ body{
 
 /* This is the "Elite Performance" section */
 .SidebarHeader #subtitle {
-  color: gray;
   font-size: 0.8rem;
   align-items: left;
   padding: 0 20px;
@@ -107,7 +105,6 @@ body{
 
 .SidebarList .row {
 height: 40px;
-background-color: var(--primary-bg-color);
 border-start-end-radius: 1px solid var(--main-gray);
 margin: 0%;
 

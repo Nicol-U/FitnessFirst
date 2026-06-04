@@ -10,6 +10,7 @@ import WhatshotIcon from "@mui/icons-material/Whatshot";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+import { useTheme } from '../Components/ThemeContext';
 
 const ICON_OPTIONS = [
   { key: "dumbbell", Component: FitnessCenterIcon },
@@ -164,12 +165,15 @@ const handleUpdateWorkoutPlan = async (plan) => {
 
 export function LogWorkoutPlan() {
   const [plans, setPlans] = useState([]);  // start empty
+  const { theme, darkMode, setDarkMode } = useTheme();
 
   useEffect(() => {
     getPlans().then(fetchedPlans => {
       setPlans(fetchedPlans);
     });
   }, []);  // runs once on mount, fetches from DB instead of localStorage
+
+  const s = StylesFunc(theme);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -387,8 +391,8 @@ function handleSave() {
       <div style={s.topRow} className="wlp-toprow">
         <div>
           <h1 style={s.heading} className="wlp-heading">
-            <span style={{ color: "#fff" }}>WORKOUT </span>
-            <span style={{ color: "#DFFF00" }}>PLANS</span>
+            <span style={{ color: theme.text }}>WORKOUT </span>
+            <span style={{ color: theme.accent }}>PLANS</span>
           </h1>
           <p style={s.subtitle}>
             Curated protocols for peak athletic performance.
@@ -407,7 +411,7 @@ function handleSave() {
           <p style={s.emptyText}>No plans yet.</p>
           <p style={s.emptyHint}>
             Click{" "}
-            <strong style={{ color: "#DFFF00" }}>+ ADD WORKOUT PLAN</strong> to
+            <strong style={{ color: theme.accent }}>+ ADD WORKOUT PLAN</strong> to
             get started.
           </p>
         </div>
@@ -652,7 +656,7 @@ function handleSave() {
   );
 }
 
-const s = {
+const StylesFunc = (theme) => ({
   page: {
     paddingLeft: 40,
     paddingRight: 40,
@@ -660,8 +664,8 @@ const s = {
     paddingBottom: 64,
     minHeight: "100vh",
     width: "100%",
-    backgroundColor: "#000",
-    color: "#fff",
+    backgroundColor: theme.pageBg,
+    color: theme.text,
     boxSizing: "border-box",
     fontFamily: "'lexend', sans-serif",
   },
@@ -680,9 +684,10 @@ const s = {
     letterSpacing: 2,
     lineHeight: 1,
     textTransform: "uppercase",
+    color: theme.text,
   },
   subtitle: {
-    color: "#ADAAAA",
+    color: theme.muted,
     fontSize: 13,
     margin: 0,
     lineHeight: 1.6,
@@ -704,13 +709,13 @@ const s = {
     fontFamily: "'lexend', sans-serif",
   },
   empty: { marginTop: 100, textAlign: "center" },
-  emptyText: { fontSize: 18, color: "#444", marginBottom: 8 },
-  emptyHint: { fontSize: 16, color: "#333" },
+  emptyText: { fontSize: 18, color: theme.muted, marginBottom: 8 },
+  emptyHint: { fontSize: 16, color: theme.muted },
   planList: { display: "flex", flexDirection: "column", gap: 12 },
   planCard: {
-    backgroundColor: "#1a1a1a",
+    backgroundColor: theme.cardBg,
     borderRadius: 12,
-    border: "1px solid #2a2a2a",
+    border: `1px solid ${theme.cardBorder}`,
     overflow: "hidden",
     cursor: "pointer",
     transition: "border-color 0.15s",
@@ -731,7 +736,7 @@ const s = {
     justifyContent: "center",
     flexShrink: 0,
   },
-  planName: { flex: 1, fontSize: 17, fontWeight: 600, color: "#fff" },
+  planName: { flex: 1, fontSize: 17, fontWeight: 600, color: theme.text },
   actions: { display: "flex", gap: 4 },
   iconBtn: {
     background: "none",
@@ -742,12 +747,12 @@ const s = {
     display: "flex",
     alignItems: "center",
   },
-  exTable: { borderTop: "1px solid #222", padding: "12px 20px 16px" },
+  exTable: { borderTop: `1px solid ${theme.cardBorder}`, padding: "12px 20px 16px" },
   exTableHeader: {
     display: "flex",
     gap: 8,
     fontSize: 11,
-    color: "#555",
+    color: theme.muted,
     textTransform: "uppercase",
     letterSpacing: 0.8,
     marginBottom: 8,
@@ -758,11 +763,10 @@ const s = {
     display: "flex",
     gap: 8,
     padding: "7px 2px",
-    borderBottom: "1px solid #222",
+    borderBottom: `1px solid ${theme.cardBorder}`,
     fontSize: 14,
-    color: "#ccc",
+    color: theme.text,
   },
-  // Modal
   overlay: {
     position: "fixed",
     inset: 0,
@@ -773,8 +777,8 @@ const s = {
     zIndex: 1000,
   },
   modal: {
-    backgroundColor: "#111",
-    border: "1px solid #2a2a2a",
+    backgroundColor: theme.cardBg,
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: 14,
     padding: "28px 28px 24px",
     width: "100%",
@@ -790,27 +794,27 @@ const s = {
     alignItems: "center",
     marginBottom: 20,
   },
-  modalTitle: { fontSize: 18, fontWeight: 700, margin: 0, color: "#fff" },
+  modalTitle: { fontSize: 18, fontWeight: 700, margin: 0, color: theme.text },
   closeBtn: {
     background: "none",
     border: "none",
-    color: "#555",
+    color: theme.muted,
     fontSize: 16,
     cursor: "pointer",
   },
   label: {
     display: "block",
     fontSize: 11,
-    color: "#666",
+    color: theme.muted,
     marginBottom: 8,
     textTransform: "uppercase",
     letterSpacing: 0.8,
   },
   input: {
-    backgroundColor: "#1a1a1a",
-    border: "1px solid #2a2a2a",
+    backgroundColor: theme.selectBg,
+    border: `1px solid ${theme.inputBorder}`,
     borderRadius: 8,
-    color: "#fff",
+    color: theme.text,
     fontSize: 16,
     padding: "9px 12px",
     marginBottom: 12,
@@ -846,8 +850,8 @@ const s = {
   },
   removeBtn: {
     background: "none",
-    border: "1px solid #2a2a2a",
-    color: "#555",
+    border: `1px solid ${theme.cardBorder}`,
+    color: theme.muted,
     borderRadius: 6,
     width: 32,
     height: 36,
@@ -865,7 +869,7 @@ const s = {
     flexWrap: "wrap",
   },
   saveBtn: {
-    backgroundColor: "#DFFF00",
+    backgroundColor: theme.accent,
     color: "#000",
     border: "none",
     borderRadius: 8,
@@ -877,8 +881,8 @@ const s = {
   },
   cancelBtn: {
     backgroundColor: "transparent",
-    color: "#888",
-    border: "1px solid #2a2a2a",
+    color: theme.muted,
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: 8,
     padding: "10px 18px",
     fontSize: 13,
@@ -887,14 +891,13 @@ const s = {
   },
   secondaryBtn: {
     backgroundColor: "transparent",
-    color: "#ADAAAA",
-    border: "1px solid #2a2a2a",
+    color: theme.muted,
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: 8,
     padding: "10px 18px",
     fontSize: 13,
     cursor: "pointer",
     fontFamily: "'lexend', sans-serif",
   },
-};
-
+});
 export default LogWorkoutPlan;

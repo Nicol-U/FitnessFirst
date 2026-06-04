@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTheme } from '../Components/ThemeContext';
 
 // ─── Static Data ─────────────────────────────────────────────────────────────
 
@@ -185,6 +186,11 @@ export function LW() {
   // add this back in if the backend fails to work
   // const [plans, setPlans] = useState(() => readLocalStorageArray(WORKOUT_PLANS_KEY));
   // const [workoutLogs, setWorkoutLogs] = useState(() => readLocalStorageArray(WORKOUT_LOGS_KEY));
+
+
+  const { theme, darkMode, setDarkMode } = useTheme();
+  const styles = StylesFunc(theme);
+
 
    const [plans, setPlans] = useState([]);
    useEffect(() => {
@@ -534,13 +540,13 @@ const quickLog = {
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
-const styles = {
+const StylesFunc = (theme) => ({
   page: {
-    backgroundColor: '#0E0E0E',
+    backgroundColor: theme.pageBg,
     minHeight: '100vh',
     padding: '40px 32px',
     fontFamily: "'Lexend', sans-serif",
-    color: '#fff',
+    color: theme.text,
     boxSizing: 'border-box',
     marginTop: '40px',
   },
@@ -549,7 +555,7 @@ const styles = {
     fontSize: 22,
     fontWeight: 900,
     letterSpacing: '0.08em',
-    color: '#F6FFC0',
+    color: theme.accent,
     marginBottom: 28,
   },
 
@@ -561,10 +567,10 @@ const styles = {
   },
 
   modeButton: {
-    backgroundColor: '#212020',
-    border: '1px solid #3a3a3a',
+    backgroundColor: theme.cardBg,
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: 10,
-    color: '#888',
+    color: theme.muted,
     fontSize: 14,
     fontWeight: 700,
     fontFamily: "'Lexend', sans-serif",
@@ -575,14 +581,14 @@ const styles = {
   },
 
   activeModeButton: {
-    backgroundColor: '#2c2c2b',
-    borderColor: '#DAF900',
-    color: '#DAF900',
+    backgroundColor: theme.selectBg,
+    borderColor: theme.accent,
+    color: theme.accent,
   },
 
   card: {
-    backgroundColor: '#171717',
-    border: '1px solid #2a2a2a',
+    backgroundColor: theme.cardBg,
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: 16,
     padding: 20,
     maxWidth: 900,
@@ -598,14 +604,14 @@ const styles = {
   },
 
   sectionHeading: {
-    color: '#F6FFC0',
+    color: theme.accent,
     fontSize: 18,
     fontWeight: 800,
     margin: '0 0 6px',
   },
 
   helperText: {
-    color: '#aaa',
+    color: theme.muted,
     fontSize: 13,
     lineHeight: 1.45,
     margin: 0,
@@ -622,7 +628,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     gap: 8,
-    color: '#888',
+    color: theme.muted,
     fontSize: 11,
     fontWeight: 700,
     letterSpacing: '0.08em',
@@ -631,10 +637,10 @@ const styles = {
 
   select: {
     width: '100%',
-    backgroundColor: '#2c2c2b',
-    border: '1px solid #3a3a3a',
+    backgroundColor: theme.selectBg,
+    border: `1px solid ${theme.inputBorder}`,
     borderRadius: 8,
-    color: '#fff',
+    color: theme.text,
     fontSize: 14,
     padding: '8px 10px',
     outline: 'none',
@@ -650,10 +656,10 @@ const styles = {
 
   input: {
     width: '100%',
-    backgroundColor: '#2c2c2b',
-    border: '1px solid #3a3a3a',
+    backgroundColor: theme.selectBg,
+    border: `1px solid ${theme.inputBorder}`,
     borderRadius: 8,
-    color: '#fff',
+    color: theme.text,
     fontSize: 14,
     padding: '8px 10px',
     outline: 'none',
@@ -665,9 +671,9 @@ const styles = {
   primaryBtn: {
     marginTop: 4,
     backgroundColor: 'transparent',
-    border: '1px solid #DAF900',
+    border: `1px solid ${theme.accent}`,
     borderRadius: 10,
-    color: '#DAF900',
+    color: theme.accent,
     fontSize: 14,
     fontWeight: 700,
     fontFamily: "'Lexend', sans-serif",
@@ -679,9 +685,9 @@ const styles = {
 
   secondaryBtn: {
     backgroundColor: 'transparent',
-    border: '1px solid #3a3a3a',
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: 10,
-    color: '#ccc',
+    color: theme.muted,
     fontSize: 13,
     fontWeight: 600,
     fontFamily: "'Lexend', sans-serif",
@@ -698,16 +704,17 @@ const styles = {
 
   planCard: {
     display: 'block',
-    backgroundColor: '#212020',
-    border: '1px solid #2a2a2a',
+    backgroundColor: theme.cardBg,
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: 12,
     padding: '14px 16px',
     cursor: 'pointer',
+    transition: 'border-color 0.15s',
   },
 
   selectedPlanCard: {
-    borderColor: '#DAF900',
-    boxShadow: '0 0 0 1px rgba(218, 249, 0, 0.2)',
+    borderColor: theme.accent,
+    boxShadow: `0 0 0 1px ${theme.accent}33`,
   },
 
   planHeader: {
@@ -718,7 +725,7 @@ const styles = {
   },
 
   planName: {
-    color: '#F6FFC0',
+    color: theme.text,
     fontSize: 15,
     fontWeight: 800,
   },
@@ -736,32 +743,32 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     gap: 12,
-    color: '#fff',
+    color: theme.text,
     fontSize: 13,
-    borderTop: '1px solid #2a2a2a',
+    borderTop: `1px solid ${theme.cardBorder}`,
     paddingTop: 8,
     flexWrap: 'wrap',
   },
 
   exerciseMeta: {
-    color: '#aaa',
+    color: theme.muted,
   },
 
   confirmBox: {
-    backgroundColor: '#212020',
-    border: '1px solid #3a3a3a',
+    backgroundColor: theme.cardBg,
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: 10,
-    color: '#ddd',
+    color: theme.text,
     fontSize: 13,
     padding: '10px 12px',
     marginBottom: 14,
   },
 
   emptyState: {
-    backgroundColor: '#212020',
-    border: '1px solid #2a2a2a',
+    backgroundColor: theme.cardBg,
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: 12,
-    color: '#aaa',
+    color: theme.muted,
     fontSize: 14,
     padding: 16,
     marginBottom: 16,
@@ -769,12 +776,12 @@ const styles = {
 
   statusMessage: {
     maxWidth: 900,
-    backgroundColor: '#212020',
-    border: '1px solid #2a2a2a',
+    backgroundColor: theme.cardBg,
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: 10,
-    color: '#F6FFC0',
+    color: theme.accent,
     fontSize: 14,
     padding: '12px 14px',
     marginTop: 16,
   },
-};
+});

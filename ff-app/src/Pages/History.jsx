@@ -3,6 +3,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import { height } from "@mui/system";
+import { useTheme } from '../Components/ThemeContext';
 
 const DAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 const MONTHS = [
@@ -35,7 +36,7 @@ function formatDisplayDate(dateStr) {
   return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
 }
 
-function DayBanner({ log, selectedDate }) {
+function DayBanner({ log, selectedDate, theme }) {
   if (!log || log.length === 0) return null;
 
   const totalSessions = log.length;
@@ -55,8 +56,8 @@ function DayBanner({ log, selectedDate }) {
 
   return (
     <div style={{
-      backgroundColor: '#1a1a1a',
-      border: '1px solid #2a2a2a',
+      backgroundColor: theme.pageBg, //'#1a1a1a',
+      border: `1px solid ${theme.watermark}`, // #2a2a2a,
       borderRadius: 12,
       padding: '16px 20px',
       marginBottom: 16,
@@ -64,7 +65,7 @@ function DayBanner({ log, selectedDate }) {
       {/* title */}
       <p style={{
         fontSize: 11,
-        color: '#555',
+        color: theme.accent, //'#555',
         textTransform: 'uppercase',
         letterSpacing: 0.8,
         margin: '0 0 14px',
@@ -85,14 +86,14 @@ function DayBanner({ log, selectedDate }) {
           { label: 'Sets',      value: totalSets },
         ].map(({ label, value }) => (
           <div key={label} style={{
-            backgroundColor: '#212020',
-            border: '1px solid #2a2a2a',
+            backgroundColor: theme.cardBorder, //'#212020',
+            border: `1px solid ${theme.watermark}`,// #2a2a2a,
             borderRadius: 8,
             padding: '8px 14px',
             textAlign: 'center',
           }}>
-            <p style={{ margin: 0, fontSize: 22, fontWeight: 900, color: '#DFFF00' }}>{value}</p>
-            <p style={{ margin: 0, fontSize: 10, color: '#555', textTransform: 'uppercase', letterSpacing: 0.8 }}>{label}</p>
+            <p style={{ margin: 0, fontSize: 22, fontWeight: 900, color: theme.accent }}>{value}</p>
+            <p style={{ margin: 0, fontSize: 10, color: theme.toggleNotDone, textTransform: 'uppercase', letterSpacing: 0.8 }}>{label}</p>
           </div>
         ))}
       </div>
@@ -108,17 +109,17 @@ function DayBanner({ log, selectedDate }) {
                 justifyContent: 'space-between',
                 marginBottom: 4,
               }}>
-                <span style={{ fontSize: 11, color: '#888', textTransform: 'uppercase', letterSpacing: 0.6 }}>
+                <span style={{ fontSize: 11, color: theme.accent/*'#888'*/, textTransform: 'uppercase', letterSpacing: 0.6 }}>
                   {label}
                 </span>
-                <span style={{ fontSize: 11, color: '#fff', fontWeight: 700 }}>
+                <span style={{ fontSize: 11, color: theme.text/*'#fff'*/, fontWeight: 700 }}>
                   {value}
                 </span>
               </div>
               {/* bar track */}
               <div style={{
                 height: 6,
-                backgroundColor: '#2a2a2a',
+                backgroundColor: theme.cardBorder, //'#2a2a2a',
                 borderRadius: 4,
                 overflow: 'hidden',
               }}>
@@ -147,10 +148,12 @@ export function History() {
   const [log,          setLog]          = useState([]);
   const [logDates,     setLogDates]     = useState(new Set());
   const [loading,      setLoading]      = useState(false);
+ 
+  const { theme, darkMode, setDarkMode } = useTheme();
 
-
+  const s = styles(theme);
   
-  // fetch all dates on mount — separate from selected date logic
+  // fetch all date and separate from date 
 useEffect(() => {
 fetch('http://localhost:3001/workoutsessions/dates', { credentials: 'include' })
   .then(res => res.json())
@@ -160,9 +163,9 @@ fetch('http://localhost:3001/workoutsessions/dates', { credentials: 'include' })
     )));
   })
     .catch(err => console.error('failed to fetch dates:', err));
-}, []);  // empty array — runs once on mount only
+}, []); // just in case array
 
-// fetch sessions when selected date changes
+// RE-fetch sessions when date changes
 useEffect(() => {
   setLoading(true);
 
@@ -173,7 +176,7 @@ useEffect(() => {
   fetch(url, { credentials: 'include' })
     .then(res => res.json())
     .then(data => {
-      console.log('sessions response:', data);  // check what comes back
+      console.log('sessions response:', data);  // check RES
       setLog(data.sessions || []);
     })
     .catch(err => console.error('failed to fetch sessions:', err))
@@ -219,8 +222,8 @@ useEffect(() => {
       <div style={s.topRow}>
         <div>
           <h1 style={s.heading}>
-            <span style={{ color: "#fff" }}>HISTORY</span>
-            <span style={{ color: "#DFFF00" }}>.</span>
+            <span style={{ color: theme.text /*"#fff"*/ }}>HISTORY</span>
+            <span style={{ color:  theme.accent }}>.</span>
           </h1>
           <p style={s.subtitle}>Track your training sessions and progress over time.</p>
         </div>
@@ -253,9 +256,10 @@ useEffect(() => {
                 onClick={() => handleDayClick(cell)}
                 style={{
                   ...s.cell,
+                  // FIX LATTER MAYBE
                   cursor: cell.currentMonth ? "pointer" : "default",
-                  backgroundColor: isSelected(cell) ? "#DFFF00" : isToday(cell) ? "#2a2a2a" : "transparent",
-                  color: isSelected(cell) ? "#000" : cell.currentMonth ? "#fff" : "#333",
+                  backgroundColor: isSelected(cell) ? "#DFFF00" : isToday(cell) ? theme.muted : "transparent",
+                  color: isSelected(cell) ? "#000" : cell.currentMonth ? theme.text : "#333",
                   fontWeight: isSelected(cell) || isToday(cell) ? 700 : 400,
                   outline: isToday(cell) && !isSelected(cell) ? "1px solid #DFFF00" : "none",
                 }}
@@ -287,7 +291,7 @@ useEffect(() => {
             {selectedDate ? formatDisplayDate(selectedDate) : "ALL SESSIONS"}
           </p>
 {  /* graph banner here */}
-          <DayBanner log={log} selectedDate={selectedDate} />
+          <DayBanner log={log} selectedDate={selectedDate} theme = {theme}/>
           {loading ? (
             <div style={s.empty}>
               <p style={s.emptyText}>Loading...</p>
@@ -305,7 +309,7 @@ useEffect(() => {
                       <FitnessCenterIcon style={{ fontSize: 18, color: "#DFFF00" }} />
                     </div>
                     <div>
-                      {/* show plan name for plan logs, category for quick logs */}
+                      {/* show plan name for plan logs, cat for quick logs */}
                       <p style={s.logPlanName}>
                         {entry.session_type === 'plan' ? entry.plan_name : `Quick Log`}
                       </p>
@@ -314,7 +318,7 @@ useEffect(() => {
                   </div>
 
                   {entry.notes && (
-                    <p style={{ color: '#888', fontSize: 12, margin: '6px 0 0' }}>{entry.notes}</p>
+                    <p style={{ color: theme.toggleOffKnob /* '#888'*/, fontSize: 12, margin: '6px 0 0' }}>{entry.notes}</p>
                   )}
 
                   <div style={{ marginTop: 10 }}>
@@ -329,7 +333,7 @@ useEffect(() => {
                         <span style={{ flex: 3 }}>
                           {ex.name}
                           {ex.category && (
-                            <span style={{ color: '#555', fontSize: 11, marginLeft: 6 }}>
+                            <span style={{ color: theme.inputBorder, fontSize: 11, marginLeft: 6 }}>
                               {ex.category}
                             </span>
                           )}
@@ -350,16 +354,15 @@ useEffect(() => {
   );
 }
 
-const s = {
+const styles = (theme) => ({
   page: {
     paddingLeft: 40,
     paddingRight: 40,
-    //paddingTop: 10,
     paddingBottom: 64,
     minHeight: "100vh",
     width: "100%",
-    backgroundColor: "#000",
-    color: "#fff",
+    backgroundColor: theme.pageBg,
+    color: theme.text,
     boxSizing: "border-box",
     fontFamily: "'lexend', sans-serif",
   },
@@ -371,15 +374,16 @@ const s = {
     paddingTop: 30,
   },
   heading: {
-    fontSize: "clamp(28px, 5vw, 48px)",  /* responsive font size */
+    fontSize: "clamp(28px, 5vw, 48px)",
     fontWeight: 900,
     margin: "0 0 10px",
     letterSpacing: 2,
     lineHeight: 1,
     textTransform: "uppercase",
+    color: theme.text,
   },
   subtitle: {
-    color: "#ADAAAA",
+    color: theme.muted,
     fontSize: 13,
     margin: 0,
     lineHeight: 1.6,
@@ -388,16 +392,16 @@ const s = {
     display: "flex",
     gap: 24,
     alignItems: "flex-start",
-    flexWrap: "wrap",         /* allows stacking */
+    flexWrap: "wrap",
   },
-   card: {
-    backgroundColor: "#1a1a1a",
-    border: "1px solid #2a2a2a",
+  card: {
+    backgroundColor: theme.cardBg,
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: 14,
     padding: "28px 32px",
     flexShrink: 0,
-    width: "100%",            /* fluid instead of fixed 420px */
-    maxWidth: 420,            /* caps at 420px on large screens */
+    width: "100%",
+    maxWidth: 420,
     boxSizing: "border-box",
     fontFamily: "'lexend', sans-serif",
   },
@@ -410,14 +414,14 @@ const s = {
   monthLabel: {
     fontSize: 18,
     fontWeight: 700,
-    color: "#fff",
+    color: theme.text,
     letterSpacing: 1,
   },
   navBtn: {
     background: "none",
-    border: "1px solid #2a2a2a",
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: 6,
-    color: "#aaa",
+    color: theme.muted,
     cursor: "pointer",
     width: 32,
     height: 32,
@@ -433,7 +437,7 @@ const s = {
   dayHeader: {
     textAlign: "center",
     fontSize: 11,
-    color: "#555",
+    color: theme.muted,
     letterSpacing: 0.8,
     paddingBottom: 10,
     textTransform: "uppercase",
@@ -457,44 +461,43 @@ const s = {
   clearBtn: {
     marginTop: 16,
     background: "none",
-    border: "1px solid #2a2a2a",
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: 6,
-    color: "#666",
+    color: theme.muted,
     fontSize: 12,
     cursor: "pointer",
     padding: "6px 14px",
     fontFamily: "'lexend', sans-serif",
   },
-  
   logPanel: {
     flex: 1,
     minWidth: 0,
-    width: "100%",            /* full width when stacked */
+    width: "100%",
     boxSizing: "border-box",
   },
   logTitle: {
     fontSize: 11,
-    color: "#555",
+    color: theme.muted,
     textTransform: "uppercase",
     letterSpacing: 0.8,
     marginBottom: 14,
     marginTop: 0,
   },
   empty: {
-    backgroundColor: "#1a1a1a",
-    border: "1px solid #2a2a2a",
+    backgroundColor: theme.cardBg,
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: 14,
     padding: "40px 24px",
     textAlign: "center",
   },
   emptyText: {
-    color: "#444",
+    color: theme.accented,
     fontSize: 14,
     margin: 0,
   },
   logCard: {
-    backgroundColor: "#1a1a1a",
-    border: "1px solid #2a2a2a",
+    backgroundColor: theme.cardBg,
+    border: `1px solid ${theme.cardBorder}`,
     borderRadius: 12,
     padding: "16px 20px",
   },
@@ -507,8 +510,8 @@ const s = {
     width: 36,
     height: 36,
     borderRadius: 8,
-    backgroundColor: "#DFFF0022",
-    border: "1px solid #DFFF0055",
+    backgroundColor: `${theme.accent}22`,
+    border: `1px solid ${theme.accent}55`,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -517,19 +520,19 @@ const s = {
   logPlanName: {
     fontSize: 15,
     fontWeight: 600,
-    color: "#fff",
+    color: theme.text,
     margin: 0,
   },
   logDate: {
     fontSize: 12,
-    color: "#555",
+    color: theme.muted,
     margin: "2px 0 0",
   },
   exHeader: {
     display: "flex",
     gap: 8,
     fontSize: 11,
-    color: "#555",
+    color: theme.muted,
     textTransform: "uppercase",
     letterSpacing: 0.8,
     marginBottom: 6,
@@ -539,10 +542,10 @@ const s = {
     display: "flex",
     gap: 8,
     padding: "6px 2px",
-    borderBottom: "1px solid #222",
+    borderBottom: `1px solid ${theme.cardBorder}`,
     fontSize: 13,
-    color: "#ccc",
+    color: theme.text,
   },
-};
+});
 
 export default History;

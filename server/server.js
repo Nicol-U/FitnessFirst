@@ -558,7 +558,7 @@ PatchElem.forEach(({ name, SQL, SQLparams, JGetRow }) => {
     }
   });
 })
-
+*/
 app.get('/settings', requireAuth, async (req, res) => {
   try {
     const { rows } = await db.query(

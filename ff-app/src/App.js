@@ -11,10 +11,13 @@ import { Settings } from './Pages/Settings';
 import { CreateAcc } from './Pages/CreateAcc';
 import { ForgotPassword } from './Pages/ForgotPassword';
 import { ResetPassword } from './Pages/ResetPassword';
+import { ThemeProvider } from './Components/ThemeContext';
+//import { ThemeContext } from '@emotion/react';
 
 function ProtectedLayout() {
   const [authChecked, setAuthChecked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
     fetch('http://localhost:3001/auth/me', { credentials: 'include' })
@@ -29,6 +32,7 @@ function ProtectedLayout() {
   if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   return (
+
     <div className="AppLayout">
       <Sidebar />
       <div className="MainContent">
@@ -41,13 +45,16 @@ function ProtectedLayout() {
         </Routes>
       </div>
     </div>
+
   );
 }
 
 function App() {
   return (
+    <ThemeProvider>
     <Router>
       <Routes>
+        
         <Route path="/login" element={<Login />} />
         <Route path="/createacc" element={<CreateAcc />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -55,6 +62,7 @@ function App() {
         <Route path="/*" element={<ProtectedLayout />} />
       </Routes>
     </Router>
+    </ThemeProvider>
   );
 }
 

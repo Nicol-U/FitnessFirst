@@ -4,9 +4,12 @@ import { SidebarHeader, SidebarData, profileIcon  } from "./SidebarData";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import GreenButton from "./CustomButton";
 import MenuIcon from '@mui/icons-material/Menu';
+import { useTheme } from '../Components/ThemeContext';
 
 // ProfileObject must be ABOVE Sidebar since it's a const
 const ProfileObject = () => {
+    const { theme, darkMode, setDarkMode } = useTheme();
+
   const navigate = useNavigate(); 
   const [UserOptions, SetUserOptions] = useState(false);
   const [isLoged, SetLog] = useState(true);
@@ -25,8 +28,8 @@ const ProfileObject = () => {
           right: 0,
           display: "flex",
           flexDirection: "column",
-          backgroundColor: "#ffffff",
-          border: "1px solid #2a2a2a",
+          backgroundColor: theme.text,//"#ffffff",
+          border: `1px solid ${theme.cardBorder}`,//#2a2a2a",
           borderRadius: "10px",
           padding: "8px",
           gap: "1px",
@@ -51,7 +54,8 @@ export default function Sidebar() {
     const navigate = useNavigate();
     const [isVisible, setIsVisible] = useState(false);
     const popupRef = useRef(null);
-      
+    const { theme, darkMode, setDarkMode } = useTheme();
+
     useEffect(() => {
         function handleOutClick(event) {
             if (popupRef.current && !popupRef.current.contains(event.target)) {
@@ -72,8 +76,8 @@ export default function Sidebar() {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                color: "#DFFF00",
-                background: "black",
+                color: theme.accent,
+                background: theme.pageBg,
                 height: "60px",
                 padding: "0 20px",
                 boxSizing: "border-box",
@@ -103,13 +107,13 @@ export default function Sidebar() {
     flexDirection: "column",
     boxSizing: "border-box",
     padding: "20px",
-    background: "black",
+    background: theme.sidebar,//"black",
     minHeight: "calc(100vh - 60px)",   /* always full height */
 }}>
-                    <ul className="SidebarHeader">
+                    <ul className="SidebarHeader" >
                         <li>
                             <div id="title">{SidebarHeader[0].title}</div>
-                            <div id="subtitle">{SidebarHeader[0].subtitle}</div>
+                            <div id="subtitle" style={{  color: theme.subheader}}>{SidebarHeader[0].subtitle}</div>
                         </li>
                     </ul>
 

@@ -3,14 +3,16 @@ import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import SecurityIcon from '@mui/icons-material/Security';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import { useState, useEffect } from "react";
-import { ThemeContext } from '../Components/ThemeContext';
+import { useState, useEffect,  } from "react";
+import { useTheme } from '../Components/ThemeContext';
 const ACCENT = "#DFFF00";
+// this should allow darkmode and getThem to be exported
+//export const ThemeContext = createContext();
 
 // new min sidebar with is 40
 const SIDEBAR_WIDTH = "40px";
 
-const getTheme = (darkMode) => ({
+/*const getTheme = (darkMode) => ({
   
   accent: darkMode ? "#DFFF00" : "#dfff00",
   pageBg: darkMode ? "#000000" : "#f5f6f8",
@@ -25,7 +27,7 @@ const getTheme = (darkMode) => ({
   toggleOffBg: darkMode ? "#444" : "#c7cad1",
   toggleOffKnob: darkMode ? "#888" : "#ffffff",
 });
-
+*/
 const createStyles = (theme) => ({
 page: {
     backgroundColor: theme.pageBg,
@@ -342,18 +344,20 @@ function Toggle({ checked, onChange, theme }) {
 
 export function Settings() {
   // ── State ──────────────────────────────────────────────────────────────────
+  const { theme, darkMode, setDarkMode } = useTheme();
 
   // null = still loading from backend
   const [form, setForm] = useState(null);
 
   const [workoutReminders, setWorkoutReminders] = useState(true);
-  const [darkMode, setDarkMode] = useState(true);
+  // const [darkMode, setDarkMode] = useState(true);
   const [alertTime, setAlertTime] = useState("06:30");
   const [ampm, setAmpm] = useState("AM");
   const [fontDensity, setFontDensity] = useState("STANDARD");
   const [confirmMessage, setConfirmMessage] = useState("");
 
-  const theme = getTheme(darkMode);
+
+  // const theme = getTheme(darkMode);
   const styles = createStyles(theme);
 
 
@@ -376,13 +380,9 @@ export function Settings() {
           targetWeight:  s?.target_weight   ?? 82.5,
         });
         setWorkoutReminders(s?.workout_reminders ?? true);
-          <ThemeContext.Provider
-            value = {{
-              darkMode,
-              getTheme,
-            }}>
+
+
           setDarkMode(s?.dark_mode             ?? true);
-        </ThemeContext.Provider>
         setAlertTime(s?.alert_time?.slice(0, 5) ?? "06:30"); // trim seconds from TIME type
         setFontDensity(s?.font_density       ?? "STANDARD");
       });
