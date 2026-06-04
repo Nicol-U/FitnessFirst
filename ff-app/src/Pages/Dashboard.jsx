@@ -4,6 +4,7 @@ import GreenButton from '../Components/CustomButton';
 import { Link, useLocation } from 'react-router-dom';
 import DescriptionIcon from '@mui/icons-material/Description';
 import EventNoteIcon from '@mui/icons-material/EventNote';
+import { ThemeContext } from './Settings.jsx';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -31,6 +32,9 @@ async function checkIfNewDay() {
 export function Dashboard() {
   const [showPopUp, setShowPopUp] = useState(false);
   const [dayCount, setStreak] = useState(0);
+  
+  const { theme } = useContext(ThemeContext);
+
 
   useEffect(() => {
     checkIfNewDay().then(streak => setStreak(streak));
@@ -78,7 +82,7 @@ useEffect(() => {
     width: '100%',
     maxWidth: '320px',
     fontSize: 'clamp(14px, 4vw, 24px)',
-    background: '#191A17',
+    background:  '#191A17',
     borderRadius: '100px',
     color: '#F6FFC0',
     gap: '10px',

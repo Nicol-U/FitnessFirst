@@ -4,13 +4,14 @@ import ColorLensIcon from '@mui/icons-material/ColorLens';
 import SecurityIcon from '@mui/icons-material/Security';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import { useState, useEffect } from "react";
-
+import { ThemeContext } from '../Components/ThemeContext';
 const ACCENT = "#DFFF00";
 
 // new min sidebar with is 40
 const SIDEBAR_WIDTH = "40px";
 
 const getTheme = (darkMode) => ({
+  
   accent: darkMode ? "#DFFF00" : "#dfff00",
   pageBg: darkMode ? "#000000" : "#f5f6f8",
   cardBg: darkMode ? "#1a1a1a" : "#ffffff",
@@ -355,6 +356,7 @@ export function Settings() {
   const theme = getTheme(darkMode);
   const styles = createStyles(theme);
 
+
   // ── Load settings from backend on mount ───────────────────────────────────
 
   useEffect(() => {
@@ -374,7 +376,13 @@ export function Settings() {
           targetWeight:  s?.target_weight   ?? 82.5,
         });
         setWorkoutReminders(s?.workout_reminders ?? true);
-        setDarkMode(s?.dark_mode             ?? true);
+          <ThemeContext.Provider
+            value = {{
+              darkMode,
+              getTheme,
+            }}>
+          setDarkMode(s?.dark_mode             ?? true);
+        </ThemeContext.Provider>
         setAlertTime(s?.alert_time?.slice(0, 5) ?? "06:30"); // trim seconds from TIME type
         setFontDensity(s?.font_density       ?? "STANDARD");
       });
