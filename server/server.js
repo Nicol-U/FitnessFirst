@@ -559,6 +559,9 @@ PatchElem.forEach(({ name, SQL, SQLparams, JGetRow }) => {
   });
 })
 */
+
+//______________________________________________Settings____________________________________________________________
+
 app.get('/settings', requireAuth, async (req, res) => {
   try {
     const { rows } = await db.query(
@@ -571,7 +574,6 @@ app.get('/settings', requireAuth, async (req, res) => {
   }
 });
 
-//______________________________________________Settings____________________________________________________________
 // PUT /settings — save or update settings + profile fields
 app.put('/settings', requireAuth, async (req, res) => {
   const { fullName, username, email, currentWeight, targetWeight,

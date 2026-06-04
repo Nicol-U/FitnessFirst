@@ -25,12 +25,20 @@ export const getTheme = (darkMode) => ({
 
 export const ThemeContext = createContext(null);
 
+export const FONT_SCALE = {
+  COMPACT:     { fontSize: "0.85rem", lineHeight: 1.0 },
+  STANDARD:    { fontSize: "1rem",    lineHeight: 1.5 },
+  COMFORTABLE: { fontSize: "1.15rem", lineHeight: 2.0 },
+};
+
 export function ThemeProvider({ children }) {
   const [darkMode, setDarkMode] = useState(true);
+  const [fontDensity, setFontDensity] = useState("STANDARD");
+  const fontScale = FONT_SCALE[fontDensity] ?? FONT_SCALE.STANDARD;
   const theme = getTheme(darkMode);
 
   return (
-    <ThemeContext.Provider value={{ theme, darkMode, setDarkMode }}>
+    <ThemeContext.Provider value={{ theme, darkMode, setDarkMode, fontDensity, setFontDensity, fontScale  }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -39,3 +47,4 @@ export function ThemeProvider({ children }) {
 export function useTheme() {
   return useContext(ThemeContext);
 }
+

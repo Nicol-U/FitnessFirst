@@ -344,7 +344,7 @@ function Toggle({ checked, onChange, theme }) {
 
 export function Settings() {
   // ── State ──────────────────────────────────────────────────────────────────
-  const { theme, darkMode, setDarkMode } = useTheme();
+  const { theme, darkMode, setDarkMode, fontDensity, setFontDensity  } = useTheme();
 
   // null = still loading from backend
   const [form, setForm] = useState(null);
@@ -353,7 +353,6 @@ export function Settings() {
   // const [darkMode, setDarkMode] = useState(true);
   const [alertTime, setAlertTime] = useState("06:30");
   const [ampm, setAmpm] = useState("AM");
-  const [fontDensity, setFontDensity] = useState("STANDARD");
   const [confirmMessage, setConfirmMessage] = useState("");
 
 
@@ -476,7 +475,7 @@ export function Settings() {
           <h1 style={styles.heading}>SETTINGS</h1>
           <p style={styles.subheading}>Configure your elite performance parameters.</p>
         </div>
-        <div style={styles.binaryWatermark}>010101</div>
+        {/* <div style={styles.binaryWatermark}>010101</div> */}
       </div>
 
       {/* Top row: Profile Identity + Security */}

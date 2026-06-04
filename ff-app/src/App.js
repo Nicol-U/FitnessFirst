@@ -11,13 +11,14 @@ import { Settings } from './Pages/Settings';
 import { CreateAcc } from './Pages/CreateAcc';
 import { ForgotPassword } from './Pages/ForgotPassword';
 import { ResetPassword } from './Pages/ResetPassword';
-import { ThemeProvider } from './Components/ThemeContext';
+import { ThemeProvider, useTheme } from './Components/ThemeContext';
 //import { ThemeContext } from '@emotion/react';
 
 function ProtectedLayout() {
   const [authChecked, setAuthChecked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
+  const { fontScale } = useTheme();
 
   useEffect(() => {
     fetch('http://localhost:3001/auth/me', { credentials: 'include' })
@@ -35,7 +36,7 @@ function ProtectedLayout() {
 
     <div className="AppLayout">
       <Sidebar />
-      <div className="MainContent">
+      <div className="MainContent" style={{ ...fontScale }}>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/logworkoutplan" element={<LogWorkoutPlan />} />
