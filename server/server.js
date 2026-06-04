@@ -506,3 +506,46 @@ PatchElem.forEach(({ name, SQL, SQLparams, JGetRow }) => {
     }
   });
 })
+
+app.get('/settings', requireAuth, async (req, res) => {
+  try {
+    const { rows } = await db.query(
+      'SELECT * FROM user_settings WHERE user_id = $1',
+      [req.user.id]
+    );
+    res.json({ settings: rows[0] || null });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//______________________________________________Settings____________________________________________________________
+// PUT /settings — save or update settings + profile fields
+app.put('/settings', requireAuth, async (req, res) => {
+  const { fullName, username, email, currentWeight, targetWeight,
+          workoutReminders, darkMode, alertTime, fontDensity } = req.body;
+  try {
+    // Update users table (profile identity + security fields)
+    await db.query(
+      `UPDATE users SET full_name=$1, username=$2, email=$3 WHERE id=$4`,
+      [fullName, username, email, req.user.id]
+    );
+
+    // Upsert user_settings (insert if not exists, update if exists)
+    await db.query(
+      `INSERT INTO user_settings 
+         (user_id, current_weight, target_weight, workout_reminders, dark_mode, alert_time, font_density)
+       VALUES ($1,$2,$3,$4,$5,$6,$7)
+       ON CONFLICT (user_id) DO UPDATE SET
+         current_weight=$2, target_weight=$3, workout_reminders=$4,
+         dark_mode=$5, alert_time=$6, font_density=$7`,
+      [req.user.id, currentWeight, targetWeight, workoutReminders, darkMode, alertTime, fontDensity]
+    );
+
+    res.json({ message: 'Settings saved' });
+  } catch (err) {
+    if (err.code === '23505') return res.status(409).json({ error: 'Username or email already taken' });
+    res.status(500).json({ error: err.message });
+  }
+});
+//________________________________________________________________________________________________________________
