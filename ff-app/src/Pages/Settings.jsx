@@ -420,14 +420,14 @@ export function Settings() {
   };
 
   const handleSave = async () => {
-     console.log({ 
-      currentWeight: form.currentWeight, 
-      targetWeight: form.targetWeight, 
-      workoutReminders, 
-      darkMode, 
-      alertTime, 
-      fontDensity 
-    });
+    //  console.log({ 
+    //   currentWeight: form.currentWeight, 
+    //   targetWeight: form.targetWeight, 
+    //   workoutReminders, 
+    //   darkMode, 
+    //   alertTime, 
+    //   fontDensity 
+    // });
     try {
       const res = await fetch("http://localhost:3001/settings", {
         method: "PUT",
