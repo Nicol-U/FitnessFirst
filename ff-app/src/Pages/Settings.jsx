@@ -3,51 +3,7 @@ import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import SecurityIcon from '@mui/icons-material/Security';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import { useState } from "react";
-/*
-export function Settings() {
-  return (
-
-    <div className="page">
-      {/* Header }
-      <div className= 'toprow'>
-          <h1 className='heading' style={{ fontSize: 46, fontWeight: 900, marginLeft: "150px"}}>
-            <span style={{ color: "#fff" }}>SETTINGS </span>
-          </h1>
-      </div>
-      </div>
-  );
-}
-
-export default Settings;*/
-
-/*export function GrayRactangles({widthSize="75%", heightSize="90vh", children}){
-  const styles1 = {
-    display: "flex",
-    backgroundColor: "#212020",
-    flex: 1,
-    color: " white",
-    border: "1px solid #2a2a2a",
-    borderRadius: 14,
-    padding: "12px 28px 12px 40px",
-    width: "90vw",
-    marginRight: "100px",
-    maxHeight: heightSize,
-    marginLeft: "150px",
-    fontFamily: "'lexend', sans-serif",
-    maxWidth: widthSize,
-  };
-
-:root {
-  --primary-color: #DFFF00;
-  --primary-font: 'lexend', sans-serif;
-  --primary-bg-color: #0E0E0E;
-  --selection-black: #393939;
-  --main-gray: #ADAAAA;
-}
-*/
-
-
+import { useState, useEffect } from "react";
 
 const ACCENT = "#DFFF00";
 
@@ -384,14 +340,10 @@ function Toggle({ checked, onChange, theme }) {
 }
 
 export function Settings() {
-  // set default elements and update functions begin
-  const [form, setForm] = useState({
-    fullName: "ALEX RIVERA",
-    username: "arivera_88",
-    currentWeight: "85.0",
-    targetWeight: "82.5",
-    email: "alex.rivera@example.com",
-  });
+  // ── State ──────────────────────────────────────────────────────────────────
+
+  // null = still loading from backend
+  const [form, setForm] = useState(null);
 
   const [workoutReminders, setWorkoutReminders] = useState(true);
   const [darkMode, setDarkMode] = useState(true);
@@ -403,31 +355,109 @@ export function Settings() {
   const theme = getTheme(darkMode);
   const styles = createStyles(theme);
 
+  // ── Load settings from backend on mount ───────────────────────────────────
+
+  useEffect(() => {
+    Promise.all([
+      fetch("http://localhost:3001/auth/me", { credentials: "include" }),
+      fetch("http://localhost:3001/settings",  { credentials: "include" }),
+    ])
+      .then(([r1, r2]) => Promise.all([r1.json(), r2.json()]))
+      .then(([userData, settingsData]) => {
+        const u = userData.user;
+        const s = settingsData.settings;
+        setForm({
+          fullName:      u.full_name,
+          username:      u.username,
+          email:         u.email,
+          currentWeight: s?.current_weight  ?? 85.0,
+          targetWeight:  s?.target_weight   ?? 82.5,
+        });
+        setWorkoutReminders(s?.workout_reminders ?? true);
+        setDarkMode(s?.dark_mode             ?? true);
+        setAlertTime(s?.alert_time?.slice(0, 5) ?? "06:30"); // trim seconds from TIME type
+        setFontDensity(s?.font_density       ?? "STANDARD");
+      });
+  }, []);
+
+  // ── Handlers ───────────────────────────────────────────────────────────────
+
   // function handleField takes a parameter "key" and returns a function that takes parameter "e" and calls the function setForm. The value of "e" comes from the user input because function handleField is used in function onChange
   const handleField = (key) => (e) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
     // function setForm takes a parameter "f", which is the previous state (see line 397 as an example), and returns an object (not return two separate commands) that copy the previous state first then update "key" using e's value
 
   const handleDiscard = () => {
-    setForm({
-      fullName: "ALEX RIVERA",
-      username: "arivera_88",
-      currentWeight: "85.0",
-      targetWeight: "82.5",
-      email: "alex.rivera@example.com",
-    });
-    setWorkoutReminders(true);
-    setDarkMode(true);
-    setAlertTime("06:30");
-    setAmpm("AM");
-    setFontDensity("STANDARD");
+    // Re-fetch from backend instead of resetting to hardcoded values
+    Promise.all([
+      fetch("http://localhost:3001/auth/me", { credentials: "include" }),
+      fetch("http://localhost:3001/settings",  { credentials: "include" }),
+    ])
+      .then(([r1, r2]) => Promise.all([r1.json(), r2.json()]))
+      .then(([userData, settingsData]) => {
+        const u = userData.user;
+        const s = settingsData.settings;
+        setForm({
+          fullName:      u.full_name,
+          username:      u.username,
+          email:         u.email,
+          currentWeight: s?.current_weight  ?? "",
+          targetWeight:  s?.target_weight   ?? "",
+        });
+        setWorkoutReminders(s?.workout_reminders ?? true);
+        setDarkMode(s?.dark_mode             ?? true);
+        setAlertTime(s?.alert_time?.slice(0, 5) ?? "06:30");
+        setFontDensity(s?.font_density       ?? "STANDARD");
+        setConfirmMessage("");
+      });
   };
 
-  const handleSave = () => {
-    //TODO: backend
-    setConfirmMessage("Settings Updated");
+  const handleSave = async () => {
+     console.log({ 
+      currentWeight: form.currentWeight, 
+      targetWeight: form.targetWeight, 
+      workoutReminders, 
+      darkMode, 
+      alertTime, 
+      fontDensity 
+    });
+    try {
+      const res = await fetch("http://localhost:3001/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          fullName:        form.fullName,
+          username:        form.username,
+          email:           form.email,
+          currentWeight:   form.currentWeight,
+          targetWeight:    form.targetWeight,
+          workoutReminders,
+          darkMode,
+          alertTime,
+          fontDensity,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        setConfirmMessage(`Error: ${err.error}`);
+      } else {
+        setConfirmMessage("Settings Updated ✓");
+      }
+    } catch {
+      setConfirmMessage("Network error — try again");
+    }
   };
-  // Set default elements and update functions end
+
+  const handleChangePassword = () => {
+    window.location.href = `/#/forgot-password?email=${encodeURIComponent(form.email)}`;
+  };
+
+  // ── Loading guard ──────────────────────────────────────────────────────────
+
+  if (!form) return <div style={{ color: "white", padding: 40 }}>Loading...</div>;
+
+  // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
     <div style={styles.page}>
@@ -488,13 +518,11 @@ export function Settings() {
             <div style={styles.fieldLabel}>Password</div>
             <div style={styles.passwordRow}>
               <span style={styles.passwordDots}>••••••••••••</span>
-              <button style={styles.changeBtn}>Change</button>
+              <button style={styles.changeBtn} onClick={handleChangePassword}>Change</button>
             </div>
           </div>
           <div style={styles.securityNote}>
-            Two-factor authentication is currently{" "}
-            <span style={styles.securityNoteHighlight}>ENABLED</span> for enhanced
-            archive security.
+            Your email and password are used to secure your account.
           </div>
         </div>
       </div>
