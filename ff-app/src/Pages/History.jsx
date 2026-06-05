@@ -172,7 +172,7 @@ export function History() {
   
   // fetch all date and separate from date 
 useEffect(() => {
-fetch('http://localhost:3001/workoutsessions/dates', { credentials: 'include' })
+fetch(`${process.env.REACT_APP_API_URL}/workoutsessions/dates`, { credentials: 'include' })
   .then(res => res.json())
   .then(data => {
     setLogDates(new Set((data.dates || []).map(d => 
