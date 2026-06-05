@@ -21,7 +21,7 @@ function ProtectedLayout() {
   const { fontScale, alertTime, setAlertTime, workoutReminders, setWorkoutReminders } = useTheme();
 
   useEffect(() => {
-    fetch('http://localhost:3001/auth/me', { credentials: 'include' })
+    fetch(`${process.env.REACT_APP_API_URL}/auth/me`, { credentials: 'include' })
       .then(res => {
         setIsAuthenticated(res.ok);
         setAuthChecked(true);
@@ -32,7 +32,7 @@ function ProtectedLayout() {
   // Load notification settings from backend once authenticated
   useEffect(() => {
     if (!isAuthenticated) return;
-    fetch("http://localhost:3001/settings", { credentials: "include" })
+    fetch(`${process.env.REACT_APP_API_URL}/settings`, { credentials: "include" })
       .then(res => res.json())
       .then(data => {
         const s = data.settings;
