@@ -34,11 +34,13 @@ export const FONT_SCALE = {
 export function ThemeProvider({ children }) {
   const [darkMode, setDarkMode] = useState(true);
   const [fontDensity, setFontDensity] = useState("STANDARD");
+  const [alertTime, setAlertTime] = useState("06:30");
+  const [workoutReminders, setWorkoutReminders] = useState(true);
   const fontScale = FONT_SCALE[fontDensity] ?? FONT_SCALE.STANDARD;
   const theme = getTheme(darkMode);
 
   return (
-    <ThemeContext.Provider value={{ theme, darkMode, setDarkMode, fontDensity, setFontDensity, fontScale  }}>
+    <ThemeContext.Provider value={{ theme, darkMode, setDarkMode, fontDensity, setFontDensity, fontScale, alertTime, setAlertTime, workoutReminders, setWorkoutReminders   }}>
       {children}
     </ThemeContext.Provider>
   );
