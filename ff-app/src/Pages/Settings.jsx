@@ -344,16 +344,15 @@ function Toggle({ checked, onChange, theme }) {
 
 export function Settings() {
   // ── State ──────────────────────────────────────────────────────────────────
-  const { theme, darkMode, setDarkMode, fontDensity, setFontDensity  } = useTheme();
+  const { theme, darkMode, setDarkMode, fontDensity, setFontDensity, alertTime, setAlertTime, workoutReminders, setWorkoutReminders } = useTheme();
 
   // null = still loading from backend
   const [form, setForm] = useState(null);
 
-  const [workoutReminders, setWorkoutReminders] = useState(true);
   // const [darkMode, setDarkMode] = useState(true);
-  const [alertTime, setAlertTime] = useState("06:30");
   const [ampm, setAmpm] = useState("AM");
   const [confirmMessage, setConfirmMessage] = useState("");
+
 
 
   // const theme = getTheme(darkMode);
