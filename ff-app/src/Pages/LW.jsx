@@ -22,7 +22,7 @@ async function readDBArray(key) {
   if (key === 'WorkoutLogs') return [];
   
   try {
-    const res = await fetch(`http://localhost:3001/${key}`, {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/${key}`, {
       credentials: 'include'
     });
 
@@ -92,7 +92,7 @@ async function saveDBArray(key, value){
   try {
 
     // step 1 — save the plan
-    let res = await fetch(`http://localhost:3001/LW/add/`, {
+    let res = await fetch(`${process.env.REACT_APP_API_URL}/LW/add/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -114,7 +114,7 @@ async function saveDBArray(key, value){
 
     // step 2: save each exercise using planId
     for (const exercise of value.exercises) {
-      let exRes = await fetch('http://localhost:3001/LW/add/EX', {
+      let exRes = await fetch(`${process.env.REACT_APP_API_URL}/LW/add/EX`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

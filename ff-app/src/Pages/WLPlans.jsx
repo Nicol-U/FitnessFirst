@@ -46,7 +46,7 @@ function PlanIcon({ iconKey, color, size = 22 }) {
 
 const getPlans = async () => {
   try {
-    const res = await fetch('http://localhost:3001/plans', {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/plans`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -111,7 +111,7 @@ const getPlans = async () => {
 
 const handleUpdateWorkoutPlan = async (plan) => {
   try {
-    const res = await fetch(`http://localhost:3001/plans/${plan.id}/edit`, {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/plans/${plan.id}/edit`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -130,7 +130,7 @@ const handleUpdateWorkoutPlan = async (plan) => {
     for (const ex of plan.exercises) {
       let exRes;
       if (ex.id) {
-        exRes = await fetch(`http://localhost:3001/excercise/${ex.id}/edit`, {
+        exRes = await fetch(`${process.env.REACT_APP_API_URL}/excercise/${ex.id}/edit`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -139,7 +139,7 @@ const handleUpdateWorkoutPlan = async (plan) => {
       }
 
       else {
-          exRes = await fetch('http://localhost:3001/plansEX/add', {
+          exRes = await fetch(`${process.env.REACT_APP_API_URL}/plansEX/add`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -190,7 +190,7 @@ async function handleDeleteExercise(ex, PlanID, i){
   if (ex){
     console.log(ex);
       try {
-        const res = await fetch(`http://localhost:3001/Excercise/${ex}/DEL`, {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/Excercise/${ex}/DEL`, {
           method: 'DELETE',
           credentials: 'include',
           body: JSON.stringify({
@@ -215,7 +215,7 @@ async function handleDeleteExercise(ex, PlanID, i){
   const handleSaveWorkoutPlan = async (plan) => {
   try {
     // step 1 — save the plan
-    let res = await fetch('http://localhost:3001/plans/add', {
+    let res = await fetch(`${process.env.REACT_APP_API_URL}/plans/add`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -238,7 +238,7 @@ async function handleDeleteExercise(ex, PlanID, i){
 
     // step 2 — save each exercise using planId
     for (const exercise of plan.exercises) {
-      let exRes = await fetch('http://localhost:3001/plansEX/add', {
+      let exRes = await fetch(`${process.env.REACT_APP_API_URL}/plansEX/add`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -355,7 +355,7 @@ function handleSave() {
   function deletePlan(e, id) {
     const deleteWP = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/plans/${id}`, {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/plans/${id}`, {
           method: 'DELETE',
           credentials: 'include',
 

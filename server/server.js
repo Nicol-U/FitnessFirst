@@ -25,6 +25,7 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     },
@@ -382,8 +383,8 @@ const getRoutes = [
     method: 'post',
     RouteCode: 201,
     name: '/LW/add',
-    SQL: 'INSERT INTO workout_sessions (user_id, date, duration_minutes ) VALUES ($1, $2, $3) RETURNING *',
-    SQLparams: (req) => [req.user.id, req.body.date, req.body.duration_minutes],
+    SQL: 'INSERT INTO workout_sessions (user_id, duration_minutes ) VALUES ($1, $2) RETURNING *',
+    SQLparams: (req) => [req.user.id, req.body.duration_minutes],
     JGetRow: 'Sesh',
   },
 

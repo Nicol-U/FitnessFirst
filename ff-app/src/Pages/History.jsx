@@ -27,13 +27,30 @@ function getCalendarDays(year, month) {
 }
 
 function toDateStr(year, month, day) {
+  
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
+function normalizeDate(dateStr) {
+  if (!dateStr) return null;
+  return dateStr.slice(0, 10);  
+}
+
 function formatDisplayDate(dateStr) {
-  const [y, m, d] = dateStr.split("-");
-  const date = new Date(y, m - 1, d);
-  return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+  if (!dateStr) return "No Date";
+
+  const date = new Date(dateStr);
+
+  if (isNaN(date.getTime())) {
+    return "Invalid Date";
+  }
+
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
 function DayBanner({ log, selectedDate, theme }) {
@@ -158,8 +175,8 @@ useEffect(() => {
 fetch('http://localhost:3001/workoutsessions/dates', { credentials: 'include' })
   .then(res => res.json())
   .then(data => {
-    setLogDates(new Set((data.dates || []).map(d =>
-      typeof d === 'string' ? d : d.date?.slice(0, 10)  // normalize to YYYY-MM-DD
+    setLogDates(new Set((data.dates || []).map(d => 
+      typeof d === 'object' ? normalizeDate(d.date) : normalizeDate(d)
     )));
   })
     .catch(err => console.error('failed to fetch dates:', err));
@@ -170,8 +187,8 @@ useEffect(() => {
   setLoading(true);
 
   const url = selectedDate
-    ? `http://localhost:3001/workoutsessions?date=${selectedDate}`
-    : 'http://localhost:3001/workoutsessions';
+    ? `${process.env.REACT_APP_API_URL}/workoutsessions?date=${selectedDate}`
+    : `${process.env.REACT_APP_API_URL}/workoutsessions`;
 
   fetch(url, { credentials: 'include' })
     .then(res => res.json())

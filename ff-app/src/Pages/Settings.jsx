@@ -364,8 +364,8 @@ export function Settings() {
 
   useEffect(() => {
     Promise.all([
-      fetch("http://localhost:3001/auth/me", { credentials: "include" }),
-      fetch("http://localhost:3001/settings",  { credentials: "include" }),
+      fetch(`${process.env.REACT_APP_API_URL}/auth/me`, { credentials: "include" }),
+      fetch(`${process.env.REACT_APP_API_URL}/settings`,  { credentials: "include" }),
     ])
       .then(([r1, r2]) => Promise.all([r1.json(), r2.json()]))
       .then(([userData, settingsData]) => {
@@ -397,8 +397,8 @@ export function Settings() {
   const handleDiscard = () => {
     // Re-fetch from backend instead of resetting to hardcoded values
     Promise.all([
-      fetch("http://localhost:3001/auth/me", { credentials: "include" }),
-      fetch("http://localhost:3001/settings",  { credentials: "include" }),
+      fetch(`${process.env.REACT_APP_API_URL}/auth/me`, { credentials: "include" }),
+      fetch(`${process.env.REACT_APP_API_URL}/settings`,  { credentials: "include" }),
     ])
       .then(([r1, r2]) => Promise.all([r1.json(), r2.json()]))
       .then(([userData, settingsData]) => {
@@ -429,7 +429,7 @@ export function Settings() {
     //   fontDensity 
     // });
     try {
-      const res = await fetch("http://localhost:3001/settings", {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/settings`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

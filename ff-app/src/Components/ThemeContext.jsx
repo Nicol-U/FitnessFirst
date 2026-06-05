@@ -17,7 +17,7 @@ export const getTheme = (darkMode) => ({
   toggleNotDone:   darkMode ? "#F6FFC0" : "black",
   toggleDone:      darkMode ?  "black"    :  "#F6FFC0",
   tansparentBG:    darkMode ?  'rgba(0,0,0,0.3)'  :  '#f6ffc090',
-  sidebar:           darkMode ? "#1a1a1a"    : "#636363",
+  sidebar:           darkMode ? "#000000"    : "#636363",
   subheader:           darkMode ?  "#636363": "#1a1a1a" ,
 
 

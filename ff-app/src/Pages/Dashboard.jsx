@@ -10,7 +10,7 @@ import { useTheme } from '../Components/ThemeContext';
 
 async function checkIfNewDay() {
   try {
-    const res = await fetch('http://localhost:3001/user/streak', {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/user/streak`, {
       method: 'PATCH',    // put get by accident took forever 
       credentials: 'include',
     });
@@ -43,7 +43,7 @@ export function Dashboard() {
 
 // fix 1: fetch goals correctly with fallback
 useEffect(() => {
-  fetch('http://localhost:3001/goals', { credentials: 'include' })
+  fetch( `${process.env.REACT_APP_API_URL}/goals`, { credentials: 'include' })
     .then(res => res.json())
     .then(data => setGoals(data.goals || []))
     .catch(err => console.error(err));
@@ -178,7 +178,7 @@ const AddGoalPopup = forwardRef(({ onClose, goals, setGoals }, ref) => {
     }
 
     try{
-      const res = await fetch('http://localhost:3001/goals/add/', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/goals/add/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -191,7 +191,7 @@ const AddGoalPopup = forwardRef(({ onClose, goals, setGoals }, ref) => {
       return;
       }
 
-const updated = await fetch('http://localhost:3001/goals', { credentials: 'include' });
+const updated = await fetch(`${process.env.REACT_APP_API_URL}/goals`, { credentials: 'include' });
     const updatedData = await updated.json();
     setGoals(updatedData.goals || []);
     onClose();
@@ -246,7 +246,7 @@ function RadioToggle({ goals, setGoals }) {
 
     try {
 
-      const res = await fetch(`http://localhost:3001/goals/${id}/complete`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/goals/${id}/complete`, {
         method: 'PATCH',
         headers: { 'Content-Type' : 'application/json'},
         credentials: 'include', 
@@ -266,7 +266,7 @@ function RadioToggle({ goals, setGoals }) {
 
 const deleteGoal = async (id) => {
   try {
-    const res = await fetch(`http://localhost:3001/goals/${id}`, {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/goals/${id}`, {
       method: 'DELETE',
       credentials: 'include',
     });
